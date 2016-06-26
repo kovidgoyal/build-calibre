@@ -34,6 +34,7 @@ def mkdir(x):
     except EnvironmentError as err:
         if err.errno != errno.EEXIST:
             raise
+mkdir(abspath('sources-cache'))
 mkdir(abspath('build'))
 output_dir = os.path.join(abspath('build'), 'linux' + arch)
 mkdir(output_dir)
