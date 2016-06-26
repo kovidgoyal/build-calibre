@@ -1,0 +1,7 @@
+zlib
+md5:126f8676442ffbd97884eb4d6f32afb4 zlib-1.2.8.tar.xz
+http://zlib.net/zlib-1.2.8.tar.xz
+
+openssl
+sha256:1d4007e53aad94a5b2002fe045ee7bb0b3d98f1a47f8b2bc851dcd1c74332919 openssl-1.0.2h.tar.gz
+https://www.openssl.org/source/openssl-1.0.2h.tar.gz
