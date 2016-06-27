@@ -36,6 +36,16 @@
     },
 
     {
+        "name": "libffi",
+        "unix": {
+            "filename": "libffi-3.2.1.tar.gz",
+            "hash": "sha1:280c265b789e041c02e5c97815793dfc283fb1e6",
+            "urls": ["ftp://sourceware.org/pub/libffi/{filename}"]
+        }
+    },
+
+
+    {
         "name": "openssl",
         "unix": {
             "filename": "openssl-1.0.2h.tar.gz",

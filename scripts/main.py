@@ -11,7 +11,7 @@ import shutil
 import tempfile
 import pwd
 from pkgs.constants import (
-    SW, PREFIX, set_build_dir, pkg_ext, set_current_source)
+    SW, PREFIX, set_build_dir, pkg_ext, set_current_source, isosx, iswindows)
 from pkgs.download_sources import download, filename_for_dep
 from pkgs.utils import (
     install_package, create_package, run_shell, extract_source, simple_build)
@@ -34,9 +34,16 @@ if args.shell:
     raise SystemExit(run_shell())
 
 all_deps = [
-    'zlib', 'expat', 'openssl',
+    # Python and its dependencies
+    'zlib', 'bzip2', 'expat', 'sqlite', 'libffi', 'openssl', 'python',
 ]
+if isosx or iswindows:
+    all_deps.remove('libffi')
 deps = args.deps or all_deps
+
+for dep in deps:
+    if dep not in all_deps:
+        raise SystemExit('%s is an unknown dependency' % dep)
 
 download(deps)
 

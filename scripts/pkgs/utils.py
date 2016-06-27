@@ -94,6 +94,8 @@ def extract_source():
 
 
 def simple_build(configure_args=()):
+    if isinstance(configure_args, type('')):
+        configure_args = shlex.split(configure_args)
     run('./configure', '--prefix=' + build_dir(), *configure_args)
     run('make')
     run('make install')
