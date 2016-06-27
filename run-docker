@@ -30,12 +30,17 @@ if arch not in '64 32'.split() or len(sys.argv) < 2:
 
 def mkdir(x):
     try:
-        os.mkdir(abspath('build'))
+        os.mkdir(abspath(x))
     except EnvironmentError as err:
-        if err.errno != errno.EEXIST:
-            raise
-mkdir(abspath('sources-cache'))
-mkdir(abspath('build'))
+        if err.errno == errno.EEXIST:
+            return
+        raise
+    if 'SUDO_UID' in os.environ and os.geteuid() == 0:
+        os.chown(abspath(x),
+                 int(os.environ['SUDO_UID']), int(os.environ['SUDO_GID']))
+
+mkdir('sources-cache')
+mkdir('build')
 output_dir = os.path.join(abspath('build'), 'linux' + arch)
 mkdir(output_dir)
 
