@@ -15,7 +15,7 @@ import shutil
 import tarfile
 import zipfile
 
-from .constants import PREFIX, SCRIPTS, build_dir, current_source, mkdtemp, PATCHES
+from .constants import PREFIX, SCRIPTS, build_dir, current_source, mkdtemp, PATCHES, PYTHON
 
 
 class ModifiedEnv(object):
@@ -110,6 +110,10 @@ def simple_build(configure_args=(), make_args=()):
     run('./configure', '--prefix=' + build_dir(), *configure_args)
     run('make', *make_args)
     run('make install')
+
+
+def python_build():
+    run(PYTHON, 'setup.py', 'install', '--root', build_dir(), library_path=True)
 
 
 def lcopy(src, dst):

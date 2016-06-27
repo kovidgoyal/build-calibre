@@ -15,7 +15,7 @@ from pkgs.constants import (
     set_tdir, mkdtemp)
 from pkgs.download_sources import download, filename_for_dep
 from pkgs.utils import (
-    install_package, create_package, run_shell, extract_source, simple_build)
+    install_package, create_package, run_shell, extract_source, simple_build, python_build)
 
 if os.geteuid() == 0:
     uid, gid = pwd.getpwnam('kovid').pw_uid, pwd.getpwnam('kovid').pw_gid
@@ -34,10 +34,15 @@ args = parser.parse_args()
 if args.shell:
     raise SystemExit(run_shell())
 
+python_deps = [
+    'setuptools', 'cssutils',
+]
+
 all_deps = [
     # Python and its dependencies
     'zlib', 'bzip2', 'expat', 'sqlite', 'libffi', 'openssl', 'ncurses', 'readline', 'python',
-]
+] + python_deps
+
 if isosx or iswindows:
     for x in 'libffi ncurses readline'.split():
         all_deps.remove(x)
@@ -83,7 +88,12 @@ def build(dep, args):
     if hasattr(m, 'main'):
         m.main(args)
     else:
-        simple_build()
+        if dep in python_deps:
+            python_build()
+            # TODO: The next line will likely need to be changed on windows
+            output_dir = os.path.join(output_dir, 'sw', 'sw')
+        else:
+            simple_build()
     create_package(m, output_dir, pkg_path(dep))
     install_package(pkg_path(dep), dest_dir)
 

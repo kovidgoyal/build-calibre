@@ -79,7 +79,26 @@
             "hash": "sha1:c3b8bbe3f084c4d4ea13ffb03d75a5e22f9756ff",
             "urls": ["https://www.python.org/ftp/python/2.7.11/{filename}"]
         }
+    },
+
+    {
+        "name": "setuptools",
+        "unix": {
+            "filename": "setuptools-23.1.0.tar.gz",
+            "hash": "md5:f7f447663f7d5e17c84be10dc6b195fd",
+            "urls": ["https://pypi.python.org/packages/9f/7c/0a33c528164f1b7ff8cf0684cf88c2e733c8ae0119ceca4a3955c7fc059d/{filename}"]
+        }
+    },
+
+    {
+        "name": "cssutils",
+        "unix": {
+            "filename": "cssutils-1.0.1.tar.gz",
+            "hash": "md5:7fcdf2c3e9f053136af1990146eb361d",
+            "urls": ["https://pypi.python.org/packages/22/de/6b03e0088baf0299ab7d2e95a9e26c2092e9cb3855876b958b6a62175ca2/{filename}"]
+        }
     }
+
 
 ]
 
