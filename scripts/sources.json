@@ -97,8 +97,42 @@
             "hash": "md5:7fcdf2c3e9f053136af1990146eb361d",
             "urls": ["https://pypi.python.org/packages/22/de/6b03e0088baf0299ab7d2e95a9e26c2092e9cb3855876b958b6a62175ca2/{filename}"]
         }
+    },
+
+    {
+        "name": "dateutil",
+        "unix": {
+            "filename": "python-dateutil-2.5.3.tar.gz",
+            "hash": "md5:05ffc6d2cc85a7fd93bb245807f715ef",
+            "urls": ["https://pypi.python.org/packages/3e/f5/aad82824b369332a676a90a8c0d1e608b17e740bbb6aeeebca726f17b902/{filename}"]
+        }
+    },
+
+    {
+        "name": "dnspython",
+        "unix": {
+            "filename": "dnspython-1.14.0.zip",
+            "hash": "md5:577f6b60b185d1ac90d76e9364a543d4",
+            "urls": ["https://pypi.python.org/packages/e1/ab/36f4e337d6cf6590f9cf46349f519b682542d211c604755ab8409f67f26b/{filename}"]
+        }
+    },
+
+    {
+        "name": "mechanize",
+        "unix": {
+            "filename": "mechanize-0.2.5.tar.gz",
+            "hash": "md5:32657f139fc2fb75bcf193b63b8c60b2",
+            "urls": ["https://pypi.python.org/packages/32/bc/d5b44fe4a3b5079f035240a7c76bd0c71a60c6082f4bfcb1c7585604aa35/{filename}"]
+        }
+    },
+
+    {
+        "name": "pygments",
+        "unix": {
+            "filename": "Pygments-2.1.3.tar.gz",
+            "hash": "md5:ed3fba2467c8afcda4d317e4ef2c6150",
+            "urls": ["https://pypi.python.org/packages/b8/67/ab177979be1c81bc99c8d0592ef22d547e70bb4c6815c383286ed5dec504/{filename}"]
+        }
     }
-
-
 ]
 

@@ -35,7 +35,7 @@ if args.shell:
     raise SystemExit(run_shell())
 
 python_deps = [
-    'setuptools', 'cssutils',
+    'setuptools', 'cssutils', 'dateutil', 'dnspython', 'mechanize', 'pygments',
 ]
 
 all_deps = [
