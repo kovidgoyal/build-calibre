@@ -48,6 +48,7 @@ def parse_sources():
 def verify_hash(pkg, cleanup=False):
     fname = os.path.join(SOURCES, pkg['filename'])
     alg, q = pkg['hash'].partition(':')[::2]
+    q = q.strip()
     h = getattr(hashlib, alg.lower())
     matched = False
     try:
