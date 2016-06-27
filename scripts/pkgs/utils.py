@@ -93,8 +93,8 @@ def extract_source():
         os.chdir(x[0])
 
 
-def simple_build():
-    run('./configure', '--prefix=' + build_dir())
+def simple_build(configure_args=()):
+    run('./configure', '--prefix=' + build_dir(), *configure_args)
     run('make')
     run('make install')
 

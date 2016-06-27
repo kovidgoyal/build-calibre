@@ -27,6 +27,15 @@
     },
 
     {
+        "name": "sqlite",
+        "unix": {
+            "filename": "sqlite-autoconf-3130000.tar.gz",
+            "hash": "sha1:f6f76e310389e3f510b23826f805850449ae8653",
+            "urls": ["https://www.sqlite.org/2016/{filename}"]
+        }
+    },
+
+    {
         "name": "openssl",
         "unix": {
             "filename": "openssl-1.0.2h.tar.gz",

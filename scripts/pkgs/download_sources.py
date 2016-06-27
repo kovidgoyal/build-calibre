@@ -64,7 +64,13 @@ def verify_hash(pkg, cleanup=False):
         prefix = pkg['filename'].partition('-')[0]
         e = ext(pkg['filename'])
         for m in glob.glob(os.path.join(SOURCES, prefix + '-*.' + e)):
-            if not os.path.samefile(fname, m):
+            try:
+                is_samefile = os.path.samefile(fname, m)
+            except EnvironmentError as err:
+                if err.errno != errno.ENOENT:
+                    raise
+                is_samefile = False
+            if not is_samefile:
                 os.remove(m)
     return matched
 
