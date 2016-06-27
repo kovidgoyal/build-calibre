@@ -14,9 +14,8 @@ import glob
 import shutil
 import tarfile
 import zipfile
-from tempfile import mkdtemp
 
-from .constants import PREFIX, SCRIPTS, build_dir, current_source
+from .constants import PREFIX, SCRIPTS, build_dir, current_source, mkdtemp
 
 
 class ModifiedEnv(object):
@@ -93,11 +92,13 @@ def extract_source():
         os.chdir(x[0])
 
 
-def simple_build(configure_args=()):
+def simple_build(configure_args=(), make_args=()):
     if isinstance(configure_args, type('')):
         configure_args = shlex.split(configure_args)
+    if isinstance(make_args, type('')):
+        make_args = shlex.split(make_args)
     run('./configure', '--prefix=' + build_dir(), *configure_args)
-    run('make')
+    run('make', *make_args)
     run('make install')
 
 

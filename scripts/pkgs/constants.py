@@ -6,6 +6,7 @@ from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import sys
 import os
+import tempfile
 from multiprocessing import cpu_count
 
 _plat = sys.platform.lower()
@@ -15,6 +16,7 @@ pkg_ext = 'tar.bz2'
 
 SW = '/sw'
 SOURCES = '/sources'
+PATCHES = '/patches'
 SCRIPTS = '/scripts'
 is64bit = sys.maxsize > (1 << 32)
 PREFIX = os.path.join(SW, 'sw')
@@ -48,3 +50,15 @@ def current_source():
 def set_current_source(x):
     global _current_source
     _current_source = os.path.join(SOURCES, x)
+
+
+_tdir = None
+
+
+def set_tdir(x):
+    global _tdir
+    _tdir = x
+
+
+def mkdtemp(prefix=''):
+    tempfile.mkdtemp(prefix=prefix, dir=_tdir)

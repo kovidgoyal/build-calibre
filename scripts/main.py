@@ -11,7 +11,8 @@ import shutil
 import tempfile
 import pwd
 from pkgs.constants import (
-    SW, PREFIX, set_build_dir, pkg_ext, set_current_source, isosx, iswindows)
+    SW, PREFIX, set_build_dir, pkg_ext, set_current_source, isosx, iswindows,
+    set_tdir, mkdtemp)
 from pkgs.download_sources import download, filename_for_dep
 from pkgs.utils import (
     install_package, create_package, run_shell, extract_source, simple_build)
@@ -57,6 +58,8 @@ def ensure_clear_dir(dest_dir):
         shutil.rmtree(dest_dir)
     os.makedirs(dest_dir)
 ensure_clear_dir(dest_dir)
+ensure_clear_dir('t')
+set_tdir(os.path.abspath('t'))
 
 
 def pkg_path(dep):
@@ -70,7 +73,7 @@ for dep in other_deps:
 
 def build(dep, args):
     set_current_source(filename_for_dep(dep))
-    output_dir = tempfile.mkdtemp(prefix=dep + '-')
+    output_dir = mkdtemp(prefix=dep + '-')
     set_build_dir(output_dir)
     try:
         m = importlib.import_module('pkgs.' + dep)
