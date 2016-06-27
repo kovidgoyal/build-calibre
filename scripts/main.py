@@ -5,10 +5,10 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import os
-import sys
 import argparse
 import importlib
 from pkgs.constants import SW
+from pkgs.download_sources import download
 
 os.chown(SW, 1000, 100)
 os.setegid(100), os.seteuid(1000)
@@ -23,7 +23,9 @@ all_deps = [
     'zlib', 'openssl',
 ]
 deps = args.deps or all_deps
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+download(deps)
+
 for dep in deps:
     m = importlib.import_module('pkgs.' + dep)
     m.main(args)

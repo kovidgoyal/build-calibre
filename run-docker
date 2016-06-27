@@ -40,7 +40,7 @@ output_dir = os.path.join(abspath('build'), 'linux' + arch)
 mkdir(output_dir)
 
 cmd = ('docker', 'run',
-       '-v', abspath('sources-cache') + ':/sources:ro',
+       '-v', abspath('sources-cache') + ':/sources:rw',
        '-v', abspath('scripts') + ':/scripts:ro',
        '-v', output_dir + ':/sw:rw',
        '--rm=true',

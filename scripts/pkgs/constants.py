@@ -8,6 +8,10 @@ import sys
 import os
 from multiprocessing import cpu_count
 
+_plat = sys.platform.lower()
+iswindows = 'win32' in _plat or 'win64' in _plat
+isosx = 'darwin' in _plat
+
 SW = '/sw'
 SOURCES = '/sources'
 SCRIPTS = '/scripts'
