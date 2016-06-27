@@ -39,6 +39,10 @@ class ModifiedEnv(object):
         self.apply(self.orig)
 
 
+def run_shell():
+    return subprocess.Popen(['/bin/bash']).wait()
+
+
 def run(*args, **kw):
     if len(args) == 1 and isinstance(args[0], type('')):
         cmd = shlex.split(args[0])
@@ -62,7 +66,7 @@ def run(*args, **kw):
         print(' '.join(pipes.quote(x) for x in cmd))
         print('Dropping you into a shell')
         sys.stdout.flush()
-        subprocess.Popen(['/bin/bash']).wait()
+        run_shell()
         raise SystemExit(1)
 
 

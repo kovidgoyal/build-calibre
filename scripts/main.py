@@ -12,19 +12,24 @@ import tempfile
 import pwd
 from pkgs.constants import SW, set_build_dir, pkg_ext, set_current_source
 from pkgs.download_sources import download, filename_for_dep
-from pkgs.utils import install_package, create_package
+from pkgs.utils import install_package, create_package, run_shell
 
 if os.geteuid() == 0:
     uid, gid = pwd.getpwnam('kovid').pw_uid, pwd.getpwnam('kovid').pw_gid
     os.chown(SW, uid, gid)
     os.setgid(gid), os.setuid(uid)
     os.putenv('HOME', tempfile.gettempdir())
+    os.chdir(tempfile.gettempdir())
 
 parser = argparse.ArgumentParser(description='Build calibre dependencies')
-parser.add_argument(
-    'deps', nargs='*', default=[], help='Which dependencies to build'
-)
+a = parser.add_argument
+a('deps', nargs='*', default=[], help='Which dependencies to build')
+a('--shell', default=False, action='store_true',
+  help='Start a shell in the container')
 args = parser.parse_args()
+
+if args.shell:
+    raise SystemExit(run_shell())
 
 all_deps = [
     'zlib', 'openssl',
