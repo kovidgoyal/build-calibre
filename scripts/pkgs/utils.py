@@ -82,10 +82,14 @@ def extract(source):
         run('tar', 'xf', source)
 
 
+def chdir_for_extract(name):
+    tdir = mkdtemp(prefix=os.path.basename(name).split('-')[0] + '-')
+    os.chdir(tdir)
+
+
 def extract_source():
     source = current_source()
-    tdir = mkdtemp(prefix=os.path.basename(source).split('-')[0] + '-')
-    os.chdir(tdir)
+    chdir_for_extract(source)
     extract(source)
     x = os.listdir('.')
     if len(x) == 1:

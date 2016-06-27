@@ -20,6 +20,8 @@ PATCHES = '/patches'
 SCRIPTS = '/scripts'
 is64bit = sys.maxsize > (1 << 32)
 PREFIX = os.path.join(SW, 'sw')
+BIN = os.path.join(PREFIX, 'bin')
+PYTHON = os.path.join(BIN, 'python')
 
 CFLAGS = os.environ['CFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
 CPPFLAGS = os.environ['CPPFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
