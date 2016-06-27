@@ -9,12 +9,16 @@ import argparse
 import importlib
 import shutil
 import tempfile
-from pkgs.constants import SW, set_build_dir, pkg_ext
-from pkgs.download_sources import download
+import pwd
+from pkgs.constants import SW, set_build_dir, pkg_ext, set_current_source
+from pkgs.download_sources import download, filename_for_dep
 from pkgs.utils import install_package, create_package
 
-os.chown(SW, 1000, 100)
-os.setgid(100), os.setuid(1000)
+if os.geteuid() == 0:
+    uid, gid = pwd.getpwnam('kovid').pw_uid, pwd.getpwnam('kovid').pw_gid
+    os.chown(SW, uid, gid)
+    os.setgid(gid), os.setuid(uid)
+    os.putenv('HOME', tempfile.gettempdir())
 
 parser = argparse.ArgumentParser(description='Build calibre dependencies')
 parser.add_argument(
@@ -50,6 +54,7 @@ for dep in other_deps:
 
 
 def build(dep, args):
+    set_current_source(filename_for_dep(dep))
     output_dir = tempfile.mkdtemp(prefix=dep + '-')
     set_build_dir(output_dir)
     m = importlib.import_module('pkgs.' + dep)

@@ -9,5 +9,5 @@ from .utils import extract_source, simple_build
 
 
 def main(args):
-    extract_source('zlib-')
+    extract_source()
     simple_build()

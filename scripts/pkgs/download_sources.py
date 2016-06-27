@@ -28,13 +28,19 @@ def ext(fname):
     return fname.rpartition('.')[-1]
 
 
+_parsed_source = None
+
+
 def parse_sources():
-    ans = []
-    for item in json.load(open(sources_file, 'rb')):
-        s = item.get('windows', item['unix']) if iswindows else item['unix']
-        s['name'] = item['name']
-        ans.append(s)
-    return ans
+    global _parsed_source
+    if _parsed_source is None:
+        _parsed_source = ans = []
+        for item in json.load(open(sources_file, 'rb')):
+            s = item.get('windows', item['unix']) if iswindows else \
+                item['unix']
+            s['name'] = item['name']
+            ans.append(s)
+    return _parsed_source
 
 
 def verify_hash(pkg, cleanup=False):
@@ -106,3 +112,10 @@ def download(pkgs=None):
         if not pkgs or pkg['name'] in pkgs:
             if not verify_hash(pkg, cleanup=True):
                 download_pkg(pkg)
+
+
+def filename_for_dep(dep):
+    sources = parse_sources()
+    for pkg in sources:
+        if pkg['name'] == dep:
+            return pkg['filename']

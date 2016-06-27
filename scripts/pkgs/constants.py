@@ -34,3 +34,15 @@ def build_dir():
 def set_build_dir(x):
     global _build_dir
     _build_dir = x
+
+
+_current_source = None
+
+
+def current_source():
+    return _current_source
+
+
+def set_current_source(x):
+    global _current_source
+    _current_source = os.path.join(SOURCES, x)

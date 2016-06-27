@@ -12,7 +12,7 @@ from .utils import extract_source, run, install_binaries, install_tree
 
 
 def main(args):
-    extract_source('openssl-')
+    extract_source()
     optflags = ['enable-ec_nistp_64_gcc_128'] if is64bit else []
     run('./config', '--prefix=/usr', '--openssldir=/etc/ssl', 'shared',
         'zlib', '-Wa,--noexecstack', CFLAGS, LDFLAGS, *optflags)

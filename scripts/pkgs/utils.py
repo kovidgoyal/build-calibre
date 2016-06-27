@@ -13,9 +13,10 @@ import errno
 import glob
 import shutil
 import tarfile
+import zipfile
 from tempfile import mkdtemp
 
-from .constants import SOURCES, SCRIPTS, build_dir
+from .constants import SCRIPTS, build_dir, current_source
 
 
 class ModifiedEnv(object):
@@ -36,12 +37,6 @@ class ModifiedEnv(object):
 
     def __exit__(self, *args):
         self.apply(self.orig)
-
-
-def get_source(prefix):
-    for x in os.listdir(SOURCES):
-        if x.lower().startswith(prefix):
-            return os.path.join(SOURCES, x)
 
 
 def run(*args, **kw):
@@ -73,16 +68,15 @@ def run(*args, **kw):
 
 def extract(source):
     if source.lower().endswith('.zip'):
-        run('unzip', source)
+        with zipfile.ZipFile(source) as zf:
+            zf.extractall()
     else:
         run('tar', 'xf', source)
 
 
-def extract_source(prefix):
-    source = get_source(prefix)
-    if not source:
-        raise SystemExit('No source for %s found' % prefix)
-    tdir = mkdtemp(prefix=prefix)
+def extract_source():
+    source = current_source()
+    tdir = mkdtemp(prefix=os.path.basename(source).split('-')[0] + '-')
     os.chdir(tdir)
     extract(source)
     x = os.listdir('.')
