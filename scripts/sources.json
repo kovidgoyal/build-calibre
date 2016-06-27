@@ -12,7 +12,7 @@
         "name": "expat",
         "unix": {
             "filename": "expat-2.2.0.tar.bz2",
-            "hash": "md5:28f1205d8dd2001f26fec1e8c2cebe37",
+            "hash": "sha1:8453bc52324be4c796fd38742ec48470eef358b3",
             "urls": ["http://downloads.sourceforge.net/sourceforge/expat/{filename}"]
         }
     },
