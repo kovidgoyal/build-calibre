@@ -192,7 +192,7 @@ def create_package(module, src_dir, outfile):
                 return
         if hasattr(module, 'filter_pkg') and module.filter_pkg(parts):
             return
-        tar_info.uid, tar_info.gid = 1000, 100
+        tar_info.uid, tar_info.gid, tar_info.mtime = 1000, 100, 0
         return tar_info
 
     with tarfile.open(outfile, 'w:bz2') as archive:
