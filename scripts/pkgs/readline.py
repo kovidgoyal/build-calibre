@@ -17,7 +17,3 @@ def main(args):
     for p in sorted(patches):
         apply_patch(p, level=2)
     simple_build('--disable-static', make_args='SHLIB_LIBS=-lncursesw')
-
-
-def filter_pkg(parts):
-    return False
