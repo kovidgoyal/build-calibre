@@ -39,6 +39,8 @@ def parse_sources():
             s = item.get('windows', item['unix']) if iswindows else \
                 item['unix']
             s['name'] = item['name']
+            s['urls'] = [x.replace('{filename}', s['filename'])
+                         for x in s['urls']]
             ans.append(s)
     return _parsed_source
 

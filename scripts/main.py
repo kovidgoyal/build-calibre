@@ -10,9 +10,11 @@ import importlib
 import shutil
 import tempfile
 import pwd
-from pkgs.constants import SW, set_build_dir, pkg_ext, set_current_source
+from pkgs.constants import (
+    SW, PREFIX, set_build_dir, pkg_ext, set_current_source)
 from pkgs.download_sources import download, filename_for_dep
-from pkgs.utils import install_package, create_package, run_shell
+from pkgs.utils import (
+    install_package, create_package, run_shell, extract_source, simple_build)
 
 if os.geteuid() == 0:
     uid, gid = pwd.getpwnam('kovid').pw_uid, pwd.getpwnam('kovid').pw_gid
@@ -32,14 +34,14 @@ if args.shell:
     raise SystemExit(run_shell())
 
 all_deps = [
-    'zlib', 'openssl',
+    'zlib', 'expat', 'openssl',
 ]
 deps = args.deps or all_deps
 
 download(deps)
 
 other_deps = frozenset(all_deps) - frozenset(deps)
-dest_dir = os.path.join(SW, 'sw')
+dest_dir = PREFIX
 
 
 def ensure_clear_dir(dest_dir):
@@ -62,8 +64,14 @@ def build(dep, args):
     set_current_source(filename_for_dep(dep))
     output_dir = tempfile.mkdtemp(prefix=dep + '-')
     set_build_dir(output_dir)
-    m = importlib.import_module('pkgs.' + dep)
-    m.main(args)
+    try:
+        m = importlib.import_module('pkgs.' + dep)
+    except ImportError:
+        m = None
+    if hasattr(m, 'main'):
+        m.main(args)
+    else:
+        extract_source(), simple_build()
     create_package(m, output_dir, pkg_path(dep))
     install_package(pkg_path(dep), dest_dir)
 

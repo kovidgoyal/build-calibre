@@ -17,11 +17,12 @@ SW = '/sw'
 SOURCES = '/sources'
 SCRIPTS = '/scripts'
 is64bit = sys.maxsize > (1 << 32)
+PREFIX = os.path.join(SW, 'sw')
 
-CFLAGS = os.environ['CFLAGS'] = '-I' + os.path.join(SW, 'include')
-LDFLAGS = os.environ['LDFLAGS'] = '-L' + os.path.join(SW, 'lib')
+CFLAGS = os.environ['CFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
+LDFLAGS = os.environ['LDFLAGS'] = '-L' + os.path.join(PREFIX, 'lib')
 os.environ['MAKEOPTS'] = '-j%d' % cpu_count()
-os.environ['PKG_CONFIG_PATH'] = os.path.join(SW, 'sw', 'lib', 'pkgconfig')
+os.environ['PKG_CONFIG_PATH'] = os.path.join(PREFIX, 'sw', 'lib', 'pkgconfig')
 
 
 _build_dir = None

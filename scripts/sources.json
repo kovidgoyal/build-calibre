@@ -4,7 +4,16 @@
         "unix": {
             "filename": "zlib-1.2.8.tar.xz",
             "hash": "md5:28f1205d8dd2001f26fec1e8c2cebe37",
-            "urls": ["http://zlib.net/zlib-1.2.8.tar.xz"]
+            "urls": ["http://zlib.net/{filename}"]
+        }
+    },
+
+    {
+        "name": "expat",
+        "unix": {
+            "filename": "expat-2.2.0.tar.bz2",
+            "hash": "md5:28f1205d8dd2001f26fec1e8c2cebe37",
+            "urls": ["http://downloads.sourceforge.net/sourceforge/expat/{filename}"]
         }
     },
 
@@ -13,7 +22,7 @@
         "unix": {
             "filename": "openssl-1.0.2h.tar.gz",
             "hash": "sha256:1d4007e53aad94a5b2002fe045ee7bb0b3d98f1a47f8b2bc851dcd1c74332919",
-            "urls": ["https://www.openssl.org/source/openssl-1.0.2h.tar.gz"]
+            "urls": ["https://www.openssl.org/source/{filename}"]
         }
     }
 ]
