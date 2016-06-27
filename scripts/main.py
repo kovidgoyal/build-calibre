@@ -7,11 +7,14 @@ from __future__ import (unicode_literals, division, absolute_import,
 import os
 import argparse
 import importlib
-from pkgs.constants import SW
+import shutil
+import tempfile
+from pkgs.constants import SW, set_build_dir, pkg_ext
 from pkgs.download_sources import download
+from pkgs.utils import install_package, create_package
 
 os.chown(SW, 1000, 100)
-os.setegid(100), os.seteuid(1000)
+os.setgid(100), os.setuid(1000)
 
 parser = argparse.ArgumentParser(description='Build calibre dependencies')
 parser.add_argument(
@@ -26,6 +29,33 @@ deps = args.deps or all_deps
 
 download(deps)
 
-for dep in deps:
+other_deps = frozenset(all_deps) - frozenset(deps)
+dest_dir = os.path.join(SW, 'sw')
+
+
+def ensure_clear_dir(dest_dir):
+    if os.path.exists(dest_dir):
+        shutil.rmtree(dest_dir)
+    os.makedirs(dest_dir)
+ensure_clear_dir(dest_dir)
+
+
+def pkg_path(dep):
+    return os.path.join(SW, dep + '.' + pkg_ext)
+
+for dep in other_deps:
+    pkg = pkg_path(dep)
+    if os.path.exists(pkg):
+        install_package(pkg, dest_dir)
+
+
+def build(dep, args):
+    output_dir = tempfile.mkdtemp(prefix=dep + '-')
+    set_build_dir(output_dir)
     m = importlib.import_module('pkgs.' + dep)
     m.main(args)
+    create_package(m, output_dir, pkg_path(dep))
+    install_package(pkg_path(dep), dest_dir)
+
+for dep in deps:
+    build(dep, args)

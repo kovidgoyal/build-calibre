@@ -12,9 +12,10 @@ import sys
 import errno
 import glob
 import shutil
+import tarfile
 from tempfile import mkdtemp
 
-from .constants import SOURCES, SW, SCRIPTS
+from .constants import SOURCES, SCRIPTS, build_dir
 
 
 class ModifiedEnv(object):
@@ -90,7 +91,7 @@ def extract_source(prefix):
 
 
 def simple_build():
-    run('./configure', '--prefix=' + SW)
+    run('./configure', '--prefix=' + build_dir())
     run('make')
     run('make install')
 
@@ -110,7 +111,8 @@ def lcopy(src, dst):
             return lcopy(src, dst)
 
 
-def install_binaries(pattern, dest=os.path.join(SW, 'lib')):
+def install_binaries(pattern, destdir='lib'):
+    dest = os.path.join(build_dir(), destdir)
     files = glob.glob(pattern)
     for f in files:
         dst = os.path.join(dest, os.path.basename(f))
@@ -119,8 +121,43 @@ def install_binaries(pattern, dest=os.path.join(SW, 'lib')):
             os.chmod(dst, 0o755)
 
 
-def install_tree(src, dest_parent=os.path.join(SW, 'include')):
+def install_tree(src, dest_parent='include'):
+    dest_parent = os.path.join(build_dir(), dest_parent)
     dst = os.path.join(dest_parent, os.path.basename(src))
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(src, dst, symlinks=True)
+
+
+def ensure_dir(path):
+    try:
+        os.makedirs(path)
+    except EnvironmentError as err:
+        if err.errno != errno.EEXIST:
+            raise
+
+
+def create_package(module, src_dir, outfile):
+
+    exclude = frozenset('doc man info'.split())
+
+    def filter_tar(tar_info):
+        parts = tar_info.name.split('/')
+        for p in parts:
+            if p in exclude:
+                return
+        if hasattr(module, 'filter_pkg') and module.filter_pkg(parts):
+            return
+        tar_info.uid, tar_info.gid = 1000, 100
+        return tar_info
+
+    with tarfile.open(outfile, 'w:bz2') as archive:
+        for x in os.listdir(src_dir):
+            path = os.path.join(src_dir, x)
+            if os.path.isdir(path):
+                archive.add(path, arcname=x, filter=filter_tar)
+
+
+def install_package(pkg_path, dest_dir):
+    with tarfile.open(pkg_path) as archive:
+        archive.extractall(dest_dir)
