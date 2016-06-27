@@ -114,15 +114,18 @@ def lcopy(src, dst):
             return lcopy(src, dst)
 
 
-def install_binaries(pattern, destdir='lib'):
+def install_binaries(pattern, destdir='lib', do_symlinks=False):
     dest = os.path.join(build_dir(), destdir)
     ensure_dir(dest)
     files = glob.glob(pattern)
+    files.sort(key=len, reverse=True)
     for f in files:
         dst = os.path.join(dest, os.path.basename(f))
         islink = lcopy(f, dst)
         if not islink:
             os.chmod(dst, 0o755)
+    if do_symlinks:
+        library_symlinks(files[0], destdir=destdir)
 
 
 def install_tree(src, dest_parent='include'):
@@ -131,6 +134,34 @@ def install_tree(src, dest_parent='include'):
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(src, dst, symlinks=True)
+
+
+def copy_headers(pattern, destdir='include'):
+    dest = os.path.join(build_dir(), destdir)
+    ensure_dir(dest)
+    files = glob.glob(pattern)
+    for f in files:
+        dst = os.path.join(dest, os.path.basename(f))
+        shutil.copy2(f, dst)
+
+
+def library_symlinks(full_name, destdir='lib'):
+    parts = full_name.split('.')
+    idx = parts.index('so')
+    basename = '.'.join(parts[:idx+1])
+    parts = parts[idx+1:]
+    for i in range(len(parts)):
+        suffix = '.'.join(parts[:i])
+        if suffix:
+            suffix = '.' + suffix
+        ln = os.path.join(build_dir(), destdir, basename + suffix)
+        try:
+            os.symlink(full_name, ln)
+        except EnvironmentError as err:
+            if err.errno != errno.EEXIST:
+                raise
+            os.unlink(ln)
+            os.symlink(full_name, ln)
 
 
 def ensure_dir(path):
