@@ -16,7 +16,7 @@ import tarfile
 import zipfile
 from tempfile import mkdtemp
 
-from .constants import SCRIPTS, build_dir, current_source
+from .constants import PREFIX, SCRIPTS, build_dir, current_source
 
 
 class ModifiedEnv(object):
@@ -51,7 +51,7 @@ def run(*args, **kw):
     env = os.environ.copy()
     if kw.get('library_path'):
         cmd = [SCRIPTS + '/ld.sh'] + cmd
-        env['LLP'] = kw['library_path']
+        env['LLP'] = kw['library_path'] + os.pathsep + PREFIX + '/lib'
     print(' '.join(pipes.quote(x) for x in cmd))
     try:
         p = subprocess.Popen(cmd, env=env)
