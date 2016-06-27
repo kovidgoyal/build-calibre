@@ -36,6 +36,7 @@ if args.shell:
 
 python_deps = [
     'setuptools', 'cssutils', 'dateutil', 'dnspython', 'mechanize', 'pygments',
+    'pycrypto',
 ]
 
 all_deps = [

@@ -133,6 +133,15 @@
             "hash": "md5:ed3fba2467c8afcda4d317e4ef2c6150",
             "urls": ["https://pypi.python.org/packages/b8/67/ab177979be1c81bc99c8d0592ef22d547e70bb4c6815c383286ed5dec504/{filename}"]
         }
+    },
+
+    {
+        "name": "pycrypto",
+        "unix": {
+            "filename": "pycrypto-2.6.1.tar.gz",
+            "hash": "md5:55a61a054aa66812daf5161a0d5d7eda",
+            "urls": ["https://pypi.python.org/packages/60/db/645aa9af249f059cc3a368b118de33889219e0362141e75d4eaf6f80f163/{filename}"]
+        }
     }
 ]
 
