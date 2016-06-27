@@ -116,6 +116,7 @@ def lcopy(src, dst):
 
 def install_binaries(pattern, destdir='lib'):
     dest = os.path.join(build_dir(), destdir)
+    ensure_dir(dest)
     files = glob.glob(pattern)
     for f in files:
         dst = os.path.join(dest, os.path.basename(f))

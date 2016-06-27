@@ -7,7 +7,7 @@ from __future__ import (unicode_literals, division, absolute_import,
 import os
 import shutil
 
-from .constants import is64bit, CFLAGS, LDFLAGS, SW
+from .constants import is64bit, CFLAGS, LDFLAGS, PREFIX
 from .utils import extract_source, run, install_binaries, install_tree
 
 
@@ -18,7 +18,7 @@ def main(args):
         'zlib', '-Wa,--noexecstack', CFLAGS, LDFLAGS, *optflags)
     run('make')
     run('make test', library_path=os.getcwd())
-    run('make', 'INSTALL_PREFIX={}/openssl'.format(SW), 'install_sw')
-    install_tree(SW + '/openssl/usr/include/openssl')
-    install_binaries(SW + '/openssl/lib/lib*.so*')
-    shutil.rmtree(os.path.join(SW, 'openssl'))
+    run('make', 'INSTALL_PREFIX={}/openssl'.format(PREFIX), 'install_sw')
+    install_tree(PREFIX + '/openssl/usr/include/openssl')
+    install_binaries(PREFIX + '/openssl/usr/lib/lib*.so*')
+    shutil.rmtree(os.path.join(PREFIX, 'openssl'))
