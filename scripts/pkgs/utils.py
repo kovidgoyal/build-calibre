@@ -50,8 +50,13 @@ def run(*args, **kw):
         cmd = args
     env = os.environ.copy()
     if kw.get('library_path'):
+        val = kw.get('library_path')
+        if val is True:
+            val = PREFIX + '/lib'
+        else:
+            val = val + os.pathsep + PREFIX + '/lib'
         cmd = [SCRIPTS + '/ld.sh'] + cmd
-        env['LLP'] = kw['library_path'] + os.pathsep + PREFIX + '/lib'
+        env['LLP'] = val
     print(' '.join(pipes.quote(x) for x in cmd))
     try:
         p = subprocess.Popen(cmd, env=env)
