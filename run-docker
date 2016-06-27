@@ -47,6 +47,7 @@ mkdir(output_dir)
 cmd = ('docker', 'run',
        '-v', abspath('sources-cache') + ':/sources:rw',
        '-v', abspath('scripts') + ':/scripts:ro',
+       '-v', abspath('patches') + ':/patches:ro',
        '-v', output_dir + ':/sw:rw',
        '--rm=true',
        '--interactive=' + ('true' if sys.stdin.isatty() else 'false'),

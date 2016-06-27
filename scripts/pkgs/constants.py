@@ -61,4 +61,4 @@ def set_tdir(x):
 
 
 def mkdtemp(prefix=''):
-    tempfile.mkdtemp(prefix=prefix, dir=_tdir)
+    return tempfile.mkdtemp(prefix=prefix, dir=_tdir)

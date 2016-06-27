@@ -15,7 +15,7 @@ import shutil
 import tarfile
 import zipfile
 
-from .constants import PREFIX, SCRIPTS, build_dir, current_source, mkdtemp
+from .constants import PREFIX, SCRIPTS, build_dir, current_source, mkdtemp, PATCHES
 
 
 class ModifiedEnv(object):
@@ -92,6 +92,12 @@ def extract_source():
         os.chdir(x[0])
 
 
+def apply_patch(name, level=0):
+    if not os.path.isabs(name):
+        name = os.path.join(PATCHES, name)
+    run('patch', '-p%d' % level, '-i', name)
+
+
 def simple_build(configure_args=(), make_args=()):
     if isinstance(configure_args, type('')):
         configure_args = shlex.split(configure_args)
@@ -151,8 +157,8 @@ def copy_headers(pattern, destdir='include'):
 def library_symlinks(full_name, destdir='lib'):
     parts = full_name.split('.')
     idx = parts.index('so')
-    basename = '.'.join(parts[:idx+1])
-    parts = parts[idx+1:]
+    basename = '.'.join(parts[:idx + 1])
+    parts = parts[idx + 1:]
     for i in range(len(parts)):
         suffix = '.'.join(parts[:i])
         if suffix:

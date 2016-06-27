@@ -64,6 +64,15 @@
     },
 
     {
+        "name": "readline",
+        "unix": {
+            "filename": "readline-6.3.tar.gz",
+            "hash": "sha1:017b92dc7fd4e636a2b5c9265a77ccc05798c9e1",
+            "urls": ["http://ftp.gnu.org/gnu/readline/{filename}"]
+        }
+    },
+
+    {
         "name": "python",
         "unix": {
             "filename": "Python-2.7.11.tar.xz",
