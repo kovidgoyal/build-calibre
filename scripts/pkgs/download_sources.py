@@ -89,17 +89,20 @@ def reporthook(count, block_size, total_size):
     sys.stdout.flush()
 
 
-def try_once(filename, url):
+def try_once(pkg, url):
+    filename = pkg['filename']
     fname = os.path.join(SOURCES, filename)
     print('Downloading', filename)
     urllib.urlretrieve(url, fname, reporthook)
+    if not verify_hash(pkg):
+        raise SystemExit('The hash of the downloaded file: %s does not match the saved hash' % filename)
 
 
 def download_pkg(pkg):
     for try_count in range(3):
         for url in pkg['urls']:
             try:
-                return try_once(pkg['filename'], url)
+                return try_once(pkg, url)
             except Exception as err:
                 print('Download failed, with error:', type('')(err))
             finally:
