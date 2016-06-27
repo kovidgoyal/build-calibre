@@ -52,6 +52,25 @@
             "hash": "sha256:1d4007e53aad94a5b2002fe045ee7bb0b3d98f1a47f8b2bc851dcd1c74332919",
             "urls": ["https://www.openssl.org/source/{filename}"]
         }
+    },
+
+    {
+        "name": "ncurses",
+        "unix": {
+            "filename": "ncurses-6.0.tar.gz",
+            "hash": "md5:ee13d052e1ead260d7c28071f46eefb1",
+            "urls": ["ftp://invisible-island.net/ncurses/{filename}"]
+        }
+    },
+
+    {
+        "name": "python",
+        "unix": {
+            "filename": "Python-2.7.11.tar.xz",
+            "hash": "sha1:c3b8bbe3f084c4d4ea13ffb03d75a5e22f9756ff",
+            "urls": ["https://www.python.org/ftp/python/2.7.11/{filename}"]
+        }
     }
+
 ]
 

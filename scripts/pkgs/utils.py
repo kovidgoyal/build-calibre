@@ -55,7 +55,7 @@ def run(*args, **kw):
             val = PREFIX + '/lib'
         else:
             val = val + os.pathsep + PREFIX + '/lib'
-        cmd = [SCRIPTS + '/ld.sh'] + cmd
+        cmd = [SCRIPTS + '/ld.sh'] + list(cmd)
         env['LLP'] = val
     print(' '.join(pipes.quote(x) for x in cmd))
     try:
@@ -176,7 +176,7 @@ def ensure_dir(path):
 
 def create_package(module, src_dir, outfile):
 
-    exclude = frozenset('doc man info'.split())
+    exclude = frozenset('doc man info test'.split())
 
     def filter_tar(tar_info):
         parts = tar_info.name.split('/')

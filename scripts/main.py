@@ -35,10 +35,11 @@ if args.shell:
 
 all_deps = [
     # Python and its dependencies
-    'zlib', 'bzip2', 'expat', 'sqlite', 'libffi', 'openssl', 'python',
+    'zlib', 'bzip2', 'expat', 'sqlite', 'libffi', 'openssl', 'ncurses', 'readline', 'python',
 ]
 if isosx or iswindows:
-    all_deps.remove('libffi')
+    for x in 'libffi ncurses readline'.split():
+        all_deps.remove(x)
 deps = args.deps or all_deps
 
 for dep in deps:
