@@ -1,0 +1,22 @@
+[
+    {
+        "zlib": {
+            "unix": {
+                "filename": "zlib-1.2.8.tar.xz",
+                "hash": "md5:126f8676442ffbd97884eb4d6f32afb4",
+                "urls": ["http://zlib.net/zlib-1.2.8.tar.xz"]
+            }
+        }
+    },
+
+    {
+        "openssl": {
+            "unix": {
+                "filename": "openssl-1.0.2h.tar.gz",
+                "hash": "sha256:1d4007e53aad94a5b2002fe045ee7bb0b3d98f1a47f8b2bc851dcd1c74332919",
+                "urls": ["https://www.openssl.org/source/openssl-1.0.2h.tar.gz"]
+            }
+        }
+    }
+]
+
