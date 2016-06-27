@@ -68,10 +68,11 @@ def build(dep, args):
         m = importlib.import_module('pkgs.' + dep)
     except ImportError:
         m = None
+    extract_source()
     if hasattr(m, 'main'):
         m.main(args)
     else:
-        extract_source(), simple_build()
+        simple_build()
     create_package(m, output_dir, pkg_path(dep))
     install_package(pkg_path(dep), dest_dir)
 
