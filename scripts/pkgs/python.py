@@ -15,7 +15,7 @@ def main(args):
     ld_library_path = PREFIX + '/lib'
     env = {'CFLAGS': CFLAGS + ' -DHAVE_LOAD_EXTENSION'}
     conf = ('--prefix={} --enable-shared --with-threads --enable-ipv6 --enable-unicode={}'
-            ' --with-system-expat --with-system-ffi --without-ensurepip --with-pymalloc').format(
+            ' --with-system-expat --with-system-ffi --with-pymalloc --without-ensurepip').format(
         build_dir(), ('ucs2' if isosx or iswindows else 'ucs4'))
 
     with ModifiedEnv(**env):
@@ -28,3 +28,7 @@ def main(args):
     if not iswindows:
         mods += ', readline, curses'
     run(build_dir() + '/bin/python', '-c', 'import ' + mods, library_path=ld)
+
+
+def filter_pkg(parts):
+    return 'idlelib' in parts or 'lib2to3' in parts or 'lib-tk' in parts or 'ensurepip' in parts or 'config' in parts

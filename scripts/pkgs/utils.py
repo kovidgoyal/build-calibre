@@ -183,12 +183,12 @@ def ensure_dir(path):
 
 def create_package(module, src_dir, outfile):
 
-    exclude = frozenset('doc man info test'.split())
+    exclude = frozenset('doc man info test tests README'.split())
 
     def filter_tar(tar_info):
         parts = tar_info.name.split('/')
         for p in parts:
-            if p in exclude:
+            if p in exclude or p.rpartition('.')[-1] in ('pyc', 'pyo'):
                 return
         if hasattr(module, 'filter_pkg') and module.filter_pkg(parts):
             return
