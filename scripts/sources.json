@@ -250,5 +250,15 @@
             "hash": "sha1:695b2ffcd5006c1041f3cb9fe7aa874dbd23de86",
             "urls": ["http://poppler.freedesktop.org/{filename}"]
         }
+    },
+
+    {
+        "name": "podofo",
+        "unix": {
+            "filename": "podofo-0.9.4.tar.gz",
+            "hash": "sha1:e91929e0e4c020aee77d6aca5a5af8195888918c",
+            "urls": ["http://downloads.sourceforge.net/podofo/{filename}"]
+        }
     }
+
 ]
