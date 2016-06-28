@@ -232,5 +232,14 @@
             "hash": "md5:5957cc384bd6e83934be35c057ec03b6",
             "urls": ["http://pypi.python.org/packages/source/l/lxml/{filename}"]
         }
+    },
+
+    {
+        "name": "pillow",
+        "unix": {
+            "filename": "Pillow-3.2.0.tar.gz",
+            "hash": "md5:7cfd093c11205d9e2ebe3c51dfcad510",
+            "urls": ["http://pypi.python.org/packages/source/P/Pillow/{filename}"]
+        }
     }
 ]
