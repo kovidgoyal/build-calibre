@@ -203,7 +203,7 @@ def create_package(module, src_dir, outfile):
     def filter_tar(tar_info):
         parts = tar_info.name.split('/')
         for p in parts:
-            if p in exclude or p.rpartition('.')[-1] in ('pyc', 'pyo', 'la') or p.endswith('egg-info'):
+            if p in exclude or p.rpartition('.')[-1] in ('pyc', 'pyo', 'la'):
                 return
         if hasattr(module, 'filter_pkg') and module.filter_pkg(parts):
             return
