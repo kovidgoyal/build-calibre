@@ -244,6 +244,15 @@
     },
 
     {
+        "name": "netifaces",
+        "unix": {
+            "filename": "netifaces-0.10.4.tar.gz",
+            "hash": "md5:36da76e2cfadd24cc7510c2c0012eb1e",
+            "urls": ["pypi"]
+        }
+    },
+
+    {
         "name": "poppler",
         "unix": {
             "filename": "poppler-0.45.0.tar.xz",

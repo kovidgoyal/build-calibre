@@ -41,7 +41,7 @@ if args.clean:
         if x.endswith('.' + pkg_ext):
             os.remove(os.path.join(SW, x))
 
-python_deps = 'setuptools cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow'.strip().split()
+python_deps = 'setuptools cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow netifaces'.strip().split()
 
 all_deps = (
     # Python and its dependencies
