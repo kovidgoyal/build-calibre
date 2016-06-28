@@ -86,7 +86,7 @@
         "unix": {
             "filename": "setuptools-23.1.0.tar.gz",
             "hash": "md5:f7f447663f7d5e17c84be10dc6b195fd",
-            "urls": ["https://pypi.python.org/packages/9f/7c/0a33c528164f1b7ff8cf0684cf88c2e733c8ae0119ceca4a3955c7fc059d/{filename}"]
+            "urls": ["pypi"]
         }
     },
 
@@ -95,7 +95,7 @@
         "unix": {
             "filename": "cssutils-1.0.1.tar.gz",
             "hash": "md5:7fcdf2c3e9f053136af1990146eb361d",
-            "urls": ["https://pypi.python.org/packages/22/de/6b03e0088baf0299ab7d2e95a9e26c2092e9cb3855876b958b6a62175ca2/{filename}"]
+            "urls": ["pypi"]
         }
     },
 
@@ -104,7 +104,7 @@
         "unix": {
             "filename": "python-dateutil-2.5.3.tar.gz",
             "hash": "md5:05ffc6d2cc85a7fd93bb245807f715ef",
-            "urls": ["https://pypi.python.org/packages/3e/f5/aad82824b369332a676a90a8c0d1e608b17e740bbb6aeeebca726f17b902/{filename}"]
+            "urls": ["pypi"]
         }
     },
 
@@ -113,7 +113,7 @@
         "unix": {
             "filename": "dnspython-1.14.0.zip",
             "hash": "md5:577f6b60b185d1ac90d76e9364a543d4",
-            "urls": ["https://pypi.python.org/packages/e1/ab/36f4e337d6cf6590f9cf46349f519b682542d211c604755ab8409f67f26b/{filename}"]
+            "urls": ["pypi"]
         }
     },
 
@@ -122,7 +122,7 @@
         "unix": {
             "filename": "mechanize-0.2.5.tar.gz",
             "hash": "md5:32657f139fc2fb75bcf193b63b8c60b2",
-            "urls": ["https://pypi.python.org/packages/32/bc/d5b44fe4a3b5079f035240a7c76bd0c71a60c6082f4bfcb1c7585604aa35/{filename}"]
+            "urls": ["pypi"]
         }
     },
 
@@ -131,7 +131,7 @@
         "unix": {
             "filename": "Pygments-2.1.3.tar.gz",
             "hash": "md5:ed3fba2467c8afcda4d317e4ef2c6150",
-            "urls": ["https://pypi.python.org/packages/b8/67/ab177979be1c81bc99c8d0592ef22d547e70bb4c6815c383286ed5dec504/{filename}"]
+            "urls": ["pypi"]
         }
     },
 
@@ -140,7 +140,7 @@
         "unix": {
             "filename": "pycrypto-2.6.1.tar.gz",
             "hash": "md5:55a61a054aa66812daf5161a0d5d7eda",
-            "urls": ["https://pypi.python.org/packages/60/db/645aa9af249f059cc3a368b118de33889219e0362141e75d4eaf6f80f163/{filename}"]
+            "urls": ["pypi"]
         }
     },
 
@@ -230,7 +230,7 @@
         "unix": {
             "filename": "lxml-3.6.0.tar.gz",
             "hash": "md5:5957cc384bd6e83934be35c057ec03b6",
-            "urls": ["http://pypi.python.org/packages/source/l/lxml/{filename}"]
+            "urls": ["pypi"]
         }
     },
 
@@ -239,7 +239,7 @@
         "unix": {
             "filename": "Pillow-3.2.0.tar.gz",
             "hash": "md5:7cfd093c11205d9e2ebe3c51dfcad510",
-            "urls": ["http://pypi.python.org/packages/source/P/Pillow/{filename}"]
+            "urls": ["pypi"]
         }
     }
 ]

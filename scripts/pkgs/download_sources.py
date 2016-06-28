@@ -13,6 +13,7 @@ import glob
 import time
 import sys
 import urllib
+import urlparse
 
 from .constants import SOURCES, iswindows
 
@@ -31,6 +32,10 @@ def ext(fname):
 _parsed_source = None
 
 
+def process_url(url, filename):
+    return url.replace('{filename}', filename)
+
+
 def parse_sources():
     global _parsed_source
     if _parsed_source is None:
@@ -39,8 +44,7 @@ def parse_sources():
             s = item.get('windows', item['unix']) if iswindows else \
                 item['unix']
             s['name'] = item['name']
-            s['urls'] = [x.replace('{filename}', s['filename'])
-                         for x in s['urls']]
+            s['urls'] = [process_url(x, s['filename']) for x in s['urls']]
             ans.append(s)
     return _parsed_source
 
@@ -96,10 +100,22 @@ def reporthook(count, block_size, total_size):
     sys.stdout.flush()
 
 
+def get_pypi_url(pkg):
+    parts = pkg['filename'].split('-')
+    pkg_name = '-'.join(parts[:-1])
+    base = 'https://pypi.python.org/simple/%s/' % pkg_name
+    raw = urllib.urlopen(base).read()
+    md5 = pkg['hash'].rpartition(':')[-1]
+    for m in re.finditer(br'href="([^"]+%s)#md5=%s"' % (pkg['filename'], md5), raw):
+        return urlparse.urljoin(base, m.group(1))
+
+
 def try_once(pkg, url):
     filename = pkg['filename']
     fname = os.path.join(SOURCES, filename)
-    print('Downloading', filename)
+    if url == 'pypi':
+        url = get_pypi_url(pkg)
+    print('Downloading', filename, 'from', url)
     urllib.urlretrieve(url, fname, reporthook)
     if not verify_hash(pkg):
         raise SystemExit('The hash of the downloaded file: %s does not match the saved hash' % filename)
