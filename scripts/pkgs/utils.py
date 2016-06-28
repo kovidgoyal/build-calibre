@@ -15,7 +15,7 @@ import shutil
 import tarfile
 import zipfile
 
-from .constants import PREFIX, SCRIPTS, build_dir, current_source, mkdtemp, PATCHES, PYTHON
+from .constants import PREFIX, build_dir, current_source, mkdtemp, PATCHES, PYTHON
 
 
 class ModifiedEnv(object):
@@ -54,8 +54,7 @@ def run(*args, **kw):
             val = PREFIX + '/lib'
         else:
             val = val + os.pathsep + PREFIX + '/lib'
-        cmd = [SCRIPTS + '/ld.sh'] + list(cmd)
-        env['LLP'] = val
+        env['LD_LIBRARY_PATH'] = val
     print(' '.join(pipes.quote(x) for x in cmd))
     try:
         p = subprocess.Popen(cmd, env=env)
