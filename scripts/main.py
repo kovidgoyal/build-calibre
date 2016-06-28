@@ -47,7 +47,7 @@ all_deps = (
     # Python and its dependencies
     'zlib bzip2 expat sqlite libffi openssl ncurses readline python '
     # Miscellaneous dependencies
-    'icu libjpeg libpng freetype fontconfig iconv libxml2 libxslt '
+    'icu libjpeg libpng freetype fontconfig iconv libxml2 libxslt chmlib '
     # PDF libraries
     'poppler podofo '
 ).strip().split() + python_deps
