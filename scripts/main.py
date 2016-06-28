@@ -36,12 +36,14 @@ if args.shell:
 
 python_deps = [
     'setuptools', 'cssutils', 'dateutil', 'dnspython', 'mechanize', 'pygments',
-    'pycrypto',
+    'pycrypto', 'apsw',
 ]
 
 all_deps = [
     # Python and its dependencies
     'zlib', 'bzip2', 'expat', 'sqlite', 'libffi', 'openssl', 'ncurses', 'readline', 'python',
+    # Miscellaneous dependencies
+    'icu', 'libjpeg', 'libpng',
 ] + python_deps
 
 if isosx or iswindows:

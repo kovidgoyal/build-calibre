@@ -142,6 +142,41 @@
             "hash": "md5:55a61a054aa66812daf5161a0d5d7eda",
             "urls": ["https://pypi.python.org/packages/60/db/645aa9af249f059cc3a368b118de33889219e0362141e75d4eaf6f80f163/{filename}"]
         }
+    },
+
+    {
+        "name": "apsw",
+        "unix": {
+            "filename": "apsw-3.13.0-r1.zip",
+            "hash": "sha1:25d72a93d5f24f534e1c811898ebfd2c7db5366e",
+            "urls": ["https://github.com/rogerbinns/apsw/releases/download/3.13.0-r1/apsw-3.13.0-r1.zip"]
+        }
+    },
+
+    {
+        "name": "icu",
+        "unix": {
+            "filename": "icu4c-57_1-src.tgz",
+            "hash": "md5:976734806026a4ef8bdd17937c8898b9",
+            "urls": ["http://download.icu-project.org/files/icu4c/57.1/{filename}"]
+        }
+    },
+
+    {
+        "name": "libjpeg",
+        "unix": {
+            "filename": "libjpeg-turbo-1.5.0.tar.gz",
+            "hash": "sha1:9adc21b927e48e4c6889e77079f6c1f3eecf98ab",
+            "urls": ["http://downloads.sourceforge.net/project/libjpeg-turbo/1.5.0/{filename}"]
+        }
+    },
+
+    {
+        "name": "libpng",
+        "unix": {
+            "filename": "libpng-1.6.23.tar.xz",
+            "hash": "md5:9b320a05ed4db1f3f0865c8a951fd9aa",
+            "urls": ["http://downloads.sourceforge.net/sourceforge/libpng/{filename}"]
+        }
     }
 ]
-

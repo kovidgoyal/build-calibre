@@ -96,20 +96,26 @@ def extract_source():
         os.chdir(x[0])
 
 
-def apply_patch(name, level=0):
+def apply_patch(name, level=0, reverse=False):
     if not os.path.isabs(name):
         name = os.path.join(PATCHES, name)
-    run('patch', '-p%d' % level, '-i', name)
+    args = ['patch', '-p%d' % level, '-i', name]
+    if reverse:
+        args.insert(1, '-R')
+    run(*args)
 
 
-def simple_build(configure_args=(), make_args=()):
+def simple_build(configure_args=(), make_args=(), install_args=()):
     if isinstance(configure_args, type('')):
         configure_args = shlex.split(configure_args)
     if isinstance(make_args, type('')):
         make_args = shlex.split(make_args)
+    if isinstance(install_args, type('')):
+        install_args = shlex.split(install_args)
     run('./configure', '--prefix=' + build_dir(), *configure_args)
     run('make', *make_args)
-    run('make install')
+    mi = ['make'] + list(install_args) + ['install']
+    run(*mi)
 
 
 def python_build():
@@ -196,7 +202,7 @@ def create_package(module, src_dir, outfile):
     def filter_tar(tar_info):
         parts = tar_info.name.split('/')
         for p in parts:
-            if p in exclude or p.rpartition('.')[-1] in ('pyc', 'pyo'):
+            if p in exclude or p.rpartition('.')[-1] in ('pyc', 'pyo') or p.endswith('egg-info'):
                 return
         if hasattr(module, 'filter_pkg') and module.filter_pkg(parts):
             return
