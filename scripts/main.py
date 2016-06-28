@@ -34,17 +34,14 @@ args = parser.parse_args()
 if args.shell:
     raise SystemExit(run_shell())
 
-python_deps = [
-    'setuptools', 'cssutils', 'dateutil', 'dnspython', 'mechanize', 'pygments',
-    'pycrypto', 'apsw',
-]
+python_deps = 'setuptools cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml'.strip().split()
 
-all_deps = [
+all_deps = (
     # Python and its dependencies
-    'zlib', 'bzip2', 'expat', 'sqlite', 'libffi', 'openssl', 'ncurses', 'readline', 'python',
+    'zlib bzip2 expat sqlite libffi openssl ncurses readline python '
     # Miscellaneous dependencies
-    'icu', 'libjpeg', 'libpng',
-] + python_deps
+    'icu libjpeg libpng freetype fontconfig iconv libxml2 libxslt '
+).strip().split() + python_deps
 
 if isosx or iswindows:
     for x in 'libffi ncurses readline'.split():
