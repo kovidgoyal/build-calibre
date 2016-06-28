@@ -118,8 +118,10 @@ def simple_build(configure_args=(), make_args=(), install_args=(), library_path=
     run(*mi, library_path=library_path)
 
 
-def python_build():
-    run(PYTHON, 'setup.py', 'install', '--root', build_dir(), library_path=True)
+def python_build(extra_args=()):
+    if isinstance(extra_args, type('')):
+        extra_args = shlex.split(extra_args)
+    run(PYTHON, 'setup.py', 'install', '--root', build_dir(), *extra_args, library_path=True)
 
 
 def lcopy(src, dst):
