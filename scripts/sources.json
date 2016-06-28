@@ -241,5 +241,14 @@
             "hash": "md5:7cfd093c11205d9e2ebe3c51dfcad510",
             "urls": ["pypi"]
         }
+    },
+
+    {
+        "name": "poppler",
+        "unix": {
+            "filename": "poppler-0.45.0.tar.xz",
+            "hash": "sha1:695b2ffcd5006c1041f3cb9fe7aa874dbd23de86",
+            "urls": ["http://poppler.freedesktop.org/{filename}"]
+        }
     }
 ]
