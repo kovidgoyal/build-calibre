@@ -29,10 +29,17 @@ a = parser.add_argument
 a('deps', nargs='*', default=[], help='Which dependencies to build')
 a('--shell', default=False, action='store_true',
   help='Start a shell in the container')
+a('--clean', default=False, action='store_true',
+  help='Remove previously built packages')
 args = parser.parse_args()
 
 if args.shell:
     raise SystemExit(run_shell())
+
+if args.clean:
+    for x in os.listdir(SW):
+        if x.endswith('.' + pkg_ext):
+            os.remove(os.path.join(SW, x))
 
 python_deps = 'setuptools cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml'.strip().split()
 
