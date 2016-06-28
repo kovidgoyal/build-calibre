@@ -253,6 +253,15 @@
     },
 
     {
+        "name": "psutil",
+        "unix": {
+            "filename": "psutil-4.3.0.tar.gz",
+            "hash": "md5:ca97cf5f09c07b075a12a68b9d44a67d",
+            "urls": ["pypi"]
+        }
+    },
+
+    {
         "name": "poppler",
         "unix": {
             "filename": "poppler-0.45.0.tar.xz",
