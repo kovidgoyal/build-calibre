@@ -6,7 +6,7 @@ from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import os
 
-from .constants import build_dir, CFLAGS, isosx, iswindows, PREFIX
+from .constants import build_dir, CFLAGS, isosx, iswindows, PREFIX, MAKEOPTS
 from .utils import ModifiedEnv, run
 
 
@@ -20,7 +20,7 @@ def main(args):
 
     with ModifiedEnv(**env):
         run('./configure', *conf.split(), library_path=ld_library_path)
-        run('make', library_path=ld_library_path)
+        run('make ' + MAKEOPTS, library_path=ld_library_path)
         run('make install', library_path=ld_library_path)
 
     ld = build_dir() + '/lib' + os.pathsep + ld_library_path
