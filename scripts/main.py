@@ -50,6 +50,8 @@ all_deps = (
     'icu libjpeg libpng freetype fontconfig iconv libxml2 libxslt chmlib '
     # PDF libraries
     'poppler podofo '
+    # Qt
+    'qt sip pyqt '
 ).strip().split() + python_deps
 
 if isosx or iswindows:

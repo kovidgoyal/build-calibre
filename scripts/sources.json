@@ -266,7 +266,7 @@
         "unix": {
             "filename": "chmlib-0.40.tar.bz2",
             "hash": "sha1:5231d7531e8808420d7f89fd1e4fdbac1ed7a167",
-            "urls": ["http://www.jedrea.com/chmlib/chmlib-0.40.tar.bz2"]
+            "urls": ["http://www.jedrea.com/chmlib/{filename}"]
         }
     },
 
@@ -286,6 +286,16 @@
             "hash": "sha1:e91929e0e4c020aee77d6aca5a5af8195888918c",
             "urls": ["http://downloads.sourceforge.net/podofo/{filename}"]
         }
+    },
+
+    {
+        "name": "qt",
+        "unix": {
+            "filename": "qt-everywhere-opensource-src-5.5.1.tar.xz",
+            "hash": "sha1:5933651d46691ff6e919a49f5a380b9a217d30fb",
+            "urls": ["http://download.qt.io/official_releases/qt/5.5/5.5.1/single/{filename}"]
+        }
     }
+
 
 ]
