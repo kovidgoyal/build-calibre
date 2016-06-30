@@ -295,7 +295,15 @@
             "hash": "sha1:5933651d46691ff6e919a49f5a380b9a217d30fb",
             "urls": ["http://download.qt.io/official_releases/qt/5.5/5.5.1/single/{filename}"]
         }
-    }
+    },
 
+    {
+        "name": "sip",
+        "unix": {
+            "filename": "sip-4.18.tar.gz",
+            "hash": "sha1:6704854bc684de3b76c9db61ce54a74e7de5cf45",
+            "urls": ["http://sourceforge.net/projects/pyqt/files/sip/sip-4.18/{filename}"]
+        }
+    }
 
 ]
