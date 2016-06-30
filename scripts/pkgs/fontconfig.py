@@ -4,12 +4,14 @@
 
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
+import os
 
 from .constants import PREFIX
 from .utils import simple_build, ModifiedEnv
 
 
 def main(args):
-    with ModifiedEnv(FREETYPE_CFLAGS='-I%s/include/freetype2' % PREFIX, FREETYPE_LIBS='-L%s/lib -lfreetype -lz -lbz2' % PREFIX):
+    with ModifiedEnv(FREETYPE_CFLAGS='-I%s/include/freetype2' % PREFIX, FREETYPE_LIBS='-L%s/lib -lfreetype -lz -lbz2' % PREFIX,
+                     LD_LIBRARY_PATH=os.path.join(PREFIX, 'lib')):
         simple_build(
-            '--disable-dependency-tracking --disable-static --disable-docs --with-expat=%s --with-add-fonts=/usr/share/fonts' % PREFIX, library_path=True)
+            '--disable-dependency-tracking --disable-static --disable-docs --with-expat=%s --with-add-fonts=/usr/share/fonts' % PREFIX)
