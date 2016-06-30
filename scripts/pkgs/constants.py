@@ -27,7 +27,7 @@ CFLAGS = os.environ['CFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
 CPPFLAGS = os.environ['CPPFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
 LDFLAGS = os.environ['LDFLAGS'] = '-L' + os.path.join(PREFIX, 'lib')
 MAKEOPTS = '-j%d' % cpu_count()
-PKG_CONFIG_PATH = os.environ['PKG_CONFIG_PATH'] = os.path.join(PREFIX, 'sw', 'lib', 'pkgconfig')
+PKG_CONFIG_PATH = os.environ['PKG_CONFIG_PATH'] = os.path.join(PREFIX, 'lib', 'pkgconfig')
 
 
 _build_dir = None
