@@ -34,3 +34,5 @@ def main(args):
     run_shell
     run('make ' + MAKEOPTS, library_path=True)
     run('make install')
+    with open(os.path.join(build_dir(), 'qt', 'bin', 'qt.conf'), 'wb') as f:
+        f.write(b"[Paths]\nPrefix = ..\n")
