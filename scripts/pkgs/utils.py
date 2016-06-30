@@ -123,6 +123,23 @@ def python_build(extra_args=()):
     run(PYTHON, 'setup.py', 'install', '--root', build_dir(), *extra_args, library_path=True)
 
 
+def replace_in_file(path, old, new):
+    if isinstance(old, type('')):
+        old = old.encode('utf-8')
+    if isinstance(new, type('')):
+        new = new.encode('utf-8')
+    with open(path, 'r+b') as f:
+        raw = f.read()
+        if isinstance(old, bytes):
+            nraw = raw.replace(old, new)
+        else:
+            nraw = old.sub(new, raw)
+        if raw == nraw:
+            raise SystemExit('Failed to patch: ' + path)
+        f.seek(0), f.truncate()
+        f.write(nraw)
+
+
 def lcopy(src, dst):
     try:
         if os.path.islink(src):
