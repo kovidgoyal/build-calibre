@@ -26,7 +26,7 @@ PYTHON = os.path.join(BIN, 'python')
 CFLAGS = os.environ['CFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
 CPPFLAGS = os.environ['CPPFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
 LDFLAGS = os.environ['LDFLAGS'] = '-L' + os.path.join(PREFIX, 'lib')
-os.environ['MAKEOPTS'] = '-j%d' % cpu_count()
+MAKEOPTS = '-j%d' % cpu_count()
 os.environ['PKG_CONFIG_PATH'] = os.path.join(PREFIX, 'sw', 'lib', 'pkgconfig')
 
 

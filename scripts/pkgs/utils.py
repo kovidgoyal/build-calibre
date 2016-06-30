@@ -15,7 +15,7 @@ import shutil
 import tarfile
 import zipfile
 
-from .constants import PREFIX, build_dir, current_source, mkdtemp, PATCHES, PYTHON
+from .constants import PREFIX, build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS
 
 
 class ModifiedEnv(object):
@@ -112,7 +112,7 @@ def simple_build(configure_args=(), make_args=(), install_args=(), library_path=
     if isinstance(install_args, type('')):
         install_args = shlex.split(install_args)
     run('./configure', '--prefix=' + build_dir(), *configure_args)
-    run('make', *make_args)
+    run('make', *(shlex.split(MAKEOPTS) + list(make_args)))
     mi = ['make'] + list(install_args) + ['install']
     run(*mi, library_path=library_path)
 
