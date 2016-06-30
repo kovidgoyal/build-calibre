@@ -15,7 +15,7 @@ from .utils import run, ModifiedEnv, install_binaries, replace_in_file
 
 def main(args):
     # CMP0033 not supported by the version of cmake in the container
-    replace_in_file('CMakeLists.txt', re.compile(br'^.+CMP0033$', re.MULTILINE), '')
+    replace_in_file('CMakeLists.txt', re.compile(br'^.+CMP0033.+$', re.MULTILINE), '')
     # cmake cannot find libpng
     replace_in_file('CMakeLists.txt', 'FIND_PACKAGE(PNG)', 'SET(PNG_INCLUDE_DIR "{}/include/libpng16")\nSET(PNG_FOUND "1")'.format(PREFIX))
     os.mkdir('podofo-build')
