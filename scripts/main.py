@@ -5,6 +5,7 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import os
+import sys
 import argparse
 import importlib
 import shutil
@@ -41,6 +42,11 @@ if args.clean:
         if x.endswith('.' + pkg_ext):
             os.remove(os.path.join(SW, x))
 
+
+def set_title(x):
+    if sys.stdout.isatty():
+        print('''\033]2;%s\007''' % x)
+
 python_deps = 'setuptools cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow netifaces psutil'.strip().split()
 
 all_deps = (
@@ -63,6 +69,7 @@ for dep in deps:
     if dep not in all_deps:
         raise SystemExit('%s is an unknown dependency' % dep)
 
+set_title('Downloading...')
 download(deps)
 
 other_deps = frozenset(all_deps) - frozenset(deps)
@@ -88,6 +95,7 @@ for dep in other_deps:
 
 
 def build(dep, args):
+    set_title('Building ' + dep)
     set_current_source(filename_for_dep(dep))
     output_dir = mkdtemp(prefix=dep + '-')
     set_build_dir(output_dir)
