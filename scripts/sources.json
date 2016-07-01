@@ -313,6 +313,23 @@
             "hash": "sha1:8920e4094470ff93f79e257c37c46f5cd0bff7ab",
             "urls": ["http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.6/{filename}"]
         }
-    }
+    },
 
+    {
+        "name": "optipng",
+        "unix": {
+            "filename": "optipng-0.7.6.tar.gz",
+            "hash": "md5:568e0738358450eca69ecf578d48f26c",
+            "urls": ["http://downloads.sourceforge.net/sourceforge/optipng/{filename}"]
+        }
+    },
+
+    {
+        "name": "mozjpeg",
+        "unix": {
+            "filename": "mozjpeg-3.1-release-source.tar.gz",
+            "hash": "sha1:2af1cd3a700117adcb3d6832e555b35ca43fbd0d",
+            "urls": ["https://github.com/mozilla/mozjpeg/releases/download/v3.1/{filename}"]
+        }
+    }
 ]
