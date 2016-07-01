@@ -6,11 +6,10 @@ from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import os
 import shutil
-import glob
 import re
 
 from .constants import PREFIX, build_dir
-from .utils import run, ModifiedEnv, install_binaries, replace_in_file
+from .utils import run, ModifiedEnv, install_binaries, replace_in_file, install_tree
 
 
 def main(args):
@@ -37,7 +36,7 @@ def main(args):
         run('make VERBOSE=0 podofo_shared')
         install_binaries('src/libpodofo*')
         inc = os.path.join(build_dir(), 'include', 'podofo')
-        os.makedirs(inc)
+        os.rename(install_tree('../src', ignore=lambda d, children: [x for x in children if not x.endswith('.h') and '.' in x]), inc)
         shutil.copy2('podofo_config.h', inc)
-        for f in glob.glob('../src/*.h'):
-            shutil.copy2(f, inc)
+
+pkg_exclude_names = frozenset()

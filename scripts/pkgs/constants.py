@@ -24,12 +24,15 @@ PREFIX = os.path.join(SW, 'sw')
 BIN = os.path.join(PREFIX, 'bin')
 PYTHON = os.path.join(BIN, 'python')
 
-CFLAGS = os.environ['CFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
-CPPFLAGS = os.environ['CPPFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
+worker_env = {}
+
+CFLAGS = worker_env['CFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
+CPPFLAGS = worker_env['CPPFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
 LIBDIR = os.path.join(PREFIX, 'lib')
-LDFLAGS = os.environ['LDFLAGS'] = '-L{0} -Wl,-rpath-link,{0}'.format(LIBDIR)
+LDFLAGS = worker_env['LDFLAGS'] = '-L{0} -Wl,-rpath-link,{0}'.format(LIBDIR)
 MAKEOPTS = '-j%d' % cpu_count()
-PKG_CONFIG_PATH = os.environ['PKG_CONFIG_PATH'] = os.path.join(PREFIX, 'lib', 'pkgconfig')
+PKG_CONFIG_PATH = worker_env['PKG_CONFIG_PATH'] = os.path.join(PREFIX, 'lib', 'pkgconfig')
+CALIBRE_DIR = '/calibre'
 
 
 _build_dir = None
@@ -66,3 +69,11 @@ def set_tdir(x):
 
 def mkdtemp(prefix=''):
     return tempfile.mkdtemp(prefix=prefix, dir=_tdir)
+
+
+def putenv(**kw):
+    for key, val in kw.iteritems():
+        if not val:
+            worker_env.pop(key, None)
+        else:
+            worker_env[key] = val

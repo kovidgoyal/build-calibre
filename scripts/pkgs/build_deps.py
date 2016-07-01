@@ -47,7 +47,7 @@ def pkg_path(dep):
     return os.path.join(SW, dep + '.' + pkg_ext)
 
 
-def install_pkgs(other_deps, dest_dir):
+def install_pkgs(other_deps=all_deps, dest_dir=PREFIX):
     print('Installing previously compiled packages:', end=' ')
     sys.stdout.flush()
     for dep in other_deps:
@@ -82,6 +82,15 @@ def build(dep, args, dest_dir):
     install_package(pkg_path(dep), dest_dir)
 
 
+def init_env(deps=all_deps):
+    dest_dir = PREFIX
+    ensure_clear_dir(dest_dir)
+    ensure_clear_dir('t')
+    set_tdir(os.path.abspath('t'))
+    install_pkgs(deps, dest_dir)
+    return dest_dir
+
+
 def main(args):
     deps = args.deps or all_deps
 
@@ -93,11 +102,7 @@ def main(args):
     download(deps)
 
     other_deps = frozenset(all_deps) - frozenset(deps)
-    dest_dir = PREFIX
-    ensure_clear_dir(dest_dir)
-    ensure_clear_dir('t')
-    set_tdir(os.path.abspath('t'))
-    install_pkgs(other_deps, dest_dir)
+    dest_dir = init_env(other_deps)
 
     while deps:
         dep = deps.pop(0)
@@ -105,7 +110,7 @@ def main(args):
             build(dep, args, dest_dir)
         finally:
             if deps:
-                print('Remaing deps:', ' '.join(deps))
+                print('Remaining deps:', ' '.join(deps))
 
     # After a successful build, remove the unneeded sw dir
     shutil.rmtree(dest_dir)

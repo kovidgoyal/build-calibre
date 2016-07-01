@@ -10,7 +10,6 @@ import tempfile
 import pwd
 from pkgs.constants import SW, pkg_ext
 from pkgs.utils import run_shell
-from pkgs.build_deps import main as build_deps
 
 if os.geteuid() == 0:
     uid, gid = pwd.getpwnam('kovid').pw_uid, pwd.getpwnam('kovid').pw_gid
@@ -26,14 +25,20 @@ a('--shell', default=False, action='store_true',
   help='Start a shell in the container')
 a('--clean', default=False, action='store_true',
   help='Remove previously built packages')
+a('--only', default=None, help='Build only a single calibre extension')
+
 args = parser.parse_args()
 
 if args.shell:
     raise SystemExit(run_shell())
 
-if args.clean:
-    for x in os.listdir(SW):
-        if x.endswith('.' + pkg_ext):
-            os.remove(os.path.join(SW, x))
-
-build_deps(args)
+if args.deps == ['calibre']:
+    from pkgs.build_calibre import main
+    main(args)
+else:
+    from pkgs.build_deps import main
+    if args.clean:
+        for x in os.listdir(SW):
+            if x.endswith('.' + pkg_ext):
+                os.remove(os.path.join(SW, x))
+    main(args)

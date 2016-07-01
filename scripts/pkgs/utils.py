@@ -15,7 +15,7 @@ import shutil
 import tarfile
 import zipfile
 
-from .constants import build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR
+from .constants import build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR, worker_env
 
 
 class ModifiedEnv(object):
@@ -26,12 +26,12 @@ class ModifiedEnv(object):
     def apply(self, mods):
         for k, val in mods.iteritems():
             if val:
-                os.environ[k] = val
+                worker_env[k] = val
             else:
-                os.environ.pop(k, None)
+                worker_env.pop(k, None)
 
     def __enter__(self):
-        self.orig = {k: os.environ.get(k) for k in self.mods}
+        self.orig = {k: worker_env.get(k) for k in self.mods}
         self.apply(self.mods)
 
     def __exit__(self, *args):
@@ -48,13 +48,15 @@ def run(*args, **kw):
     else:
         cmd = args
     env = os.environ.copy()
-    if kw.get('library_path'):
-        val = kw.get('library_path')
-        if val is True:
-            val = LIBDIR
-        else:
-            val = val + os.pathsep + LIBDIR
-        env['LD_LIBRARY_PATH'] = val
+    if not kw.get('clean_env'):
+        env.update(worker_env)
+        if kw.get('library_path'):
+            val = kw.get('library_path')
+            if val is True:
+                val = LIBDIR
+            else:
+                val = val + os.pathsep + LIBDIR
+            env['LD_LIBRARY_PATH'] = val
     print(' '.join(pipes.quote(x) for x in cmd))
     try:
         p = subprocess.Popen(cmd, env=env)
@@ -169,12 +171,13 @@ def install_binaries(pattern, destdir='lib', do_symlinks=False):
         library_symlinks(files[0], destdir=destdir)
 
 
-def install_tree(src, dest_parent='include'):
+def install_tree(src, dest_parent='include', ignore=None):
     dest_parent = os.path.join(build_dir(), dest_parent)
     dst = os.path.join(dest_parent, os.path.basename(src))
     if os.path.exists(dst):
         shutil.rmtree(dst)
-    shutil.copytree(src, dst, symlinks=True)
+    shutil.copytree(src, dst, symlinks=True, ignore=ignore)
+    return dst
 
 
 def copy_headers(pattern, destdir='include'):
@@ -215,7 +218,7 @@ def ensure_dir(path):
 
 def create_package(module, src_dir, outfile):
 
-    exclude = frozenset('doc man info test tests gtk-doc README'.split())
+    exclude = getattr(module, 'pkg_exclude_names', frozenset('doc man info test tests gtk-doc README'.split()))
 
     def filter_tar(tar_info):
         parts = tar_info.name.split('/')
