@@ -12,8 +12,8 @@ import shutil
 import tempfile
 import pwd
 from pkgs.constants import (
-    SW, PREFIX, set_build_dir, pkg_ext, set_current_source, isosx, iswindows,
-    set_tdir, mkdtemp)
+    SW, PREFIX, set_build_dir, pkg_ext, set_current_source, iswindows,
+    set_tdir, mkdtemp, islinux)
 from pkgs.download_sources import download, filename_for_dep
 from pkgs.utils import (
     install_package, create_package, run_shell, extract_source, simple_build, python_build)
@@ -60,7 +60,7 @@ all_deps = (
     'qt sip pyqt '
 ).strip().split() + python_deps
 
-if isosx or iswindows:
+if not islinux:
     for x in 'libffi ncurses readline'.split():
         all_deps.remove(x)
 if iswindows:
