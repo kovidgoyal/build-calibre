@@ -116,5 +116,10 @@ def build(dep, args):
     create_package(m, output_dir, pkg_path(dep))
     install_package(pkg_path(dep), dest_dir)
 
-for dep in deps:
-    build(dep, args)
+while deps:
+    dep = deps.pop(0)
+    try:
+        build(dep, args)
+    finally:
+        if deps:
+            print('Remaing deps:', ' '.join(deps))
