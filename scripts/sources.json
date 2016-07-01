@@ -334,6 +334,24 @@
     },
 
     {
+        "name": "libusb",
+        "unix": {
+            "filename": "libusb-1.0.20.tar.bz2",
+            "hash": "md5:1d4eb194eaaa2bcfbba28102768c7dbf",
+            "urls": ["http://downloads.sourceforge.net/libusb/{filename}"]
+        }
+    },
+
+    {
+        "name": "libmtp",
+        "unix": {
+            "filename": "libmtp-1.1.11.tar.gz",
+            "hash": "md5:eea14dd30ddd08bbe39cfcb57564a4b8",
+            "urls": ["http://downloads.sourceforge.net/libmtp/{filename}"]
+        }
+    },
+
+    {
         "name": "plist",
         "unix": {
             "filename": "libplist-1.12.tar.bz2",
