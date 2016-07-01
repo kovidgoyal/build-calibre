@@ -91,10 +91,15 @@ set_tdir(os.path.abspath('t'))
 def pkg_path(dep):
     return os.path.join(SW, dep + '.' + pkg_ext)
 
+print('Installing previously compiled packages:', end=' ')
+sys.stdout.flush()
 for dep in other_deps:
     pkg = pkg_path(dep)
     if os.path.exists(pkg):
+        print(dep, end=', ')
+        sys.stdout.flush()
         install_package(pkg, dest_dir)
+print()
 
 
 def build(dep, args):
