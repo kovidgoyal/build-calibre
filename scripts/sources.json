@@ -349,5 +349,14 @@
             "hash": "md5:e5351ff6f6eedcb50701e02d91cc480c",
             "urls": ["http://www.libimobiledevice.org/downloads/{filename}"]
         }
+    },
+
+    {
+        "name": "imobiledevice",
+        "unix": {
+            "filename": "libimobiledevice-1.2.0.tar.bz2",
+            "hash": "md5:8757900ba7bbe2ef5f54342415d0223e",
+            "urls": ["http://www.libimobiledevice.org/downloads/{filename}"]
+        }
     }
 ]
