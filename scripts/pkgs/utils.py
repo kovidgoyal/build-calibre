@@ -237,3 +237,8 @@ def create_package(module, src_dir, outfile):
 def install_package(pkg_path, dest_dir):
     with tarfile.open(pkg_path) as archive:
         archive.extractall(dest_dir)
+
+
+def set_title(x):
+    if sys.stdout.isatty():
+        print('''\033]2;%s\007''' % x)
