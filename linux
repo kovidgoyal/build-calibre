@@ -50,7 +50,7 @@ def check_for_image(tag):
 
 if not check_for_image(arch):
     cmd = ('docker', 'build', '-t', ('calibre:' + arch),
-           '-f', abspath('linux/dockerfile-{}bit'.format(arch)), abspath('linux')
+           '-f', abspath('docker/dockerfile-{}bit'.format(arch)), abspath('linux')
            )
     print(*cmd)
     p = subprocess.Popen(cmd)
