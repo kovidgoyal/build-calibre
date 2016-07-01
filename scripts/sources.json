@@ -331,5 +331,14 @@
             "hash": "sha1:2af1cd3a700117adcb3d6832e555b35ca43fbd0d",
             "urls": ["https://github.com/mozilla/mozjpeg/releases/download/v3.1/{filename}"]
         }
+    },
+
+    {
+        "name": "plist",
+        "unix": {
+            "filename": "libplist-1.12.tar.bz2",
+            "hash": "md5:8b04b0f09f2398022dcd4fba75012997",
+            "urls": ["http://www.libimobiledevice.org/downloads/{filename}"]
+        }
     }
 ]

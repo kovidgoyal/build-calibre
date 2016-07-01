@@ -12,6 +12,7 @@ from multiprocessing import cpu_count
 _plat = sys.platform.lower()
 iswindows = 'win32' in _plat or 'win64' in _plat
 isosx = 'darwin' in _plat
+islinux = not iswindows and not isosx
 pkg_ext = 'tar.bz2'
 
 SW = '/sw'
@@ -25,7 +26,8 @@ PYTHON = os.path.join(BIN, 'python')
 
 CFLAGS = os.environ['CFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
 CPPFLAGS = os.environ['CPPFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
-LDFLAGS = os.environ['LDFLAGS'] = '-L' + os.path.join(PREFIX, 'lib')
+LIBDIR = os.path.join(PREFIX, 'lib')
+LDFLAGS = os.environ['LDFLAGS'] = '-L{0} -Wl,-rpath-link,{0}'.format(LIBDIR)
 MAKEOPTS = '-j%d' % cpu_count()
 PKG_CONFIG_PATH = os.environ['PKG_CONFIG_PATH'] = os.path.join(PREFIX, 'lib', 'pkgconfig')
 

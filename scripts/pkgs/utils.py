@@ -15,7 +15,7 @@ import shutil
 import tarfile
 import zipfile
 
-from .constants import PREFIX, build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS
+from .constants import build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR
 
 
 class ModifiedEnv(object):
@@ -51,9 +51,9 @@ def run(*args, **kw):
     if kw.get('library_path'):
         val = kw.get('library_path')
         if val is True:
-            val = PREFIX + '/lib'
+            val = LIBDIR
         else:
-            val = val + os.pathsep + PREFIX + '/lib'
+            val = val + os.pathsep + LIBDIR
         env['LD_LIBRARY_PATH'] = val
     print(' '.join(pipes.quote(x) for x in cmd))
     try:

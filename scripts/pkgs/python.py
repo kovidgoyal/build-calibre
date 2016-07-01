@@ -4,29 +4,25 @@
 
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
-import os
 
-from .constants import build_dir, CFLAGS, isosx, iswindows, PREFIX, MAKEOPTS
-from .utils import ModifiedEnv, run
+from .constants import build_dir, CFLAGS, isosx, iswindows, LIBDIR
+from .utils import ModifiedEnv, run, simple_build
 
 
 def main(args):
-    # Needed otherwise _ssl module fails to import because system openssl is too old
-    ld_library_path = PREFIX + '/lib'
-    env = {'CFLAGS': CFLAGS + ' -DHAVE_LOAD_EXTENSION'}
+    # Needed as the system openssl is too old, causing the _ssl module to fail
+    env = {'CFLAGS': CFLAGS + ' -DHAVE_LOAD_EXTENSION', 'LD_LIBRARY_PATH': LIBDIR}
     conf = ('--prefix={} --enable-shared --with-threads --enable-ipv6 --enable-unicode={}'
             ' --with-system-expat --with-system-ffi --with-pymalloc --without-ensurepip').format(
         build_dir(), ('ucs2' if isosx or iswindows else 'ucs4'))
 
     with ModifiedEnv(**env):
-        run('./configure', *conf.split(), library_path=ld_library_path)
-        run('make ' + MAKEOPTS, library_path=ld_library_path)
-        run('make install', library_path=ld_library_path)
+        simple_build(conf)
 
-    ld = build_dir() + '/lib' + os.pathsep + ld_library_path
+    ld = build_dir() + '/lib'
     mods = '_ssl, zlib, bz2, ctypes, sqlite3'
     if not iswindows:
-        mods += ', readline, curses'
+        mods += ', readline, _curses'
     run(build_dir() + '/bin/python', '-c', 'import ' + mods, library_path=ld)
 
 
