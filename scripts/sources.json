@@ -298,6 +298,15 @@
     },
 
     {
+        "name": "libgpg-error",
+        "unix": {
+            "filename": "libgpg-error-1.22.tar.bz2",
+            "hash": "sha1:c40015ed88bf5f50fa58d02252d75cf20b858951",
+            "urls": ["ftp://ftp.gnupg.org/gcrypt/libgpg-error/{filename}"]
+        }
+    },
+
+    {
         "name": "qt",
         "unix": {
             "filename": "qt-everywhere-opensource-src-5.5.1.tar.xz",
