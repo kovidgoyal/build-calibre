@@ -340,5 +340,14 @@
             "hash": "md5:8b04b0f09f2398022dcd4fba75012997",
             "urls": ["http://www.libimobiledevice.org/downloads/{filename}"]
         }
+    },
+
+    {
+        "name": "usbmuxd",
+        "unix": {
+            "filename": "libusbmuxd-1.0.10.tar.bz2",
+            "hash": "md5:e5351ff6f6eedcb50701e02d91cc480c",
+            "urls": ["http://www.libimobiledevice.org/downloads/{filename}"]
+        }
     }
 ]
