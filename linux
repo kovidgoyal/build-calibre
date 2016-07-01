@@ -57,18 +57,22 @@ if not check_for_image(arch):
     if p.wait() != 0:
         raise SystemExit(p.wait())
 
-cmd = ('docker', 'run',
-       '-v', abspath('sources-cache') + ':/sources:rw',
-       '-v', abspath('scripts') + ':/scripts:ro',
-       '-v', abspath('patches') + ':/patches:ro',
-       '-v', output_dir + ':/sw:rw',
-       '--rm=true',
-       '--interactive=' + ('true' if sys.stdin.isatty() else 'false'),
-       '--tty=' + ('true' if sys.stdin.isatty() else 'false'),
-       'calibre:64',
-       'python', '/scripts/main.py',
-       )
-cmd += tuple(sys.argv[2:])
+cmd = [
+    'docker', 'run',
+    '-v', abspath('sources-cache') + ':/sources:rw',
+    '-v', abspath('scripts') + ':/scripts:ro',
+    '-v', abspath('patches') + ':/patches:ro',
+    '-v', output_dir + ':/sw:rw',
+    '--rm=true',
+    '--interactive=' + ('true' if sys.stdin.isatty() else 'false'),
+    '--tty=' + ('true' if sys.stdin.isatty() else 'false'),
+    'calibre:64',
+    'python', '/scripts/main.py',
+]
+calibre_dir = os.environ.get('CALIBRE_SRC_DIR', os.path.join('..', 'calibre'))
+if os.path.exists(os.path.join(calibre_dir, 'setup.py')):
+    cmd[2:2] = ['-v', abspath(calibre_dir) + ':/calibre:ro']
+cmd += sys.argv[2:]
 print(*cmd)
 
 raise SystemExit(subprocess.Popen(cmd).wait())
