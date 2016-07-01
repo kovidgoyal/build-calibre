@@ -63,6 +63,9 @@ all_deps = (
 if isosx or iswindows:
     for x in 'libffi ncurses readline'.split():
         all_deps.remove(x)
+if iswindows:
+    for x in 'libusb libmtp'.split():
+        all_deps.remove(x)
 deps = args.deps or all_deps
 
 for dep in deps:
