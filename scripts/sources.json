@@ -181,6 +181,15 @@
     },
 
     {
+        "name": "libwebp",
+        "unix": {
+            "filename": "libwebp-0.5.0.tar.gz",
+            "hash": "sha256:5cd3bb7b623aff1f4e70bd611dc8dbabbf7688fd5eb225b32e02e09e37dfb274",
+            "urls": ["http://downloads.webmproject.org/releases/webp/{filename}"]
+        }
+    },
+
+    {
         "name": "freetype",
         "unix": {
             "filename": "freetype-2.6.3.tar.bz2",

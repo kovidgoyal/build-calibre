@@ -53,11 +53,11 @@ all_deps = (
     # Python and its dependencies
     'zlib bzip2 expat sqlite libffi openssl ncurses readline python '
     # Miscellaneous dependencies
-    'icu libjpeg libpng freetype fontconfig iconv libxml2 libxslt chmlib optipng mozjpeg libusb libmtp plist usbmuxd imobiledevice '
+    'icu libjpeg libpng libwebp freetype fontconfig iconv libxml2 libxslt chmlib optipng mozjpeg libusb libmtp plist usbmuxd imobiledevice '
     # PDF libraries
     'poppler podofo '
     # Qt
-    'qt sip pyqt '
+    'libgpg-error libgcrypt qt sip pyqt '
 ).strip().split() + python_deps
 
 if not islinux:
