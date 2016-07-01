@@ -18,10 +18,10 @@ def abspath(x):
 
 
 def usage():
-    raise SystemExit(
-        'Usage: run-docker 32|64'
+    raise SystemExit((
+        'Usage: %s 32|64'
         ' [the rest of the command line is passed to main.py]'
-    )
+    ) % sys.srv[0])
 
 arch = sys.argv[1].decode('utf-8')
 if arch not in '64 32'.split() or len(sys.argv) < 2:
@@ -43,6 +43,19 @@ mkdir('sources-cache')
 mkdir('build')
 output_dir = os.path.join(abspath('build'), 'linux' + arch)
 mkdir(output_dir)
+
+
+def check_for_image(tag):
+    return bool(subprocess.check_output(('docker images -q calibre:%s' % tag).split()))
+
+if not check_for_image(arch):
+    cmd = ('docker', 'build', '-t', ('calibre:' + arch),
+           '-f', abspath('linux/dockerfile-{}bit'.format(arch)), abspath('linux')
+           )
+    print(*cmd)
+    p = subprocess.Popen(cmd)
+    if p.wait() != 0:
+        raise SystemExit(p.wait())
 
 cmd = ('docker', 'run',
        '-v', abspath('sources-cache') + ':/sources:rw',
