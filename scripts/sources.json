@@ -315,6 +315,15 @@
         }
     },
 
+   {
+        "name": "glib",
+        "unix": {
+            "filename": "glib-2.48.1.tar.xz",
+            "hash": "sha256:74411bff489cb2a3527bac743a51018841a56a4d896cc1e0d0d54f8166a14612",
+            "urls": ["http://ftp.gnome.org/pub/GNOME/sources/glib/2.48/{filename}"]
+        }
+    },
+
     {
         "name": "qt",
         "unix": {
