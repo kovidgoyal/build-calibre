@@ -37,10 +37,15 @@ CALIBRE_DIR = '/calibre'
 
 QT_PREFIX = os.path.join(PREFIX, 'qt')
 QT_DLLS = ['Qt5' + x for x in (
-    'Core', 'Gui',  'OpenGL', 'Network', 'PrintSupport', 'Positioning', 'Sensors', 'Sql', 'Svg',
-    'WebKit', 'WebKitWidgets', 'Widgets',  'Multimedia', 'MultimediaWidgets', 'Xml',  # 'XmlPatterns',
+    'Core', 'Gui',  'Network', 'PrintSupport', 'Positioning', 'Sensors', 'Sql',
+    'Svg', 'WebKit', 'WebKitWidgets', 'Widgets',  'Multimedia',
+    'MultimediaWidgets', 'Xml',  # 'XmlPatterns', 'OpenGL',
 )]
-QT_PLUGINS = ('imageformats', 'audio', 'iconengines', 'mediaservice', 'platforms', 'playlistformats', 'printsupport', 'sqldrivers')
+QT_PLUGINS = (
+    'imageformats', 'iconengines', 'mediaservice', 'platforms',
+    'playlistformats', 'sqldrivers', 'platforminputcontexts',
+    # 'audio', 'printsupport', 'bearer', 'position',
+)
 PYQT_MODULES = ('Qt', 'QtCore', 'QtGui', 'QtNetwork',  # 'QtMultimedia', 'QtMultimediaWidgets',
                 'QtPrintSupport', 'QtSensors', 'QtSvg', 'QtWebKit', 'QtWebKitWidgets', 'QtWidgets')
 

@@ -17,7 +17,7 @@ from pkgs.constants import (
     PREFIX, py_ver, QT_PREFIX, QT_DLLS, CALIBRE_DIR, mkdtemp, QT_PLUGINS,
     PYQT_MODULES, PYTHON, SW
 )
-from freeze import modules, basenames, functions, create_job, parallel_build, __appname__, __version__
+from freeze import create_job, parallel_build, calibre_constants
 from pkgs.constants import is64bit
 from pkgs.utils import run, walk
 
@@ -33,7 +33,7 @@ def binary_includes():
         j(PREFIX, 'private', 'mozjpeg', 'bin', x) for x in ('jpegtran', 'cjpeg')] + [
 
         j(PREFIX, 'lib', 'lib' + x) for x in (
-            'usb-1.0.so.0', 'mtp.so.9', 'expat.so.1', 'sqlite3.so.0', 'libffi.so.6',
+            'usb-1.0.so.0', 'mtp.so.9', 'expat.so.1', 'sqlite3.so.0', 'ffi.so.6',
             'podofo.so.0.9.4', 'z.so.1', 'bz2.so.1.0', 'poppler.so.62', 'dbus-1.so.3',
             'iconv.so.2', 'xml2.so.2', 'xslt.so.1', 'jpeg.so.8', 'png16.so.16', 'webp.so.6',
             'exslt.so.0', 'imobiledevice.so.6', 'usbmuxd.so.4', 'plist.so.3',
@@ -50,7 +50,7 @@ def binary_includes():
         # https://gcc.gnu.org/onlinedocs/libstdc++/manual/abi.html (The current
         # debian stable libstdc++ is  libstdc++.so.6.0.17)
     ] + [
-        j(QT_PREFIX, 'lib%s.so.5' % x) for x in QT_DLLS]
+        j(QT_PREFIX, 'lib', 'lib%s.so.5' % x) for x in QT_DLLS if x != 'Qt5OpenGL']
 
 
 class Env(object):
@@ -102,8 +102,6 @@ def import_site_packages(srcdir, dest):
 
 def copy_libs(env):
     print('Copying libs...')
-    os.mkdir(env.lib_dir)
-    os.mkdir(env.bin_dir)
 
     for x in binary_includes():
         dest = env.bin_dir if '/bin/' in x else env.lib_dir
@@ -113,7 +111,8 @@ def copy_libs(env):
     dest = j(env.lib_dir, 'qt_plugins')
     os.mkdir(dest)
     for x in QT_PLUGINS:
-        shutil.copytree(j(base, x), j(dest, x))
+        if x not in ('audio', 'printsupport'):
+            shutil.copytree(j(base, x), j(dest, x))
 
 
 def copy_python(env, ext_dir):
@@ -132,6 +131,7 @@ def copy_python(env, ext_dir):
     srcdir = j(srcdir, 'site-packages')
     dest = j(env.py_dir, 'site-packages')
     import_site_packages(srcdir, dest)
+    shutil.rmtree(j(dest, 'PyQt5/uic/port_v3'))
 
     filter_pyqt = {x + '.so' for x in PYQT_MODULES}
     pyqt = j(dest, 'PyQt5')
@@ -146,7 +146,8 @@ def copy_python(env, ext_dir):
         elif os.path.isfile(c):
             shutil.copy2(c, j(dest, x))
     pdir = j(dest, 'calibre', 'plugins')
-    os.mkdir(pdir)
+    if not os.path.exists(pdir):
+        os.mkdir(pdir)
     for x in glob.glob(j(ext_dir, '*.so')):
         shutil.copy2(x, j(pdir, os.path.basename(x)))
 
@@ -165,27 +166,28 @@ def copy_python(env, ext_dir):
 def build_launchers(env):
     base = self_dir
     sources = [j(base, x) for x in ['util.c']]
-    objects = [j(env.obj_dir, os.path.baseame(x) + '.o') for x in sources]
+    objects = [j(env.obj_dir, os.path.basename(x) + '.o') for x in sources]
     cflags = '-fno-strict-aliasing -W -Wall -c -O2 -pipe -DPYTHON_VER="python%s"' % py_ver
     cflags = cflags.split() + ['-I%s/include/python%s' % (PREFIX, py_ver)]
     for src, obj in zip(sources, objects):
         cmd = ['gcc'] + cflags + ['-fPIC', '-o', obj, src]
-        run(cmd)
+        run(*cmd)
 
     dll = j(env.lib_dir, 'libcalibre-launcher.so')
     cmd = ['gcc', '-O2', '-Wl,--rpath=$ORIGIN/../lib', '-fPIC', '-o', dll, '-shared'] + objects + \
         ['-L%s/lib' % PREFIX, '-lpython' + py_ver]
-    run(cmd)
+    run(*cmd)
 
     src = j(base, 'main.c')
 
+    modules, basenames, functions = calibre_constants['modules'].copy(), calibre_constants['basenames'].copy(), calibre_constants['functions'].copy()
     modules['console'].append('calibre.linux')
     basenames['console'].append('calibre_postinstall')
     functions['console'].append('main')
     c_launcher = '/tmp/calibre-c-launcher'
     lsrc = os.path.join(base, 'launcher.c')
     cmd = ['gcc', '-O2', '-o', c_launcher, lsrc, ]
-    run(cmd, verbose=False)
+    run(*cmd)
 
     jobs = []
     for typ in ('console', 'gui', ):
@@ -250,7 +252,7 @@ def strip_binaries(env):
 def create_tarfile(env):
     print('Creating archive...')
     base = SW
-    dist = os.path.join(base, '%s-%s-%s.tar' % (__appname__, __version__, arch))
+    dist = os.path.join(base, '%s-%s-%s.tar' % (calibre_constants['appname'], calibre_constants['version'], arch))
     with tarfile.open(dist, mode='w', format=tarfile.PAX_FORMAT) as tf:
         cwd = os.getcwd()
         os.chdir(env.base)
