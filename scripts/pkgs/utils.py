@@ -15,7 +15,7 @@ import shutil
 import tarfile
 import zipfile
 
-from .constants import build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR, worker_env
+from .constants import build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR, worker_env, pkg_ext
 
 
 class ModifiedEnv(object):
@@ -231,7 +231,8 @@ def create_package(module, src_dir, outfile):
         tar_info.uid, tar_info.gid, tar_info.mtime = 1000, 100, 0
         return tar_info
 
-    with tarfile.open(outfile, 'w:bz2') as archive:
+    c = pkg_ext.split('.')[-1]
+    with tarfile.open(outfile, 'w:' + c) as archive:
         for x in os.listdir(src_dir):
             path = os.path.join(src_dir, x)
             if os.path.isdir(path):
