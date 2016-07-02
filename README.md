@@ -11,10 +11,19 @@ build the calibre installer itself.
 Requirements
 ---------------
 
-The code in this repository is intended to itself run on linux.  To make the
-linux calibre builds, it uses docker. To make the Windows and OS X builds it
-uses VirtualBox VMs. Instructions on creating the VMs are in their respective
-sections below.
+First you need a *bootstrapped* copy of the calibre source code. This means
+either untar the official calibre source distribution tarball, or checkout
+calibre from github and run `python setup.py bootstrap`.
+
+Then set the environment variable `CALIBRE_SRC_DIR` to point to the location of
+the calibre source code.
+
+The code in this repository is intended to run on linux.
+
+To make the linux calibre builds, it uses docker.
+
+To make the Windows and OS X builds it uses VirtualBox VMs. Instructions on
+creating the VMs are in their respective sections below.
 
 Linux
 -------
@@ -34,8 +43,8 @@ The output (after a very long time) will be in `build/linux[32|63]`
 Now you can build calibre itself using these dependencies, to do that, run:
 
 ```
-./linux 64 calibre
-./linux 32 calibre
+CALIBRE_SRC_DIR=/whatever ./linux 64 calibre
+CALIBRE_SRC_DIR=/whatever ./linux 32 calibre
 ```
 
 The output will be `build/linux[32|64]/calibre-*.txz` which are the linux
