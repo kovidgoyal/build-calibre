@@ -13,7 +13,8 @@ _plat = sys.platform.lower()
 iswindows = 'win32' in _plat or 'win64' in _plat
 isosx = 'darwin' in _plat
 islinux = not iswindows and not isosx
-pkg_ext = 'tar.bz2'
+pkg_ext = 'tar.gz'
+py_ver = '2.7'
 
 SW = '/sw'
 SOURCES = '/sources'
