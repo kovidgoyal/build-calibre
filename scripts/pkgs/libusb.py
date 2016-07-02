@@ -9,4 +9,4 @@ from .utils import simple_build
 
 
 def main(args):
-    simple_build('--disable-udev --disable-dependency-tracking --disable-static')
+    simple_build('--disable-udev --disable-dependency-tracking --disable-static', no_parallel=True)
