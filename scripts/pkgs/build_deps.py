@@ -26,11 +26,11 @@ all_deps = (
     # PDF libraries
     'poppler podofo '
     # Qt
-    'libgpg-error libgcrypt glib qt sip pyqt '
+    'libgpg-error libgcrypt glib dbus dbusglib qt sip pyqt '
 ).strip().split() + python_deps
 
 if not islinux:
-    for x in 'libffi ncurses readline libgpg-error libgcrypt glib'.split():
+    for x in 'libffi ncurses readline libgpg-error libgcrypt glib dbus dbusglib'.split():
         all_deps.remove(x)
 if iswindows:
     for x in 'libusb libmtp'.split():

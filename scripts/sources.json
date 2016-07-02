@@ -325,11 +325,11 @@
     },
 
     {
-        "name": "dbus-glib",
+        "name": "dbusglib",
         "unix": {
-            "filename": "dbus-glib-0.106.tar.gz",
+            "filename": "dbusglib-0.106.tar.gz",
             "hash": "md5:2eea0b7f52b49f600a07abfd8535d4e4",
-            "urls": ["http://dbus.freedesktop.org/releases/dbus-glib/{filename}"]
+            "urls": ["http://dbus.freedesktop.org/releases/dbus-glib/dbus-glib-0.106.tar.gz"]
         }
     },
 
