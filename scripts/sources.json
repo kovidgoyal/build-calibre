@@ -315,12 +315,30 @@
         }
     },
 
-   {
+    {
         "name": "glib",
         "unix": {
             "filename": "glib-2.48.1.tar.xz",
             "hash": "sha256:74411bff489cb2a3527bac743a51018841a56a4d896cc1e0d0d54f8166a14612",
             "urls": ["http://ftp.gnome.org/pub/GNOME/sources/glib/2.48/{filename}"]
+        }
+    },
+
+    {
+        "name": "dbus-glib",
+        "unix": {
+            "filename": "dbus-glib-0.106.tar.gz",
+            "hash": "md5:2eea0b7f52b49f600a07abfd8535d4e4",
+            "urls": ["http://dbus.freedesktop.org/releases/dbus-glib/{filename}"]
+        }
+    },
+
+    {
+        "name": "dbus",
+        "unix": {
+            "filename": "dbus-1.10.8.tar.gz",
+            "hash": "md5:e912e930f249454752512aa7ac864d43",
+            "urls": ["http://dbus.freedesktop.org/releases/dbus/{filename}"]
         }
     },
 
