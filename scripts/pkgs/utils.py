@@ -247,3 +247,10 @@ def install_package(pkg_path, dest_dir):
 def set_title(x):
     if sys.stdout.isatty():
         print('''\033]2;%s\007''' % x)
+
+
+def walk(path):
+    ''' A nice interface to os.walk '''
+    for dirpath, dirnames, filenames in os.walk(path):
+        for f in filenames:
+            yield os.path.join(dirpath, f)
