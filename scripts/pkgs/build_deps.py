@@ -16,7 +16,7 @@ from pkgs.download_sources import download, filename_for_dep
 from pkgs.utils import (
     install_package, create_package, extract_source, simple_build, python_build, set_title)
 
-python_deps = 'setuptools cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow netifaces psutil'.strip().split()
+python_deps = 'setuptools cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow netifaces psutil dbuspython'.strip().split()
 
 all_deps = (
     # Python and its dependencies
@@ -30,7 +30,7 @@ all_deps = (
 ).strip().split() + python_deps
 
 if not islinux:
-    for x in 'libffi ncurses readline libgpg-error libgcrypt glib dbus dbusglib'.split():
+    for x in 'libffi ncurses readline libgpg-error libgcrypt glib dbus dbusglib dbuspython'.split():
         all_deps.remove(x)
 if iswindows:
     for x in 'libusb libmtp'.split():

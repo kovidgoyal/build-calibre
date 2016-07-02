@@ -334,6 +334,15 @@
     },
 
     {
+        "name": "dbuspython",
+        "unix": {
+            "filename": "dbuspython-1.2.4.tar.gz",
+            "hash": "md5:7372a588c83a7232b4e08159bfd48fe5",
+            "urls": ["http://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.4.tar.gz"]
+        }
+    },
+
+    {
         "name": "dbus",
         "unix": {
             "filename": "dbus-1.10.8.tar.gz",
