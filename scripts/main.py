@@ -27,6 +27,7 @@ a('--clean', default=False, action='store_true',
   help='Remove previously built packages')
 a('--only', default=None, help='Build only a single calibre extension')
 a('--dont-strip', default=False, action='store_true', help='Dont strip the binaries when building calibre')
+a('--compression-level', default='9', choices=list('123456789'), help='Level of compression for the linux calibre tarball')
 
 args = parser.parse_args()
 

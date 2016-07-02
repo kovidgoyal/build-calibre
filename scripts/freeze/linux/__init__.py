@@ -249,7 +249,7 @@ def strip_binaries(env):
     print('Stripped %.1f MB' % ((before - after) / (1024 * 1024.)))
 
 
-def create_tarfile(env):
+def create_tarfile(env, compression_level='9'):
     print('Creating archive...')
     base = SW
     dist = os.path.join(base, '%s-%s-%s.tar' % (calibre_constants['appname'], calibre_constants['version'], arch))
@@ -264,7 +264,7 @@ def create_tarfile(env):
     print('Compressing archive...')
     ans = dist.rpartition('.')[0] + '.txz'
     start_time = time.time()
-    subprocess.check_call(['xz', '--threads=0', '-f', '-9', dist])
+    subprocess.check_call(['xz', '--threads=0', '-f', '-' + compression_level, dist])
     secs = time.time() - start_time
     print('Compressed in %d minutes %d seconds' % (secs // 60, secs % 60))
     os.rename(dist + '.xz', ans)
@@ -279,4 +279,4 @@ def main(args, ext_dir):
     build_launchers(env)
     if not args.dont_strip:
         strip_binaries(env)
-    create_tarfile(env)
+    create_tarfile(env, args.compression_level)
