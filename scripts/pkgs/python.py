@@ -4,9 +4,11 @@
 
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
+import os
+import re
 
-from .constants import build_dir, CFLAGS, isosx, iswindows, LIBDIR
-from .utils import ModifiedEnv, run, simple_build
+from .constants import build_dir, CFLAGS, isosx, iswindows, LIBDIR, PREFIX
+from .utils import ModifiedEnv, run, simple_build, replace_in_file
 
 
 def main(args):
@@ -23,7 +25,9 @@ def main(args):
     mods = '_ssl, zlib, bz2, ctypes, sqlite3'
     if not iswindows:
         mods += ', readline, _curses'
-    run(build_dir() + '/bin/python', '-c', 'import ' + mods, library_path=ld)
+    P = os.path.join(build_dir(), 'bin', 'python')
+    run(P, '-c', 'import ' + mods, library_path=ld)
+    replace_in_file(P+'-config', re.compile(br'^#!.+/bin/', re.MULTILINE), '#!' + PREFIX + '/bin/')
 
 
 def filter_pkg(parts):
