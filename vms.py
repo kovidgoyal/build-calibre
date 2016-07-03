@@ -39,7 +39,7 @@ def ensure_vm(name):
     st = time.time()
     while not is_host_reachable(name):
         time.sleep(0.1)
-    print('SSH server started in', st - time.time(), 'seconds')
+    print('SSH server started in', '%.1f' % (time.time() - st), 'seconds')
 
 
 def run_in_vm(name, *args, **kw):
