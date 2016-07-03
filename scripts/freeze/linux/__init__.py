@@ -24,6 +24,7 @@ from pkgs.utils import run, walk, run_shell
 j = os.path.join
 self_dir = os.path.dirname(os.path.abspath(__file__))
 arch = 'x86_64' if is64bit else 'i686'
+QT_DLLS = QT_DLLS + ['Qt5DBus']
 
 
 def binary_includes():
@@ -50,7 +51,7 @@ def binary_includes():
         # https://gcc.gnu.org/onlinedocs/libstdc++/manual/abi.html (The current
         # debian stable libstdc++ is  libstdc++.so.6.0.17)
     ] + [
-        j(QT_PREFIX, 'lib', 'lib%s.so.5' % x) for x in QT_DLLS if x != 'Qt5OpenGL']
+        j(QT_PREFIX, 'lib', 'lib%s.so.5' % x) for x in QT_DLLS]
 
 
 class Env(object):
@@ -285,7 +286,8 @@ def main(args, ext_dir):
     copy_libs(env)
     copy_python(env, ext_dir)
     build_launchers(env)
-    test_build(env)
+    if not args.skip_calibre_tests:
+        test_build(env)
     if not args.dont_strip:
         strip_binaries(env)
     create_tarfile(env, args.compression_level)
