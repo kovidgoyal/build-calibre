@@ -66,6 +66,7 @@ def shutdown_vm(name):
     cmd = 'sudo shutdown -h now' if isosx else ['shutdown.exe', '-s', '-f', '-t', '0']
     run_in_vm(name, cmd)
     subprocess.Popen(SSH + ['-O', 'exit', name])
+
     while is_host_reachable(name):
         time.sleep(0.1)
     if isosx:
@@ -74,3 +75,31 @@ def shutdown_vm(name):
         subprocess.check_call(('VBoxManage controlvm %s poweroff' % name).split())
     while is_vm_running(name):
         time.sleep(0.1)
+
+
+class Rsync(object):
+
+    excludes = frozenset({'*.pyc', '*.pyo', '*.swp', '*.swo', '*.pyj-cached', '*~', '.git'})
+
+    def __init__(self, name):
+        self.name = name
+
+    def from_vm(self, from_, to, excludes=frozenset()):
+        f = self.name + ':' + from_
+        self(f, to, excludes)
+
+    def to_vm(self, from_, to, excludes=frozenset()):
+        t = self.name + ':' + to
+        self(from_, t, excludes)
+
+    def __call__(self, from_, to, excludes=frozenset()):
+        ssh = ' '.join(SSH)
+        if isinstance(excludes, type('')):
+            excludes = excludes.split()
+        excludes = frozenset(excludes) | self.excludes
+        excludes = ['--exclude=' + x for x in excludes]
+        cmd = ['rsync', '-a', '-e', ssh, '--delete', '--delete-excluded'] + excludes + [from_ + '/', to]
+        # print(' '.join(cmd))
+        p = subprocess.Popen(cmd)
+        if p.wait() != 0:
+            raise SystemExit(p.wait())

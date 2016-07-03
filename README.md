@@ -64,3 +64,4 @@ You need a VirtualBox virtual machine of OS X 10.9 (Mavericks) named
   * Setup passwordless sudo in the Virtual Machine for the user account kovid
   * Run `xcode-select --install` and follow the prompts to install the command
     line developer tools
+  * Run `sudo mkdir -p /calibre /scripts /sources /sw /patches && sudo chown kovid:staff /calibre /scripts /sources /sw /patches`
