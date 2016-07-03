@@ -163,6 +163,8 @@ def install_binaries(pattern, destdir='lib', do_symlinks=False):
     ensure_dir(dest)
     files = glob.glob(pattern)
     files.sort(key=len, reverse=True)
+    if not files:
+        raise ValueError('The pattern %s did not match any actual files' % pattern)
     for f in files:
         dst = os.path.join(dest, os.path.basename(f))
         islink = lcopy(f, dst)
