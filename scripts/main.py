@@ -8,14 +8,16 @@ import os
 import argparse
 import tempfile
 import pwd
-from pkgs.constants import SW, pkg_ext
+from pkgs.constants import SW, pkg_ext, islinux
 from pkgs.utils import run_shell
 
 if os.geteuid() == 0:
     uid, gid = pwd.getpwnam('kovid').pw_uid, pwd.getpwnam('kovid').pw_gid
     os.chown(SW, uid, gid)
     os.setgid(gid), os.setuid(uid)
-    os.putenv('HOME', tempfile.gettempdir())
+
+if islinux:
+    os.environ['HOME'] = tempfile.gettempdir()
     os.chdir(tempfile.gettempdir())
 
 parser = argparse.ArgumentParser(description='Build calibre dependencies')
