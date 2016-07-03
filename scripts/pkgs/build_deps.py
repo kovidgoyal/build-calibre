@@ -14,7 +14,7 @@ from pkgs.constants import (
     set_tdir, mkdtemp, islinux)
 from pkgs.download_sources import download, filename_for_dep
 from pkgs.utils import (
-    install_package, create_package, extract_source, simple_build, python_build, set_title)
+    run_shell, install_package, create_package, extract_source, simple_build, python_build, set_title)
 
 python_deps = 'setuptools six cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow netifaces psutil dbuspython'.strip().split()
 
@@ -71,15 +71,22 @@ def build(dep, args, dest_dir):
             raise
         m = None
     extract_source()
-    if hasattr(m, 'main'):
-        m.main(args)
-    else:
-        if dep in python_deps:
-            python_build()
-            # TODO: The next line will likely need to be changed on windows
-            output_dir = os.path.join(output_dir, 'sw', 'sw')
+    try:
+        if hasattr(m, 'main'):
+            m.main(args)
         else:
-            simple_build()
+            if dep in python_deps:
+                python_build()
+                # TODO: The next line will likely need to be changed on windows
+                output_dir = os.path.join(output_dir, 'sw', 'sw')
+            else:
+                simple_build()
+    except Exception:
+        import traceback
+        traceback.print_exc()
+        print('\nDropping you into a shell')
+        run_shell()
+        raise SystemExit(1)
     create_package(m, output_dir, pkg_path(dep))
     install_package(pkg_path(dep), dest_dir)
 
