@@ -16,7 +16,7 @@ from pkgs.download_sources import download, filename_for_dep
 from pkgs.utils import (
     install_package, create_package, extract_source, simple_build, python_build, set_title)
 
-python_deps = 'setuptools cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow netifaces psutil dbuspython'.strip().split()
+python_deps = 'setuptools six cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow netifaces psutil dbuspython'.strip().split()
 
 all_deps = (
     # Python and its dependencies
