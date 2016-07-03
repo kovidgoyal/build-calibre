@@ -24,7 +24,7 @@ from pkgs.utils import run, walk, run_shell
 j = os.path.join
 self_dir = os.path.dirname(os.path.abspath(__file__))
 arch = 'x86_64' if is64bit else 'i686'
-QT_DLLS = QT_DLLS + ['Qt5DBus']
+QT_DLLS = QT_DLLS + ['Qt5DBus', 'Qt5XcbQpa']
 
 
 def binary_includes():
