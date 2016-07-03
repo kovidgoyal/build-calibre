@@ -24,6 +24,7 @@ def main(args):
             CMAKE_INCLUDE_PATH='{}/include'.format(PREFIX),
             CMAKE_LIBRARY_PATH='{}/lib'.format(PREFIX),
             # These are needed to avoid undefined SIZE_MAX errors on older gcc
+            # (SIZE_MAX goes away in podofo 0.9.5)
             CXXFLAGS='-D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS',
     ):
         run('cmake', '-G', 'Unix Makefiles', '-Wno-dev',
