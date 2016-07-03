@@ -38,8 +38,8 @@ CALIBRE_DIR = '/calibre'
 QT_PREFIX = os.path.join(PREFIX, 'qt')
 QT_DLLS = ['Qt5' + x for x in (
     'Core', 'Gui',  'Network', 'PrintSupport', 'Positioning', 'Sensors', 'Sql',
-    'Svg', 'WebKit', 'WebKitWidgets', 'Widgets',  'Multimedia',
-    'MultimediaWidgets', 'Xml',  # 'XmlPatterns', 'OpenGL',
+    'Svg', 'WebKit', 'WebKitWidgets', 'Widgets',  'Multimedia', 'OpenGL',
+    'MultimediaWidgets', 'Xml',  # 'XmlPatterns',
 )]
 QT_PLUGINS = (
     'imageformats', 'iconengines', 'mediaservice', 'platforms',

@@ -48,14 +48,22 @@ mkdir(output_dir)
 def check_for_image(tag):
     return bool(subprocess.check_output(('docker images -q calibre:%s' % tag).split()))
 
-if not check_for_image(arch):
+
+def build_docker():
     cmd = ('docker', 'build', '-t', ('calibre:' + arch),
-           '-f', abspath('docker/dockerfile-{}bit'.format(arch)), abspath('linux')
+           '-f', abspath('docker/dockerfile-{}bit'.format(arch)), abspath('docker')
            )
     print(*cmd)
     p = subprocess.Popen(cmd)
     if p.wait() != 0:
         raise SystemExit(p.wait())
+
+if sys.argv[2:] == ['docker']:
+    build_docker()
+    raise SystemExit(0)
+
+if not check_for_image(arch):
+    build_docker()
 
 cmd = [
     'docker', 'run',
