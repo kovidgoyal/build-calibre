@@ -115,9 +115,13 @@ def main(args):
 
     while deps:
         dep = deps.pop(0)
+        ok = False
         try:
             build(dep, args, dest_dir)
+            ok = True
         finally:
+            if not ok:
+                deps.insert(0, dep)
             if deps:
                 print('Remaining deps:', ' '.join(deps))
 
