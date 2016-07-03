@@ -5,11 +5,14 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import sys
+from functools import partial
 
-from vms import ensure_vm, shutdown_vm
+from vms import ensure_vm, shutdown_vm, run_in_vm as riv
 VM = 'osx-calibre-build'
+run_in_vm = partial(riv, VM)
 
 if sys.argv[1:] == ['shutdown']:
     shutdown_vm(VM)
-else:
-    ensure_vm(VM)
+    raise SystemExit(0)
+
+ensure_vm(VM)

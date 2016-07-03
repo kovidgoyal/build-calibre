@@ -8,6 +8,7 @@ import subprocess
 import time
 import socket
 import shlex
+import tempfile
 
 
 def is_host_reachable(name, timeout=1):
@@ -31,6 +32,22 @@ def is_vm_running(name):
     return False
 
 
+SSH = [
+    'ssh', '-o', 'User=kovid',
+    '-o', 'ControlMaster=auto', '-o', 'ControlPersist=yes', '-o', 'ControlPath={}/%r@%h:%p'.format(tempfile.gettempdir())
+]
+
+
+def run_in_vm(name, *args, **kw):
+    if len(args) == 1:
+        args = shlex.split(args[0])
+    p = subprocess.Popen(SSH + [name] + list(args))
+    if kw.get('async'):
+        return p
+    if not p.wait() == 0:
+        raise SystemExit(p.wait())
+
+
 def ensure_vm(name):
     if not is_vm_running(name):
         subprocess.check_call(['VBoxManage', 'startvm', name])
@@ -42,22 +59,13 @@ def ensure_vm(name):
     print('SSH server started in', '%.1f' % (time.time() - st), 'seconds')
 
 
-def run_in_vm(name, *args, **kw):
-    if len(args) == 1:
-        args = shlex.split(args[0])
-    p = subprocess.Popen(['ssh', name] + list(args))
-    if kw.get('async'):
-        return p
-    if not p.wait() == 0:
-        raise SystemExit(p.wait())
-
-
 def shutdown_vm(name):
     if not is_vm_running(name):
         return
     isosx = name.startswith('osx-')
     cmd = 'sudo shutdown -h now' if isosx else ['shutdown.exe', '-s', '-f', '-t', '0']
     run_in_vm(name, cmd)
+    subprocess.Popen(SSH + ['-O', 'exit', name])
     while is_host_reachable(name):
         time.sleep(0.1)
     if isosx:
