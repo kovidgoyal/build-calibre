@@ -49,3 +49,16 @@ CALIBRE_SRC_DIR=/whatever ./linux 32 calibre
 
 The output will be `build/linux[32|64]/calibre-*.txz` which are the linux
 binary installers for calibre.
+
+
+OS X
+------
+
+You need a VirtualBox virtual machine of OS X 10.9 (Mavericks) named
+`osx-calibre-build`. To setup the VM, follow the steps
+
+  * Turn on Remote Login under Network (SSHD)
+  * Create a user account named `kovid` and enable password-less login for SSH
+    for that account (setup `~/.ssh/authorized_keys`)
+  * Run `xcode-select --install` and follow the prompts to install the command
+    line developer tools
