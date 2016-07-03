@@ -19,7 +19,7 @@ from pkgs.constants import (
 )
 from freeze import create_job, parallel_build, calibre_constants
 from pkgs.constants import is64bit
-from pkgs.utils import run, walk
+from pkgs.utils import run, walk, run_shell
 
 j = os.path.join
 self_dir = os.path.dirname(os.path.abspath(__file__))
@@ -36,7 +36,7 @@ def binary_includes():
             'usb-1.0.so.0', 'mtp.so.9', 'expat.so.1', 'sqlite3.so.0', 'ffi.so.6',
             'podofo.so.0.9.4', 'z.so.1', 'bz2.so.1.0', 'poppler.so.62', 'dbus-1.so.3',
             'iconv.so.2', 'xml2.so.2', 'xslt.so.1', 'jpeg.so.8', 'png16.so.16', 'webp.so.6',
-            'exslt.so.0', 'imobiledevice.so.6', 'usbmuxd.so.4', 'plist.so.3',
+            'exslt.so.0', 'imobiledevice.so.6', 'usbmuxd.so.4', 'plist.so.3', 'ncursesw.so.6',
             'ssl.so.1.0.0', 'crypto.so.1.0.0', 'readline.so.6', 'chm.so.0', 'icudata.so.57',
             'icui18n.so.57', 'icuuc.so.57', 'icuio.so.57', 'python%s.so.1.0' % py_ver,
             'gcrypt.so.20', 'gpg-error.so.0', 'gobject-2.0.so.0', 'glib-2.0.so.0',
@@ -210,6 +210,14 @@ def build_launchers(env):
             raise SystemExit(1)
 
 
+def test_build(env):
+    p = subprocess.Popen([j(env.base, 'calibre-debug'), '--test-build'])
+    if p.wait() != 0:
+        os.chdir(env.base)
+        run_shell()
+        raise SystemExit(p.wait())
+
+
 def is_elf(path):
     with open(path, 'rb') as f:
         return f.read(4) == b'\x7fELF'
@@ -277,6 +285,7 @@ def main(args, ext_dir):
     copy_libs(env)
     copy_python(env, ext_dir)
     build_launchers(env)
+    test_build(env)
     if not args.dont_strip:
         strip_binaries(env)
     create_tarfile(env, args.compression_level)
