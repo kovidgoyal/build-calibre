@@ -38,8 +38,20 @@ class ModifiedEnv(object):
         self.apply(self.orig)
 
 
-def run_shell():
-    return subprocess.Popen(['/bin/bash']).wait()
+def current_env(library_path=False):
+    env = os.environ.copy()
+    env.update(worker_env)
+    if library_path:
+        if library_path is True:
+            library_path = LIBDIR
+        else:
+            library_path = library_path + os.pathsep + LIBDIR
+        env['LD_LIBRARY_PATH'] = library_path
+    return env
+
+
+def run_shell(library_path=False):
+    return subprocess.Popen(['/bin/bash'], env=current_env(library_path=library_path)).wait()
 
 
 def run(*args, **kw):
@@ -47,19 +59,9 @@ def run(*args, **kw):
         cmd = shlex.split(args[0])
     else:
         cmd = args
-    env = os.environ.copy()
-    if not kw.get('clean_env'):
-        env.update(worker_env)
-        if kw.get('library_path'):
-            val = kw.get('library_path')
-            if val is True:
-                val = LIBDIR
-            else:
-                val = val + os.pathsep + LIBDIR
-            env['LD_LIBRARY_PATH'] = val
     print(' '.join(pipes.quote(x) for x in cmd))
     try:
-        p = subprocess.Popen(cmd, env=env)
+        p = subprocess.Popen(cmd, env=current_env(library_path=kw.get('library_path')))
     except EnvironmentError as err:
         if err.errno == errno.ENOENT:
             raise SystemExit('Could not find the program: %s' % cmd[0])
@@ -71,7 +73,7 @@ def run(*args, **kw):
         print(' '.join(pipes.quote(x) for x in cmd))
         print('Dropping you into a shell')
         sys.stdout.flush()
-        run_shell()
+        run_shell(library_path=kw.get('library_path'))
         raise SystemExit(1)
 
 
