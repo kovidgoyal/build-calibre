@@ -15,7 +15,8 @@ import shutil
 import tarfile
 import zipfile
 
-from .constants import build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR, worker_env, pkg_ext
+from .constants import (
+    build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR, worker_env, pkg_ext, islinux)
 
 
 class ModifiedEnv(object):
@@ -51,7 +52,8 @@ def current_env(library_path=False):
 
 
 def run_shell(library_path=False):
-    return subprocess.Popen(['/bin/bash'], env=current_env(library_path=library_path)).wait()
+    sh = '/bin/bash' if islinux else '/bin/zsh'
+    return subprocess.Popen([sh, '-i'], env=current_env(library_path=library_path)).wait()
 
 
 def run(*args, **kw):
