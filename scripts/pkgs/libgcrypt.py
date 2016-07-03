@@ -5,9 +5,12 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 
-from .constants import PREFIX
+from .constants import PREFIX, is64bit
 from .utils import simple_build
 
 
 def main(args):
-    simple_build('--disable-dependency-tracking --disable-static --with-libgpg-error-prefix=' + PREFIX)
+    cmd = '--disable-dependency-tracking --disable-static --with-libgpg-error-prefix=' + PREFIX
+    if not is64bit:
+        cmd += ' --disable-amd64-as-feature-detection --disable-pclmul-support'
+    simple_build(cmd)
