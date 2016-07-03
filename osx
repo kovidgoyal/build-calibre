@@ -1,0 +1,15 @@
+#!/usr/bin/env python2
+# vim:fileencoding=utf-8
+# License: GPLv3 Copyright: 2016, Kovid Goyal <kovid at kovidgoyal.net>
+
+from __future__ import (unicode_literals, division, absolute_import,
+                        print_function)
+import sys
+
+from vms import ensure_vm, shutdown_vm
+VM = 'osx-calibre-build'
+
+if sys.argv[1:] == ['shutdown']:
+    shutdown_vm(VM)
+else:
+    ensure_vm(VM)

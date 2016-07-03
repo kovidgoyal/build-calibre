@@ -60,5 +60,7 @@ You need a VirtualBox virtual machine of OS X 10.9 (Mavericks) named
   * Turn on Remote Login under Network (SSHD)
   * Create a user account named `kovid` and enable password-less login for SSH
     for that account (setup `~/.ssh/authorized_keys`)
+  * Setup ssh into the VM from the host under the name: `osx-calibre-build`
+  * Setup passwordless sudo in the Virtual Machine for the user account kovid
   * Run `xcode-select --install` and follow the prompts to install the command
     line developer tools
