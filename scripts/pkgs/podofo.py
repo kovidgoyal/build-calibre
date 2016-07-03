@@ -8,7 +8,7 @@ import os
 import shutil
 import re
 
-from .constants import PREFIX, build_dir
+from .constants import PREFIX, build_dir, islinux
 from .utils import run, ModifiedEnv, install_binaries, replace_in_file, install_tree
 
 
@@ -38,5 +38,10 @@ def main(args):
         inc = os.path.join(build_dir(), 'include', 'podofo')
         os.rename(install_tree('../src', ignore=lambda d, children: [x for x in children if not x.endswith('.h') and '.' in x]), inc)
         shutil.copy2('podofo_config.h', inc)
+        ldir = os.path.join(build_dir(), 'lib')
+        libs = {os.path.realpath(os.path.join(ldir, x)) for x in os.listdir(ldir)}
+        if islinux:
+            # libpodofo.so has RPATH set which is just wrong. Remove it.
+            run('chrpath', '--delete', *list(libs))
 
 pkg_exclude_names = frozenset()
