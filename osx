@@ -7,11 +7,9 @@ from __future__ import (unicode_literals, division, absolute_import,
 import sys
 import os
 import errno
-from functools import partial
 
-from vms import ensure_vm, shutdown_vm, run_in_vm as riv, Rsync
+from vms import ensure_vm, shutdown_vm, Rsync, to_vm, from_vm, run_main
 VM = 'osx-calibre-build'
-run_in_vm = partial(riv, VM)
 rsync = Rsync(VM)
 base = os.path.dirname(os.path.abspath(__file__))
 
@@ -38,20 +36,8 @@ output_dir = os.path.join(abspath('build'), 'osx')
 mkdir(output_dir)
 
 ensure_vm(VM)
-print('Mirroring data to the VM...')
-calibre_dir = os.environ.get('CALIBRE_SRC_DIR', os.path.join('..', 'calibre'))
-if os.path.exists(os.path.join(calibre_dir, 'setup.py')):
-    rsync.to_vm(calibre_dir, '/calibre', '/imgsrc /build /dist /manual /format_docs /icons /translations /.build-cache /tags /Changelog* *.so *.pyd')
-
-for x in 'scripts patches'.split():
-    rsync.to_vm(x, '/' + x)
-
-rsync.to_vm('sources-cache', '/sources')
-rsync.to_vm('build/osx', '/sw')
-
+to_vm(rsync, output_dir)
 try:
-    pass
+    run_main(VM, 'python', '/scripts/main.py', *sys.argv[1:])
 finally:
-    print('Mirroring data from VM...')
-    rsync.from_vm('/sw', 'build/osx')
-    rsync.from_vm('/sources', 'sources-cache')
+    from_vm(rsync, output_dir)

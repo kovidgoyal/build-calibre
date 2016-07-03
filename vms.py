@@ -9,6 +9,7 @@ import time
 import socket
 import shlex
 import tempfile
+import os
 
 
 def is_host_reachable(name, timeout=1):
@@ -103,3 +104,26 @@ class Rsync(object):
         p = subprocess.Popen(cmd)
         if p.wait() != 0:
             raise SystemExit(p.wait())
+
+
+def to_vm(rsync, output_dir):
+    print('Mirroring data to the VM...')
+    calibre_dir = os.environ.get('CALIBRE_SRC_DIR', os.path.join('..', 'calibre'))
+    if os.path.exists(os.path.join(calibre_dir, 'setup.py')):
+        rsync.to_vm(calibre_dir, '/calibre', '/imgsrc /build /dist /manual /format_docs /icons /translations /.build-cache /tags /Changelog* *.so *.pyd')
+
+    for x in 'scripts patches'.split():
+        rsync.to_vm(x, '/' + x)
+
+    rsync.to_vm('sources-cache', '/sources')
+    rsync.to_vm('build/osx', '/sw')
+
+
+def from_vm(rsync, output_dir):
+    print('Mirroring data from VM...')
+    rsync.from_vm('/sw', output_dir)
+    rsync.from_vm('/sources', 'sources-cache')
+
+
+def run_main(name, *cmd):
+    run_in_vm(name, *cmd)
