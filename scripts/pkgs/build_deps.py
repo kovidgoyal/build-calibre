@@ -67,6 +67,8 @@ def build(dep, args, dest_dir):
     try:
         m = importlib.import_module('pkgs.' + dep)
     except ImportError:
+        if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), dep + '.py')):
+            raise
         m = None
     extract_source()
     if hasattr(m, 'main'):
