@@ -27,9 +27,9 @@ def main(args):
     # cannot use mismatching udev client and daemon versions.
     # http://www.marshut.com/yiqmk/can-apps-ship-their-own-copy-of-libudev.html
     os.mkdir('build'), os.chdir('build')
-    run(('../configure -opensource -confirm-license -prefix {}/qt  -release -nomake examples -nomake tests'
-         ' -no-sql-odbc -no-sql-psql -no-qml-debug -qt-xcb -no-c++11'
-         ' -no-libudev -openssl -gtkstyle -icu {} {}').format(build_dir(), CFLAGS, LDFLAGS))
+    run(('../configure -v -silent -opensource -confirm-license -prefix {}/qt  -release -nomake examples -nomake tests'
+         ' -no-sql-odbc -no-sql-psql -no-qml-debug -qt-xcb -no-c++11 -glib'
+         ' -no-libudev -openssl -gtkstyle -icu {} {}').format(build_dir(), CFLAGS, LDFLAGS), library_path=True)
     # run_shell()
     run_shell
     run('make ' + MAKEOPTS, library_path=True)
