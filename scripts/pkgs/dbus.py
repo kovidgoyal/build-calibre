@@ -22,5 +22,5 @@ def main(args):
     install_binaries('dbus/.libs/libdbus*.so*')
     os.makedirs(build_dir() + '/lib/pkgconfig')
     shutil.copy2('dbus-1.pc', build_dir() + '/lib/pkgconfig')
-    copy_headers('dbus/*.h', destdir='include/dbus-1.0')
+    copy_headers('dbus/*.h', destdir='include/dbus-1.0/dbus')
     replace_in_file(os.path.join(build_dir(), 'lib/pkgconfig/dbus-1.pc'), re.compile(br'^prefix=.+$', re.M), b'prefix=%s' % PREFIX)
