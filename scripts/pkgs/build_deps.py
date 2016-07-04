@@ -8,6 +8,7 @@ import sys
 import importlib
 import shutil
 import os
+import tempfile
 
 from pkgs.constants import (
     SW, PREFIX, set_build_dir, pkg_ext, set_current_source, iswindows,
@@ -96,8 +97,9 @@ def build(dep, args, dest_dir):
 def init_env(deps=all_deps):
     dest_dir = PREFIX
     ensure_clear_dir(dest_dir)
-    ensure_clear_dir('t')
-    set_tdir(os.path.abspath('t'))
+    tdir = os.path.join(tempfile.gettempdir(), 't')
+    ensure_clear_dir(tdir)
+    set_tdir(tdir)
     install_pkgs(deps, dest_dir)
     return dest_dir
 
