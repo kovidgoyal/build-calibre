@@ -51,7 +51,7 @@ def run_in_vm(name, *args, **kw):
 
 def ensure_vm(name):
     if not is_vm_running(name):
-        subprocess.check_call(['VBoxManage', 'startvm', name])
+        subprocess.Popen(['VBoxHeadless', '--startvm', name])
         time.sleep(2)
     print('Waiting for SSH server to start...')
     st = time.time()
