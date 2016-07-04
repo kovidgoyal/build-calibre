@@ -11,7 +11,7 @@ import os
 
 from pkgs.constants import (
     SW, PREFIX, set_build_dir, pkg_ext, set_current_source, iswindows,
-    set_tdir, mkdtemp, islinux)
+    set_tdir, mkdtemp, islinux, isosx)
 from pkgs.download_sources import download, filename_for_dep
 from pkgs.utils import (
     run_shell, install_package, create_package, extract_source, simple_build, python_build, set_title)
@@ -35,6 +35,8 @@ if not islinux:
 if iswindows:
     for x in 'libusb libmtp'.split():
         all_deps.remove(x)
+if isosx:
+    all_deps.remove('bzip2')
 
 
 def ensure_clear_dir(dest_dir):
