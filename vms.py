@@ -42,10 +42,10 @@ SSH = [
 def run_in_vm(name, *args, **kw):
     if len(args) == 1:
         args = shlex.split(args[0])
-    p = subprocess.Popen(SSH + [name] + list(args))
+    p = subprocess.Popen(SSH + ['-t', name] + list(args))
     if kw.get('async'):
         return p
-    if not p.wait() == 0:
+    if p.wait() != 0:
         raise SystemExit(p.wait())
 
 
