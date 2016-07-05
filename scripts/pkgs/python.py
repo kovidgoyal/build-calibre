@@ -33,10 +33,24 @@ def main(args):
     mods = '_ssl zlib bz2 ctypes sqlite3'.split()
     if not iswindows:
         mods.extend('readline _curses'.split())
-    P = os.path.join(build_dir(), 'bin', 'python')
+    bindir = os.path.join(build_dir(), 'bin')
+    P = os.path.join(bindir, 'python')
     run(P, '-c', 'import ' + ','.join(mods), library_path=ld)
     replace_in_file(P + '-config', re.compile(br'^#!.+/bin/', re.MULTILINE), '#!' + PREFIX + '/bin/')
+    if isosx:
+        for f in os.listdir(bindir):
+            l = os.path.join(bindir, f)
+            if os.path.islink(l):
+                fp = os.readlink(l)
+                nfp = fp.replace(build_dir(), PREFIX)
+                if nfp != fp:
+                    os.unlink(l)
+                    os.symlink(nfp, l)
 
 
 def filter_pkg(parts):
     return 'idlelib' in parts or 'lib2to3' in parts or 'lib-tk' in parts or 'ensurepip' in parts or 'config' in parts
+
+
+def install_name_change_predicate(p):
+    return p.endswith('/Python')

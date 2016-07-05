@@ -304,13 +304,25 @@ def change_lib_names(p, changes):
         flipwritable(p, old_mode)
 
 
+def is_macho_binary(p):
+    try:
+        with open(p, 'rb') as f:
+            return f.read(4) in (b'\xcf\xfa\xed\xfe', b'\xfe\xed\xfa\xcf')
+    except EnvironmentError as err:
+        if err.errno == errno.ENOENT:
+            return False
+        raise
+
+
 def fix_install_names(m, output_dir):
     dylibs = set()
-    for dirpath, dornames, filenames in os.walk(output_dir):
+    mfunc = getattr(m, 'install_name_change_predicate', lambda p: False)
+    for dirpath, dirnames, filenames in os.walk(output_dir):
         for f in filenames:
-            p = os.path.realpath(os.path.join(dirpath, f))
-            if p.endswith('.dylib') or ('.' not in p and 'bin' in p.split('/')):
-                dylibs.add(p)
+            p = os.path.abspath(os.path.realpath(os.path.join(dirpath, f)))
+            if p not in dylibs and os.path.exists(p):
+                if p.endswith('.dylib') or ('bin' in p.split('/') and is_macho_binary(p)) or (mfunc(p) and is_macho_binary(p)):
+                    dylibs.add(p)
     for p in dylibs:
         changes = []
         install_name, deps = read_lib_names(p)
