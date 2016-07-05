@@ -5,8 +5,13 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 
-from .utils import simple_build
+from .constants import CFLAGS, isosx
+from .utils import simple_build, ModifiedEnv
 
 
 def main(args):
-    simple_build('--disable-dependency-tracking --disable-static'.split())
+    cflags = CFLAGS
+    if isosx:
+        cflags += ' -O2 -DSQLITE_ENABLE_LOCKING_STYLE'
+    with ModifiedEnv(CFLAGS=cflags):
+        simple_build('--disable-dependency-tracking --disable-static')
