@@ -14,6 +14,7 @@ import glob
 import shutil
 import tarfile
 import zipfile
+import stat
 
 from .constants import (
     build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR,
@@ -270,8 +271,23 @@ def read_install_name(p):
     return lines[1].strip()
 
 
+def flipwritable(fn, mode=None):
+    """
+    Flip the writability of a file and return the old mode. Returns None
+    if the file is already writable.
+    """
+    if os.access(fn, os.W_OK):
+        return None
+    old_mode = os.stat(fn).st_mode
+    os.chmod(fn, stat.S_IWRITE | old_mode)
+    return old_mode
+
+
 def change_install_name(p, new_name):
+    old_mode = flipwritable(p)
     subprocess.check_call(['install_name_tool', '-id', new_name, p])
+    if old_mode is not None:
+        flipwritable(p, old_mode)
 
 
 def fix_install_names(m, output_dir):

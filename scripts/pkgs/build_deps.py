@@ -85,14 +85,14 @@ def build(dep, args, dest_dir):
                 output_dir = os.path.join(output_dir, 'sw', 'sw')
             else:
                 simple_build()
+        if isosx:
+            fix_install_names(m, output_dir)
     except Exception:
         import traceback
         traceback.print_exc()
         print('\nDropping you into a shell')
         run_shell()
         raise SystemExit(1)
-    if isosx:
-        fix_install_names(m, output_dir)
     create_package(m, output_dir, pkg_path(dep))
     install_package(pkg_path(dep), dest_dir)
 

@@ -7,17 +7,22 @@ from __future__ import (unicode_literals, division, absolute_import,
 import os
 import shutil
 
-from .constants import is64bit, CFLAGS, LDFLAGS, PREFIX, MAKEOPTS
+from .constants import is64bit, CFLAGS, LDFLAGS, PREFIX, MAKEOPTS, isosx, build_dir
 from .utils import run, install_binaries, install_tree
 
 
 def main(args):
-    optflags = ['enable-ec_nistp_64_gcc_128'] if is64bit else []
-    run('./config', '--prefix=/usr', '--openssldir=/etc/ssl', 'shared',
-        'zlib', '-Wa,--noexecstack', CFLAGS, LDFLAGS, *optflags)
-    run('make ' + MAKEOPTS)
-    run('make test', library_path=os.getcwd())
-    run('make', 'INSTALL_PREFIX={}/openssl'.format(PREFIX), 'install_sw')
-    install_tree(PREFIX + '/openssl/usr/include/openssl')
-    install_binaries(PREFIX + '/openssl/usr/lib/lib*.so*')
-    shutil.rmtree(os.path.join(PREFIX, 'openssl'))
+    if isosx:
+        run('sh ./Configure darwin64-x86_64-cc shared enable-ec_nistp_64_gcc_128 no-ssl2 --openssldir=' + build_dir())
+        run('make ' + MAKEOPTS)
+        run('make install')
+    else:
+        optflags = ['enable-ec_nistp_64_gcc_128'] if is64bit else []
+        run('./config', '--prefix=/usr', '--openssldir=/etc/ssl', 'shared',
+            'zlib', '-Wa,--noexecstack', CFLAGS, LDFLAGS, *optflags)
+        run('make ' + MAKEOPTS)
+        run('make test', library_path=os.getcwd())
+        run('make', 'INSTALL_PREFIX={}/openssl'.format(PREFIX), 'install_sw')
+        install_tree(PREFIX + '/openssl/usr/include/openssl')
+        install_binaries(PREFIX + '/openssl/usr/lib/lib*.so*')
+        shutil.rmtree(os.path.join(PREFIX, 'openssl'))
