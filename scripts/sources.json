@@ -75,9 +75,9 @@
     {
         "name": "python",
         "unix": {
-            "filename": "Python-2.7.11.tar.xz",
-            "hash": "sha1:c3b8bbe3f084c4d4ea13ffb03d75a5e22f9756ff",
-            "urls": ["https://www.python.org/ftp/python/2.7.11/{filename}"]
+            "filename": "Python-2.7.12.tar.xz",
+            "hash": "md5:57dffcee9cee8bb2ab5f82af1d8e9a69",
+            "urls": ["https://www.python.org/ftp/python/2.7.12/{filename}"]
         }
     },
 
