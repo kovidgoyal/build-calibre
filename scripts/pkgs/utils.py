@@ -264,11 +264,18 @@ def walk(path):
             yield os.path.join(dirpath, f)
 
 
-def read_install_name(p):
+def read_lib_names(p):
     lines = subprocess.check_output(['otool', '-D', p]).decode('utf-8').splitlines()
-    if len(lines) < 2:
-        return
-    return lines[1].strip()
+    install_name = None
+    if len(lines) > 1:
+        install_name = lines[1].strip()
+    lines = subprocess.check_output(['otool', '-L', p]).decode('utf-8').splitlines()
+    deps = []
+    for line in lines[1:]:
+        val = line.partition('(')[0].strip()
+        if val != install_name:
+            deps.append(val)
+    return install_name, deps
 
 
 def flipwritable(fn, mode=None):
@@ -283,9 +290,16 @@ def flipwritable(fn, mode=None):
     return old_mode
 
 
-def change_install_name(p, new_name):
+def change_lib_names(p, changes):
+    cmd = ['install_name_tool']
+    for old_name, new_name in changes:
+        if old_name is None:
+            cmd.extend(['-id', new_name])
+        else:
+            cmd.extend(['-change', old_name, new_name])
+    cmd.append(p)
     old_mode = flipwritable(p)
-    subprocess.check_call(['install_name_tool', '-id', new_name, p])
+    subprocess.check_call(cmd)
     if old_mode is not None:
         flipwritable(p, old_mode)
 
@@ -298,9 +312,16 @@ def fix_install_names(m, output_dir):
             if p.endswith('.dylib') or ('.' not in p and 'bin' in p.split('/')):
                 dylibs.add(p)
     for p in dylibs:
-        install_name = read_install_name(p)
+        changes = []
+        install_name, deps = read_lib_names(p)
         if install_name:
             nn = install_name.replace(output_dir, PREFIX)
             if nn != install_name:
-                print('Changing install name from:', install_name, 'to', nn)
-                change_install_name(p, nn)
+                changes.append((None, nn))
+        for name in deps:
+            nn = name.replace(output_dir, PREFIX)
+            if nn != name:
+                changes.append((name, nn))
+        if changes:
+            print('Changing lib names in:', p)
+            change_lib_names(p, changes)
