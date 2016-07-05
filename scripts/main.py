@@ -6,6 +6,7 @@ from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import os
 import argparse
+import shutil
 import tempfile
 import pwd
 from pkgs.constants import SW, pkg_ext, islinux
@@ -35,7 +36,12 @@ a('--skip-calibre-tests', default=False, action='store_true', help='Skip the bui
 args = parser.parse_args()
 
 if args.shell:
-    raise SystemExit(run_shell())
+    from pkgs.build_deps import init_env
+    dest_dir = init_env()
+    try:
+        raise SystemExit(run_shell())
+    finally:
+        shutil.rmtree(dest_dir)
 
 if args.deps == ['calibre']:
     from pkgs.build_calibre import main
