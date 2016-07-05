@@ -16,7 +16,8 @@ import tarfile
 import zipfile
 
 from .constants import (
-    build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR, worker_env, pkg_ext, islinux)
+    build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR,
+    worker_env, pkg_ext, islinux, PREFIX)
 
 
 class ModifiedEnv(object):
@@ -260,3 +261,30 @@ def walk(path):
     for dirpath, dirnames, filenames in os.walk(path):
         for f in filenames:
             yield os.path.join(dirpath, f)
+
+
+def read_install_name(p):
+    lines = subprocess.check_output(['otool', '-D', p]).decode('utf-8').splitlines()
+    if len(lines) < 2:
+        return
+    return lines[1].strip()
+
+
+def change_install_name(p, new_name):
+    subprocess.check_call(['install_name_tool', '-id', new_name, p])
+
+
+def fix_install_names(m, output_dir):
+    dylibs = set()
+    for dirpath, dornames, filenames in os.walk(output_dir):
+        for f in filenames:
+            p = os.path.realpath(os.path.join(dirpath, f))
+            if p.endswith('.dylib') or ('.' not in p and 'bin' in p.split('/')):
+                dylibs.add(p)
+    for p in dylibs:
+        install_name = read_install_name(p)
+        if install_name:
+            nn = install_name.replace(output_dir, PREFIX)
+            if nn != install_name:
+                print('Changing install name from:', install_name, 'to', nn)
+                change_install_name(p, nn)

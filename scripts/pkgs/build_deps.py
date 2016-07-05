@@ -15,7 +15,8 @@ from pkgs.constants import (
     set_tdir, mkdtemp, islinux, isosx)
 from pkgs.download_sources import download, filename_for_dep
 from pkgs.utils import (
-    run_shell, install_package, create_package, extract_source, simple_build, python_build, set_title)
+    run_shell, install_package, create_package, extract_source, simple_build,
+    python_build, set_title, fix_install_names)
 
 python_deps = 'setuptools six cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow netifaces psutil dbuspython'.strip().split()
 
@@ -90,6 +91,8 @@ def build(dep, args, dest_dir):
         print('\nDropping you into a shell')
         run_shell()
         raise SystemExit(1)
+    if isosx:
+        fix_install_names(m, output_dir)
     create_package(m, output_dir, pkg_path(dep))
     install_package(pkg_path(dep), dest_dir)
 
