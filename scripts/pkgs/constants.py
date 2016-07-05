@@ -33,6 +33,7 @@ LIBDIR = os.path.join(PREFIX, 'lib')
 LDFLAGS = worker_env['LDFLAGS'] = '-L{0} -Wl,-rpath-link,{0}'.format(LIBDIR)
 if isosx:
     LDFLAGS = worker_env['LDFLAGS'] = '-headerpad_max_install_names -L{}'.format(LIBDIR)
+    worker_env['MACOSX_DEPLOYMENT_TARGET'] = '10.8'
 MAKEOPTS = '-j%d' % cpu_count()
 PKG_CONFIG_PATH = worker_env['PKG_CONFIG_PATH'] = os.path.join(PREFIX, 'lib', 'pkgconfig')
 CALIBRE_DIR = '/calibre'
