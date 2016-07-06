@@ -95,6 +95,8 @@ def build(dep, args, dest_dir):
         raise SystemExit(1)
     create_package(m, output_dir, pkg_path(dep))
     install_package(pkg_path(dep), dest_dir)
+    if hasattr(m, 'post_install_check'):
+        m.post_install_check()
 
 
 def init_env(deps=all_deps):

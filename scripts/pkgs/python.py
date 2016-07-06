@@ -7,12 +7,11 @@ from __future__ import (unicode_literals, division, absolute_import,
 import os
 import re
 
-from .constants import build_dir, CFLAGS, isosx, iswindows, LIBDIR, PREFIX, islinux
+from .constants import build_dir, CFLAGS, isosx, iswindows, LIBDIR, PREFIX, islinux, PYTHON
 from .utils import ModifiedEnv, run, simple_build, replace_in_file
 
 
 def main(args):
-    # Needed as the system openssl is too old, causing the _ssl module to fail
     env = {'CFLAGS': CFLAGS + ' -DHAVE_LOAD_EXTENSION'}
     replace_in_file('setup.py', re.compile('def detect_tkinter.+:'), lambda m: m.group() + '\n' + ' ' * 8 + 'return 0')
     conf = (
@@ -21,23 +20,19 @@ def main(args):
         build_dir(), ('ucs2' if isosx or iswindows else 'ucs4'))
     if islinux:
         conf += ' --with-system-ffi --enable-shared'
+        # Needed as the system openssl is too old, causing the _ssl module to fail
         env['LD_LIBRARY_PATH'] = LIBDIR
     elif isosx:
         conf += ' --enable-framework={}/python --with-signal-module'.format(build_dir())
-        # replace_in_file('setup.py', "missing.append('readline')", 'raise SystemExit("readline not found")')
 
     with ModifiedEnv(**env):
         simple_build(conf)
 
-    ld = build_dir() + '/lib'
-    mods = '_ssl zlib bz2 ctypes sqlite3'.split()
-    if not iswindows:
-        mods.extend('readline _curses'.split())
     bindir = os.path.join(build_dir(), 'bin')
     P = os.path.join(bindir, 'python')
-    run(P, '-c', 'import ' + ','.join(mods), library_path=ld)
     replace_in_file(P + '-config', re.compile(br'^#!.+/bin/', re.MULTILINE), '#!' + PREFIX + '/bin/')
     if isosx:
+        bindir = os.path.join(build_dir(), 'bin')
         for f in os.listdir(bindir):
             l = os.path.join(bindir, f)
             if os.path.islink(l):
@@ -54,3 +49,10 @@ def filter_pkg(parts):
 
 def install_name_change_predicate(p):
     return p.endswith('/Python')
+
+
+def post_install_check():
+    mods = '_ssl zlib bz2 ctypes sqlite3'.split()
+    if not iswindows:
+        mods.extend('readline _curses'.split())
+    run(PYTHON, '-c', 'import ' + ','.join(mods), library_path=True)
