@@ -9,7 +9,8 @@ import argparse
 import shutil
 import tempfile
 import pwd
-from pkgs.constants import SW, pkg_ext, islinux
+import sys
+from pkgs.constants import SW, pkg_ext, islinux, iswindows, set_64bit
 from pkgs.utils import run_shell
 
 if os.geteuid() == 0:
@@ -20,6 +21,11 @@ if os.geteuid() == 0:
 if islinux:
     os.environ['HOME'] = tempfile.gettempdir()
     os.chdir(tempfile.gettempdir())
+
+if iswindows:
+    arch = sys.argv[1].decode('utf-8')
+    del sys.argv[1]
+    set_64bit(arch == '64')
 
 parser = argparse.ArgumentParser(description='Build calibre dependencies')
 a = parser.add_argument

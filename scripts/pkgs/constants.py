@@ -95,3 +95,8 @@ def putenv(**kw):
             worker_env.pop(key, None)
         else:
             worker_env[key] = val
+
+
+def set_64bit(val):
+    global is64bit
+    is64bit = val
