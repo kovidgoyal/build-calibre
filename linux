@@ -21,7 +21,7 @@ def usage():
     raise SystemExit((
         'Usage: %s 32|64'
         ' [the rest of the command line is passed to main.py]'
-    ) % sys.srv[0])
+    ) % sys.argv[0])
 
 arch = sys.argv[1].decode('utf-8')
 if arch not in '64 32'.split() or len(sys.argv) < 2:
