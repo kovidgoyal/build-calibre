@@ -21,12 +21,14 @@ from pkgs.utils import (
 python_deps = 'setuptools six cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow netifaces psutil dbuspython'.strip().split()
 
 all_deps = (
+    # Build tools
+    'nasm cmake '
     # Python and its dependencies
     'zlib bzip2 expat sqlite libffi openssl ncurses readline python '
     # Miscellaneous dependencies
-    'icu nasm libjpeg libpng libwebp freetype fontconfig iconv libxml2 libxslt chmlib optipng mozjpeg libusb libmtp plist usbmuxd imobiledevice '
+    'icu libjpeg libpng libwebp freetype fontconfig iconv libxml2 libxslt chmlib optipng mozjpeg libusb libmtp plist usbmuxd imobiledevice '
     # PDF libraries
-    'cmake poppler podofo '
+    'poppler podofo '
     # Qt
     'libgpg-error libgcrypt glib dbus dbusglib qt sip pyqt '
 ).strip().split() + python_deps
