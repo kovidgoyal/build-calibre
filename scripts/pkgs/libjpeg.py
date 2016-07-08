@@ -5,8 +5,12 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 
+from .constants import isosx, PREFIX
 from .utils import simple_build
 
 
 def main(args):
-    simple_build(' --disable-dependency-tracking --enable-shared --with-jpeg8 --disable-static')
+    conf = ' --disable-dependency-tracking --enable-shared --with-jpeg8 --without-turbojpeg --disable-static'
+    if isosx:
+        conf += ' --host x86_64-apple-darwin NASM={}/bin/nasm'.format(PREFIX)
+    simple_build(conf)
