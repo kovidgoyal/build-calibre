@@ -5,10 +5,14 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 
-from .constants import CFLAGS, PREFIX
+from .constants import CFLAGS, PREFIX, LIBDIR
 from .utils import simple_build, ModifiedEnv
 
 
 def main(args):
-    with ModifiedEnv(CFLAGS=CFLAGS + ' -I%s/include/libxml2' % PREFIX):
+    with ModifiedEnv(
+            CFLAGS=CFLAGS + ' -I%s/include/libxml2' % PREFIX,
+            libxml2_CFLAGS=' -I%s/include/libxml2' % PREFIX,
+            libxml2_LIBS='-L{} -lxml2'.format(LIBDIR)
+    ):
         simple_build('--disable-dependency-tracking --without-cython')
