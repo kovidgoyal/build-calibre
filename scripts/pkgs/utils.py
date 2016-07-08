@@ -317,6 +317,7 @@ def is_macho_binary(p):
 def fix_install_names(m, output_dir):
     dylibs = set()
     mfunc = getattr(m, 'install_name_change_predicate', lambda p: False)
+    mcfunc = getattr(m, 'install_name_change', lambda old_name, is_dep: old_name)
     for dirpath, dirnames, filenames in os.walk(output_dir):
         for f in filenames:
             p = os.path.abspath(os.path.realpath(os.path.join(dirpath, f)))
@@ -328,10 +329,12 @@ def fix_install_names(m, output_dir):
         install_name, deps = read_lib_names(p)
         if install_name:
             nn = install_name.replace(output_dir, PREFIX)
+            nn = mcfunc(nn, False)
             if nn != install_name:
                 changes.append((None, nn))
         for name in deps:
             nn = name.replace(output_dir, PREFIX)
+            nn = mcfunc(nn, True)
             if nn != name:
                 changes.append((name, nn))
         if changes:
