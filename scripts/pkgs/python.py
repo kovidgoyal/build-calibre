@@ -24,6 +24,7 @@ def main(args):
         env['LD_LIBRARY_PATH'] = LIBDIR
     elif isosx:
         conf += ' --enable-framework={}/python --with-signal-module'.format(build_dir())
+        env['MACOSX_DEPLOYMENT_TARGET'] = '10.9'  # Needed for readline detection
 
     with ModifiedEnv(**env):
         simple_build(conf)

@@ -5,12 +5,11 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 
-from .utils import simple_build, ModifiedEnv
+from .utils import simple_build
 
 
 def main(args):
-    with ModifiedEnv(MACOSX_DEPLOYMENT_TARGET=None):
-        simple_build('--no-qt-gui', configure_name='./bootstrap')
+    simple_build('--no-qt-gui', configure_name='./bootstrap')
 
 
 def filter_pkg(parts):
