@@ -5,7 +5,7 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 
-from .constants import PREFIX, LDFLAGS, CFLAGS, LIBDIR
+from .constants import PREFIX, LDFLAGS, CFLAGS, LIBDIR, islinux
 from .utils import simple_build, ModifiedEnv
 
 
@@ -17,4 +17,7 @@ def main(args):
             LDFLAGS=LDFLAGS + ' -liconv',
             LD_LIBRARY_PATH=LIBDIR,
     ):
-        simple_build('--disable-mtpz --disable-dependency-tracking --disable-static --with-libiconv-prefix={0} --with-udev={0}/udev'.format(PREFIX))
+        conf = '--disable-mtpz --disable-dependency-tracking --disable-static --with-libiconv-prefix={0}'.format(PREFIX)
+        if islinux:
+            conf += ' --with-udev={0}/udev'.format(PREFIX)
+        simple_build(conf)
