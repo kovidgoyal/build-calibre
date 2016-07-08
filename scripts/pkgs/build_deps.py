@@ -24,7 +24,7 @@ all_deps = (
     # Python and its dependencies
     'zlib bzip2 expat sqlite libffi openssl ncurses readline python '
     # Miscellaneous dependencies
-    'icu libjpeg libpng libwebp freetype fontconfig iconv libxml2 libxslt chmlib optipng mozjpeg libusb libmtp plist usbmuxd imobiledevice '
+    'icu nasm libjpeg libpng libwebp freetype fontconfig iconv libxml2 libxslt chmlib optipng mozjpeg libusb libmtp plist usbmuxd imobiledevice '
     # PDF libraries
     'poppler podofo '
     # Qt
@@ -39,6 +39,8 @@ if iswindows:
         all_deps.remove(x)
 if isosx:
     all_deps.remove('bzip2')
+if not isosx:
+    all_deps.remove('nasm')
 
 
 def ensure_clear_dir(dest_dir):

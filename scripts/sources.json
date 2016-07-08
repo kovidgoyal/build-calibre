@@ -172,6 +172,15 @@
     },
 
     {
+        "name": "nasm",
+        "unix": {
+            "filename": "nasm-2.12.02.tar.xz",
+            "hash": "sha1:a0e6e655d04009178d4b7c15d935a46a691a617c",
+            "urls": ["http://www.nasm.us/pub/nasm/releasebuilds/2.12.02/{filename}"]
+        }
+    },
+
+    {
         "name": "libjpeg",
         "unix": {
             "filename": "libjpeg-turbo-1.5.0.tar.gz",
