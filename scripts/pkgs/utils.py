@@ -112,14 +112,14 @@ def apply_patch(name, level=0, reverse=False):
     run(*args)
 
 
-def simple_build(configure_args=(), make_args=(), install_args=(), library_path=None, override_prefix=None, no_parallel=False):
+def simple_build(configure_args=(), make_args=(), install_args=(), library_path=None, override_prefix=None, no_parallel=False, configure_name='./configure'):
     if isinstance(configure_args, type('')):
         configure_args = shlex.split(configure_args)
     if isinstance(make_args, type('')):
         make_args = shlex.split(make_args)
     if isinstance(install_args, type('')):
         install_args = shlex.split(install_args)
-    run('./configure', '--prefix=' + (override_prefix or build_dir()), *configure_args)
+    run(configure_name, '--prefix=' + (override_prefix or build_dir()), *configure_args)
     make_opts = [] if no_parallel else shlex.split(MAKEOPTS)
     run('make', *(make_opts + list(make_args)))
     mi = ['make'] + list(install_args) + ['install']

@@ -181,6 +181,15 @@
     },
 
     {
+        "name": "cmake",
+        "unix": {
+            "filename": "cmake-3.6.0.tar.gz",
+            "hash": "sha1:6b0d2d7d93c2e74f8890c4b8b824deb3b36d24b6",
+            "urls": ["https://cmake.org/files/v3.6/{filename}"]
+        }
+    },
+
+    {
         "name": "libjpeg",
         "unix": {
             "filename": "libjpeg-turbo-1.5.0.tar.gz",

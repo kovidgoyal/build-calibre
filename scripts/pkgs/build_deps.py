@@ -26,7 +26,7 @@ all_deps = (
     # Miscellaneous dependencies
     'icu nasm libjpeg libpng libwebp freetype fontconfig iconv libxml2 libxslt chmlib optipng mozjpeg libusb libmtp plist usbmuxd imobiledevice '
     # PDF libraries
-    'poppler podofo '
+    'cmake poppler podofo '
     # Qt
     'libgpg-error libgcrypt glib dbus dbusglib qt sip pyqt '
 ).strip().split() + python_deps
@@ -41,6 +41,7 @@ if isosx:
     all_deps.remove('bzip2')
 if not isosx:
     all_deps.remove('nasm')
+    all_deps.remove('cmake')
 
 
 def ensure_clear_dir(dest_dir):
