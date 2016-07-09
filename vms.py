@@ -66,10 +66,10 @@ def shutdown_vm(name):
     isosx = name.startswith('osx-')
     cmd = 'sudo shutdown -h now' if isosx else ['shutdown.exe', '-s', '-f', '-t', '0']
     shp = run_in_vm(name, cmd, async=True)
-    subprocess.Popen(SSH + ['-O', 'exit', name])
 
     while is_host_reachable(name):
         time.sleep(0.1)
+    subprocess.Popen(SSH + ['-O', 'exit', name])
     if isosx:
         # OS X VM does not shutdown cleanly
         time.sleep(5)
