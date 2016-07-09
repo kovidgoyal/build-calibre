@@ -65,7 +65,7 @@ def shutdown_vm(name):
         return
     isosx = name.startswith('osx-')
     cmd = 'sudo shutdown -h now' if isosx else ['shutdown.exe', '-s', '-f', '-t', '0']
-    run_in_vm(name, cmd)
+    shp = run_in_vm(name, cmd, async=True)
     subprocess.Popen(SSH + ['-O', 'exit', name])
 
     while is_host_reachable(name):
@@ -76,6 +76,8 @@ def shutdown_vm(name):
         subprocess.check_call(('VBoxManage controlvm %s poweroff' % name).split())
     while is_vm_running(name):
         time.sleep(0.1)
+    if shp.poll() is None:
+        shp.kill()
 
 
 class Rsync(object):
