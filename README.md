@@ -62,6 +62,27 @@ You need a VirtualBox virtual machine of OS X 10.9 (Mavericks) named
     for that account (setup `~/.ssh/authorized_keys`)
   * Setup ssh into the VM from the host under the name: `osx-calibre-build`
   * Setup passwordless sudo in the Virtual Machine for the user account kovid
-  * Run `xcode-select --install` and follow the prompts to install the command
-    line developer tools
+  * Install XCode (version 6.2 is the latest that runs on Mavericks). Download
+    from https://developer.apple.com/download/more/
+    Note that installing only the command line tools is not sufficient as Qt
+    requires the full XCode.
   * Run `sudo mkdir -p /calibre /scripts /sources /sw /patches && sudo chown kovid:staff /calibre /scripts /sources /sw /patches`
+
+To build the dependencies for calibre, run:
+
+```
+./osx
+```
+
+The output (after a very long time) will be in `build/osx`
+
+Now you can build calibre itself using these dependencies, to do that, run:
+
+```
+CALIBRE_SRC_DIR=/whatever ./osx calibre
+```
+
+The output will be `build/osx/calibre-*.dmg` which is the OS X
+binary installer for calibre.
+
+
