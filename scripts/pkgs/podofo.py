@@ -8,7 +8,7 @@ import os
 import shutil
 import re
 
-from .constants import PREFIX, build_dir, islinux, isosx, CFLAGS, CMAKE, LIBDIR
+from .constants import PREFIX, build_dir, islinux, CMAKE, LIBDIR
 from .utils import run, ModifiedEnv, install_binaries, replace_in_file, install_tree
 
 
@@ -38,11 +38,6 @@ def main(args):
             '-DCMAKE_INSTALL_PREFIX=' + PREFIX,
             '..'
         ]
-        if isosx:
-            # We set c++98 and libstdc++ as PoDoFo does not use C++11 and without that it
-            # will be compiled with C++11 and linked against libc++, which means the PoDoFo
-            # calibre extension would also have to be compiled and liked that way.
-            cmd.insert(-2, '-DCMAKE_CXX_FLAGS=' + CFLAGS + ' -std=c++98 -stdlib=libstdc++')
         run(*cmd)
         run('make VERBOSE=0 podofo_shared')
         install_binaries('src/libpodofo*')
