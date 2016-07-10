@@ -343,7 +343,10 @@ class Freeze(object):
         c = join(self.build_dir, 'Contents')
         for x in ('Frameworks', 'MacOS', 'Resources'):
             os.makedirs(join(c, x))
-        for x in glob.glob(join(CALIBRE_DIR, 'icons', 'icns', '*.iconset')):
+        icons = glob.glob(join(CALIBRE_DIR, 'icons', 'icns', '*.iconset'))
+        if not icons:
+            raise SystemExit('Failed to find icns format icons')
+        for x in icons:
             subprocess.check_call([
                 'iconutil', '-c', 'icns', x, '-o', join(
                     self.resources_dir, basename(x).partition('.')[0] + '.icns')])
