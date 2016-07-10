@@ -80,11 +80,7 @@ def shutdown_vm(name, max_wait=15):
         if isosx:
             # OS X VM hangs on shutdown, so just give it at most 5 seconds to
             # shutdown cleanly.
-            delta = time.time() - shutdown_time
-            if delta < 5:
-                time.sleep(5 - delta)
-            subprocess.check_call(('VBoxManage controlvm %s poweroff' % name).split())
-            return
+            max_wait = 5 + shutdown_time - start_time
         while is_vm_running(name) and time.time() - start_time <= max_wait:
             time.sleep(0.1)
         print('Timed out waiting for %s to shutdown cleanly, forcing shutdown' % name)
