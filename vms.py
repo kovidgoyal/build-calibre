@@ -60,24 +60,38 @@ def ensure_vm(name):
     print('SSH server started in', '%.1f' % (time.time() - st), 'seconds')
 
 
-def shutdown_vm(name):
+def shutdown_vm(name, max_wait=15):
+    start_time = time.time()
     if not is_vm_running(name):
         return
     isosx = name.startswith('osx-')
     cmd = 'sudo shutdown -h now' if isosx else ['shutdown.exe', '-s', '-f', '-t', '0']
     shp = run_in_vm(name, cmd, async=True)
+    shutdown_time = time.time()
 
-    while is_host_reachable(name):
-        time.sleep(0.1)
-    subprocess.Popen(SSH + ['-O', 'exit', name])
-    if isosx:
-        # OS X VM does not shutdown cleanly
-        time.sleep(5)
+    try:
+        while is_host_reachable(name) and time.time() - start_time <= max_wait:
+            time.sleep(0.1)
+        subprocess.Popen(SSH + ['-O', 'exit', name])
+        if is_host_reachable(name):
+            print('Timed out waiting for %s to shutdown cleanly, forcing shutdown' % name)
+            subprocess.check_call(('VBoxManage controlvm %s poweroff' % name).split())
+            return
+        if isosx:
+            # OS X VM hangs on shutdown, so just give it at most 5 seconds to
+            # shutdown cleanly.
+            delta = time.time() - shutdown_time
+            if delta < 5:
+                time.sleep(5 - delta)
+            subprocess.check_call(('VBoxManage controlvm %s poweroff' % name).split())
+            return
+        while is_vm_running(name) and time.time() - start_time <= max_wait:
+            time.sleep(0.1)
+        print('Timed out waiting for %s to shutdown cleanly, forcing shutdown' % name)
         subprocess.check_call(('VBoxManage controlvm %s poweroff' % name).split())
-    while is_vm_running(name):
-        time.sleep(0.1)
-    if shp.poll() is None:
-        shp.kill()
+    finally:
+        if shp.poll() is None:
+            shp.kill()
 
 
 class Rsync(object):
