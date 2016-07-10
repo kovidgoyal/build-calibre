@@ -15,9 +15,9 @@ import time
 
 from pkgs.constants import (
     PREFIX, py_ver, QT_PREFIX, QT_DLLS, CALIBRE_DIR, mkdtemp, QT_PLUGINS,
-    PYQT_MODULES, PYTHON, SW
+    PYQT_MODULES, SW
 )
-from freeze import create_job, parallel_build, calibre_constants
+from freeze import create_job, parallel_build, calibre_constants, py_compile
 from pkgs.constants import is64bit
 from pkgs.utils import run, walk
 
@@ -156,12 +156,7 @@ def copy_python(env, ext_dir):
     sitepy = j(self_dir, 'site.py')
     shutil.copy2(sitepy, j(env.py_dir, 'site.py'))
 
-    run(PYTHON, '-OO', '-c', 'import compileall; compileall.compile_dir("%s", force=True, quiet=True)' % env.py_dir, library_path=True)
-
-    for f in walk(env.py_dir):
-        ext = f.rpartition('.')[-1]
-        if ext in ('py', 'pyc'):
-            os.remove(f)
+    py_compile(env.py_dir)
 
 
 def build_launchers(env):

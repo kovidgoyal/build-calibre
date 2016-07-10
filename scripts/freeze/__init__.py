@@ -7,13 +7,15 @@ from __future__ import (unicode_literals, division, absolute_import,
 from future_builtins import map
 import os
 import re
+import json
 import subprocess
 from multiprocessing.dummy import Pool
 from multiprocessing import cpu_count
 from contextlib import closing
 
 
-from pkgs.constants import CALIBRE_DIR, LIBDIR, worker_env
+from pkgs.constants import CALIBRE_DIR, LIBDIR, worker_env, PYTHON
+from pkgs.utils import walk, run
 
 calibre_constants = {}
 
@@ -54,6 +56,10 @@ def initialize_constants():
         modules[x] = list(map(e2m, entry_points[y]))
         scripts[x] = list(map(e2s, entry_points[y]))
 
+    src = read_cal_file('ebooks/__init__.py')
+    be = re.search(r'^BOOK_EXTENSIONS\s*=\s*(\[.+?\])', src, flags=re.DOTALL | re.MULTILINE).group(1)
+    calibre_constants['book_extensions'] = json.loads(be.replace("'", '"'))
+
 
 def run_worker(job, decorate=True):
     cmd, human_text = job
@@ -87,3 +93,12 @@ def parallel_build(jobs, log=print, verbose=True):
             if not ok:
                 return False
         return True
+
+
+def py_compile(basedir):
+    run(PYTHON, '-OO', '-c', 'import compileall; compileall.compile_dir("%s", force=True, quiet=True)' % basedir, library_path=True)
+
+    for f in walk(basedir):
+        ext = f.rpartition('.')[-1]
+        if ext in ('py', 'pyc'):
+            os.remove(f)
