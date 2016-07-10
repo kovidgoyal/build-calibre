@@ -6,7 +6,7 @@ from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import os
 
-from .constants import CFLAGS, LDFLAGS, MAKEOPTS, build_dir
+from .constants import CFLAGS, LDFLAGS, MAKEOPTS, build_dir, isosx, islinux, LIBDIR
 from .utils import run, apply_patch, run_shell, replace_in_file
 
 
@@ -21,15 +21,28 @@ def main(args):
     replace_in_file('qtbase/src/plugins/platforms/xcb/qxcbcursor.cpp', 'pointing_hand"', 'hand2"')
     # Slim down Qt
     apply_patch('qt-slim.patch')
-    # libudev is disabled because systemd based distros use libudev.so.1 while
-    # non systemd based distros use libudev.so.0 (debian stable currently uses
-    # libudev.so.0). And according to the incompetent udev developers, we
-    # cannot use mismatching udev client and daemon versions.
-    # http://www.marshut.com/yiqmk/can-apps-ship-their-own-copy-of-libudev.html
+    ldflags = LDFLAGS
+    if isosx:
+        ldflags = '-L' + LIBDIR
+        # Patch below is needed for Qt < 5.6
+        # https://codereview.qt-project.org/#/c/125923/
+        apply_patch('qt-5.5-osx-dock-window-resizable.patch')
     os.mkdir('build'), os.chdir('build')
-    run(('../configure -v -silent -opensource -confirm-license -prefix {}/qt  -release -nomake examples -nomake tests'
-         ' -no-sql-odbc -no-sql-psql -no-qml-debug -qt-xcb -no-c++11 -glib'
-         ' -no-libudev -openssl -gtkstyle -icu {} {}').format(build_dir(), CFLAGS, LDFLAGS), library_path=True)
+    conf = (
+        '../configure -v -silent -opensource -confirm-license -prefix {}/qt -release -nomake examples -nomake tests'
+        ' -no-sql-odbc -no-sql-psql -no-qml-debug -no-c++11 -icu'
+    ).format(build_dir())
+    if islinux:
+        # libudev is disabled because systemd based distros use libudev.so.1 while
+        # non systemd based distros use libudev.so.0 (debian stable currently uses
+        # libudev.so.0). And according to the incompetent udev developers, we
+        # cannot use mismatching udev client and daemon versions.
+        # http://www.marshut.com/yiqmk/can-apps-ship-their-own-copy-of-libudev.html
+        conf += ' -qt-xcb -glib -no-libudev -openssl -gtkstyle -qtpcre '
+    elif isosx:
+        conf += ' -no-pkg-config -framework -no-openssl -securetransport '
+    conf += ' ' + CFLAGS + ' ' + ldflags
+    run(conf, library_path=True)
     # run_shell()
     run_shell
     run('make ' + MAKEOPTS, library_path=True)

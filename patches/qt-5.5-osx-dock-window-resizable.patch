@@ -1,0 +1,18 @@
+--- qtbase/src/plugins/platforms/cocoa/qcocoawindow.mm	2015-10-13 10:05:28.000000000 +0530
++++ qtbase/src/plugins/platforms/cocoa/qcocoawindow.mm	2015-10-13 2016-07-09 10:41:13.214506134 +0530
+@@ -800,13 +800,10 @@ NSUInteger QCocoaWindow::windowStyleMask
+         return styleMask;
+     if ((type & Qt::Popup) == Qt::Popup) {
+         if (!windowIsPopupType(type)) {
+-            styleMask = NSUtilityWindowMask;
++            styleMask = NSUtilityWindowMask | NSResizableWindowMask;
+             if (!(flags & Qt::CustomizeWindowHint)) {
+-                styleMask |= NSResizableWindowMask | NSClosableWindowMask |
+-                             NSMiniaturizableWindowMask | NSTitledWindowMask;
++                styleMask |= NSClosableWindowMask | NSMiniaturizableWindowMask | NSTitledWindowMask;
+             } else {
+-                if (flags & Qt::WindowMaximizeButtonHint)
+-                    styleMask |= NSResizableWindowMask;
+                 if (flags & Qt::WindowTitleHint)
+                     styleMask |= NSTitledWindowMask;
+                 if (flags & Qt::WindowCloseButtonHint)
