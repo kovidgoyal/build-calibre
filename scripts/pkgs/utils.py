@@ -4,6 +4,8 @@
 
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
+from contextlib import contextmanager
+import time
 import os
 import shlex
 import pipes
@@ -340,3 +342,21 @@ def fix_install_names(m, output_dir):
         if changes:
             print('Changing lib names in:', p)
             change_lib_names(p, changes)
+
+
+@contextmanager
+def timeit():
+    ' Usage: `with timeit() as times: whatever()` minutes, seconds = times '
+    times = [0, 0]
+    st = time.time()
+    yield times
+    dt = time.time() - st
+    times[0], times[1] = dt // 60, dt % 60
+
+
+@contextmanager
+def current_dir(path):
+    cwd = os.getcwd()
+    os.chdir(path)
+    yield path
+    os.chdir(cwd)
