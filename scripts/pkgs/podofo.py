@@ -8,7 +8,7 @@ import os
 import shutil
 import re
 
-from .constants import PREFIX, build_dir, islinux, isosx, CFLAGS, CMAKE
+from .constants import PREFIX, build_dir, islinux, isosx, CFLAGS, CMAKE, LIBDIR
 from .utils import run, ModifiedEnv, install_binaries, replace_in_file, install_tree
 
 
@@ -56,3 +56,9 @@ def main(args):
             run('chrpath', '--delete', *list(libs))
 
 pkg_exclude_names = frozenset()
+
+
+def install_name_change(old_name, is_dep):
+    # since we build podofo in-place the normal install name change logic does
+    # not work
+    return os.path.join(LIBDIR, os.path.basename(old_name))
