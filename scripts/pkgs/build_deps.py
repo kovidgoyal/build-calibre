@@ -18,7 +18,7 @@ from pkgs.utils import (
     run_shell, install_package, create_package, extract_source, simple_build,
     python_build, set_title, fix_install_names)
 
-python_deps = 'setuptools six cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow netifaces psutil dbuspython'.strip().split()
+python_deps = 'setuptools six cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow netifaces psutil dbuspython macfsevents'.strip().split()
 
 all_deps = (
     # Build tools
@@ -44,6 +44,7 @@ if isosx:
 if not isosx:
     all_deps.remove('nasm')
     all_deps.remove('cmake')
+    all_deps.remove('macfsevents')
 
 
 def ensure_clear_dir(dest_dir):

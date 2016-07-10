@@ -466,5 +466,14 @@
             "hash": "md5:8757900ba7bbe2ef5f54342415d0223e",
             "urls": ["http://www.libimobiledevice.org/downloads/{filename}"]
         }
+    },
+
+    {
+        "name": "macfsevents",
+        "unix": {
+            "filename": "MacFSEvents-0.7.tar.gz",
+            "hash": "md5:089d52d40a088651302967b1d13c3825",
+            "urls": ["pypi"]
+        }
     }
 ]
