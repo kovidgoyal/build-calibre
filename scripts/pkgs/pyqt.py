@@ -24,4 +24,4 @@ def main(args):
 
 
 def post_install_check():
-    run(PYTHON, '-c', 'import sip, sipconfig; from PyQt5 import QtCore, QtGui, QtWebKit', library_path=True)
+    run(PYTHON, '-c', 'import sip, sipconfig; from PyQt5 import QtCore, QtGui, QtWebKit', library_path=os.path.join(PREFIX, 'qt', 'lib'))
