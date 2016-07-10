@@ -56,4 +56,6 @@ pkg_exclude_names = frozenset()
 def install_name_change(old_name, is_dep):
     # since we build podofo in-place the normal install name change logic does
     # not work
+    if is_dep:
+        return old_name
     return os.path.join(LIBDIR, os.path.basename(old_name))
