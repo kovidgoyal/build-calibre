@@ -19,7 +19,7 @@ from pkgs.constants import (
 )
 from freeze import create_job, parallel_build, calibre_constants
 from pkgs.constants import is64bit
-from pkgs.utils import run, walk, run_shell
+from pkgs.utils import run, walk
 
 j = os.path.join
 self_dir = os.path.dirname(os.path.abspath(__file__))
@@ -211,14 +211,6 @@ def build_launchers(env):
             raise SystemExit(1)
 
 
-def test_build(env):
-    p = subprocess.Popen([j(env.base, 'calibre-debug'), '--test-build'])
-    if p.wait() != 0:
-        os.chdir(env.base)
-        run_shell()
-        raise SystemExit(p.wait())
-
-
 def is_elf(path):
     with open(path, 'rb') as f:
         return f.read(4) == b'\x7fELF'
@@ -281,13 +273,12 @@ def create_tarfile(env, compression_level='9'):
         os.path.basename(ans), os.stat(ans).st_size / (1024.**2)))
 
 
-def main(args, ext_dir):
+def main(args, ext_dir, run_test):
     env = Env()
     copy_libs(env)
     copy_python(env, ext_dir)
     build_launchers(env)
-    if not args.skip_calibre_tests:
-        test_build(env)
+    run_test(j(env.base, 'calibre-debug'), env.base)
     if not args.dont_strip:
         strip_binaries(env)
     create_tarfile(env, args.compression_level)

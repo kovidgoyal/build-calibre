@@ -6,12 +6,24 @@ from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import os
 import shutil
+import subprocess
 
 from .build_deps import init_env
-from .constants import putenv, mkdtemp, PREFIX, CALIBRE_DIR, PYTHON
-from .utils import run
+from .constants import putenv, mkdtemp, PREFIX, CALIBRE_DIR, PYTHON, isosx
+from .utils import run, run_shell
 from freeze import initialize_constants
-from freeze.linux import main as freeze
+
+
+def run_build_tests(path_to_calibre_debug, cwd_on_failure):
+    p = subprocess.Popen([path_to_calibre_debug, '--test-build'])
+    if p.wait() != 0:
+        os.chdir(cwd_on_failure)
+        run_shell()
+        raise SystemExit(p.wait())
+
+
+def skip_tests(*a, **kw):
+    pass
 
 
 def main(args):
@@ -32,8 +44,13 @@ def main(args):
     if args.only:
         cmd.append('--only=' + args.only)
     run(*cmd, library_path=ld)
+    test_runner = skip_tests if args.skip_calibre_tests else run_build_tests
     if not args.only:
-        freeze(args, ext_dir)
+        if isosx:
+            from freeze.osx import main as freeze
+        else:
+            from freeze.linux import main as freeze
+        freeze(args, ext_dir, test_runner)
 
     # After a successful run, remove the unneeded sw directory
     shutil.rmtree(PREFIX)
