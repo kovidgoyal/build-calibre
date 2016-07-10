@@ -44,14 +44,17 @@ QT_DLLS = ['Qt5' + x for x in (
     'Svg', 'WebKit', 'WebKitWidgets', 'Widgets',  'Multimedia', 'OpenGL',
     'MultimediaWidgets', 'Xml',  # 'XmlPatterns',
 )]
-QT_PLUGINS = (
+QT_PLUGINS = [
     'imageformats', 'iconengines', 'mediaservice', 'platforms',
-    'playlistformats', 'sqldrivers', 'platforminputcontexts',
+    'playlistformats', 'sqldrivers',
     # 'audio', 'printsupport', 'bearer', 'position',
-)
+]
+if islinux:
+    QT_PLUGINS.append('platforminputcontexts')
+
 PYQT_MODULES = ('Qt', 'QtCore', 'QtGui', 'QtNetwork',  # 'QtMultimedia', 'QtMultimediaWidgets',
                 'QtPrintSupport', 'QtSensors', 'QtSvg', 'QtWebKit', 'QtWebKitWidgets', 'QtWidgets')
-
+CODESIGN_KEYCHAIN = '/Users/kovid/codesign.keychain'
 
 _build_dir = None
 
