@@ -10,11 +10,10 @@ import re
 import json
 import subprocess
 from multiprocessing.dummy import Pool
-from multiprocessing import cpu_count
 from contextlib import closing
 
 
-from pkgs.constants import CALIBRE_DIR, LIBDIR, worker_env, PYTHON
+from pkgs.constants import CALIBRE_DIR, LIBDIR, worker_env, PYTHON, cpu_count
 from pkgs.utils import walk, run
 
 calibre_constants = {}

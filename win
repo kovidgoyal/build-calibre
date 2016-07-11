@@ -24,7 +24,7 @@ def abspath(x):
 
 def usage():
     raise SystemExit((
-        'Usage: %s 32|64'
+        'Usage: %s 32|64|shutdown'
         ' [the rest of the command line is passed to main.py]'
     ) % sys.argv[0])
 
@@ -43,13 +43,14 @@ def mkdir(x):
 
 mkdir('sources-cache')
 mkdir('build')
+mkdir('build/win')
 output_dir = os.path.join(abspath('build'), 'win', arch)
 mkdir(output_dir)
 
 ensure_vm(VM)
-to_vm(rsync, output_dir)
+to_vm(rsync, output_dir, prefix='/cygdrive/c/')
 try:
     run_main(VM, 'python', '/scripts/main.py', arch, *sys.argv[1:])
 finally:
     print()
-    from_vm(rsync, output_dir)
+    from_vm(rsync, output_dir, prefix='/cygdrive/c/')

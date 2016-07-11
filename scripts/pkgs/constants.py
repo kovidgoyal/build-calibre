@@ -7,7 +7,6 @@ from __future__ import (unicode_literals, division, absolute_import,
 import sys
 import os
 import tempfile
-from multiprocessing import cpu_count
 
 _plat = sys.platform.lower()
 iswindows = 'win32' in _plat or 'win64' in _plat
@@ -16,10 +15,14 @@ islinux = not iswindows and not isosx
 pkg_ext = 'tar.gz'
 py_ver = '2.7'
 
-SW = '/sw'
-SOURCES = '/sources'
-PATCHES = '/patches'
-SCRIPTS = '/scripts'
+ROOT = 'C:\\' if iswindows else '/'
+SW = ROOT + 'sw'
+SOURCES = ROOT + 'sources'
+PATCHES = ROOT + 'patches'
+SCRIPTS = ROOT + 'scripts'
+CALIBRE_DIR = ROOT + 'calibre'
+if iswindows:
+    tempfile.tempdir = 'C:\\t'
 is64bit = sys.maxsize > (1 << 32)
 PREFIX = os.path.join(SW, 'sw')
 BIN = os.path.join(PREFIX, 'bin')
@@ -33,9 +36,47 @@ LIBDIR = os.path.join(PREFIX, 'lib')
 LDFLAGS = worker_env['LDFLAGS'] = '-L{0} -Wl,-rpath-link,{0}'.format(LIBDIR)
 if isosx:
     LDFLAGS = worker_env['LDFLAGS'] = '-headerpad_max_install_names -L{}'.format(LIBDIR)
+if iswindows:
+    import ctypes
+    from ctypes import wintypes
+
+    class SYSTEM_INFO(ctypes.Structure):
+        _fields_ = [
+            ('wProcessorArchitecture', wintypes.WORD),
+            ('wReserved', wintypes.WORD),
+            ('dwPageSize', wintypes.DWORD),
+            ('lpMinimumApplicationAddress', wintypes.LPVOID),
+            ('lpMaximumApplicationAddress', wintypes.LPVOID),
+            ('dwActiveProcessorMask', ctypes.c_size_t),
+            ('dwNumberOfProcessors', wintypes.DWORD),
+            ('dwProcessorType', wintypes.DWORD),
+            ('dwAllocationGranularity', wintypes.DWORD),
+            ('wProcessorLevel', wintypes.WORD),
+            ('wProcessorRevision', wintypes.WORD),
+        ]
+
+    GetSystemInfo = ctypes.windll.kernel32.GetSystemInfo
+    GetSystemInfo.restype = None
+    GetSystemInfo.argtypes = [ctypes.POINTER(SYSTEM_INFO)]
+
+    def cpu_count():
+        sysinfo = SYSTEM_INFO()
+        GetSystemInfo(sysinfo)
+        num = sysinfo.dwNumberOfProcessors
+        if num == 0:
+            raise NotImplementedError('cannot determine number of cpus')
+        return num
+
+    # Remove cygwin paths from environment
+    paths = [p.replace('/', os.sep) for p in os.environ['PATH'].split(os.pathsep)]
+    cygwin_paths = [p.encode('ascii') for p in paths if 'cygwin64' in p.split(os.sep)]
+    paths = [p for p in paths if 'cygwin64' not in p.split(os.sep)]
+    os.environ[b'PATH'] = os.pathsep.join(paths).encode('ascii')
+else:
+    from multiprocessing import cpu_count
+
 MAKEOPTS = '-j%d' % cpu_count()
 PKG_CONFIG_PATH = worker_env['PKG_CONFIG_PATH'] = os.path.join(PREFIX, 'lib', 'pkgconfig')
-CALIBRE_DIR = '/calibre'
 CMAKE = os.path.join(PREFIX, 'bin', 'cmake') if isosx else 'cmake'
 
 QT_PREFIX = os.path.join(PREFIX, 'qt')

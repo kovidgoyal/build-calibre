@@ -8,12 +8,14 @@ import os
 import argparse
 import shutil
 import tempfile
-import pwd
 import sys
 from pkgs.constants import SW, pkg_ext, islinux, iswindows, set_64bit
 from pkgs.utils import run_shell
 
-if os.geteuid() == 0:
+args = sys.argv
+
+if hasattr(os, 'geteuid') and os.geteuid() == 0:
+    import pwd
     uid, gid = pwd.getpwnam('kovid').pw_uid, pwd.getpwnam('kovid').pw_gid
     os.chown(SW, uid, gid)
     os.setgid(gid), os.setuid(uid)
@@ -23,8 +25,8 @@ if islinux:
     os.chdir(tempfile.gettempdir())
 
 if iswindows:
-    arch = sys.argv[1].decode('utf-8')
-    del sys.argv[1]
+    arch = args[1].decode('utf-8')
+    del args[1]
     set_64bit(arch == '64')
 
 parser = argparse.ArgumentParser(description='Build calibre dependencies')
@@ -39,7 +41,7 @@ a('--dont-strip', default=False, action='store_true', help='Dont strip the binar
 a('--compression-level', default='9', choices=list('123456789'), help='Level of compression for the linux calibre tarball')
 a('--skip-calibre-tests', default=False, action='store_true', help='Skip the build tests when building calibre')
 
-args = parser.parse_args()
+args = parser.parse_args(args)
 
 if args.shell:
     from pkgs.build_deps import init_env

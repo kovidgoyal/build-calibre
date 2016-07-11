@@ -20,7 +20,8 @@ import stat
 
 from .constants import (
     build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR,
-    worker_env, pkg_ext, islinux, PREFIX)
+    worker_env, pkg_ext, islinux, PREFIX, iswindows
+)
 
 
 class ModifiedEnv(object):
@@ -52,12 +53,20 @@ def current_env(library_path=False):
         else:
             library_path = library_path + os.pathsep + LIBDIR
         env['LD_LIBRARY_PATH'] = library_path
+    enc = 'mbcs' if iswindows else 'utf-8'
+    env = {k.encode(enc): v.encode(enc) for k, v in env.iteritems()}
     return env
 
 
 def run_shell(library_path=False):
-    sh = '/bin/bash' if islinux else '/bin/zsh'
-    return subprocess.Popen([sh, '-i'], env=current_env(library_path=library_path)).wait()
+    sh = '/bin/bash' if islinux else 'C:/cygwin64/bin/zsh' if iswindows else '/bin/zsh'
+    env = current_env(library_path=library_path)
+    if iswindows:
+        from .constants import cygwin_paths
+        paths = env['PATH'].split(os.pathsep)
+        paths.extend(cygwin_paths)
+        env[b'PATH'] = os.pathsep.join(paths)
+    return subprocess.Popen([sh, '-i'], env=env).wait()
 
 
 def run(*args, **kw):

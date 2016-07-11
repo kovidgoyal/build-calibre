@@ -37,7 +37,7 @@ if not islinux:
     for x in 'libffi ncurses readline libgpg-error libgcrypt glib dbus dbusglib dbuspython'.split():
         all_deps.remove(x)
 if iswindows:
-    for x in 'libusb libmtp'.split():
+    for x in 'libusb libmtp bzip2'.split():
         all_deps.remove(x)
 if isosx:
     all_deps.remove('bzip2')
@@ -108,7 +108,7 @@ def build(dep, args, dest_dir):
 def init_env(deps=all_deps):
     dest_dir = PREFIX
     ensure_clear_dir(dest_dir)
-    tdir = os.path.join(tempfile.gettempdir(), 't')
+    tdir = tempfile.tempdir if iswindows else os.path.join(tempfile.gettempdir(), 't')
     ensure_clear_dir(tdir)
     set_tdir(tdir)
     install_pkgs(deps, dest_dir)

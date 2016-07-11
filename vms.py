@@ -119,23 +119,23 @@ class Rsync(object):
             raise SystemExit(p.wait())
 
 
-def to_vm(rsync, output_dir):
+def to_vm(rsync, output_dir, prefix='/'):
     print('Mirroring data to the VM...')
     calibre_dir = os.environ.get('CALIBRE_SRC_DIR', os.path.join('..', 'calibre'))
     if os.path.exists(os.path.join(calibre_dir, 'setup.py')):
-        rsync.to_vm(calibre_dir, '/calibre', '/imgsrc /build /dist /manual /format_docs /translations /.build-cache /tags /Changelog* *.so *.pyd')
+        rsync.to_vm(calibre_dir, prefix + 'calibre', '/imgsrc /build /dist /manual /format_docs /translations /.build-cache /tags /Changelog* *.so *.pyd')
 
     for x in 'scripts patches'.split():
-        rsync.to_vm(x, '/' + x)
+        rsync.to_vm(x, prefix + x)
 
-    rsync.to_vm('sources-cache', '/sources')
-    rsync.to_vm('build/osx', '/sw')
+    rsync.to_vm('sources-cache', prefix + 'sources')
+    rsync.to_vm(output_dir, prefix + 'sw')
 
 
-def from_vm(rsync, output_dir):
+def from_vm(rsync, output_dir, prefix='/'):
     print('Mirroring data from VM...')
-    rsync.from_vm('/sw', output_dir)
-    rsync.from_vm('/sources', 'sources-cache')
+    rsync.from_vm(prefix + 'sw', output_dir)
+    rsync.from_vm(prefix + 'sources', 'sources-cache')
 
 
 def run_main(name, *cmd):
