@@ -30,10 +30,13 @@ PYTHON = os.path.join(BIN, 'python')
 
 worker_env = {}
 
-CFLAGS = worker_env['CFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
-CPPFLAGS = worker_env['CPPFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
-LIBDIR = os.path.join(PREFIX, 'lib')
-LDFLAGS = worker_env['LDFLAGS'] = '-L{0} -Wl,-rpath-link,{0}'.format(LIBDIR)
+if iswindows:
+    CFLAGS = CPPFLAGS = LIBDIR = LDFLAGS = ''
+else:
+    CFLAGS = worker_env['CFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
+    CPPFLAGS = worker_env['CPPFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
+    LIBDIR = os.path.join(PREFIX, 'lib')
+    LDFLAGS = worker_env['LDFLAGS'] = '-L{0} -Wl,-rpath-link,{0}'.format(LIBDIR)
 if isosx:
     LDFLAGS = worker_env['LDFLAGS'] = '-headerpad_max_install_names -L{}'.format(LIBDIR)
 if iswindows:
@@ -67,11 +70,6 @@ if iswindows:
             raise NotImplementedError('cannot determine number of cpus')
         return num
 
-    # Remove cygwin paths from environment
-    paths = [p.replace('/', os.sep) for p in os.environ['PATH'].split(os.pathsep)]
-    cygwin_paths = [p.encode('ascii') for p in paths if 'cygwin64' in p.split(os.sep)]
-    paths = [p for p in paths if 'cygwin64' not in p.split(os.sep)]
-    os.environ[b'PATH'] = os.pathsep.join(paths).encode('ascii')
 else:
     from multiprocessing import cpu_count
 
@@ -141,6 +139,31 @@ def putenv(**kw):
             worker_env[key] = val
 
 
+def uniq(vals):
+    ''' Remove all duplicates from vals, while preserving order.  '''
+    vals = vals or ()
+    seen = set()
+    seen_add = seen.add
+    return list(x for x in vals if x not in seen and not seen_add(x))
+
+
+cygwin_paths = []
+
+
 def set_64bit(val):
-    global is64bit
+    global is64bit, cygwin_paths
     is64bit = val
+    if not iswindows:
+        return
+    from vcvars import query_vcvarsall
+    env = query_vcvarsall(is64bit)
+    # Remove cygwin paths from environment
+    paths = [p.replace('/', os.sep) for p in env['PATH'].split(os.pathsep)]
+    cygwin_paths = [p.encode('ascii') for p in paths if 'cygwin64' in p.split(os.sep)]
+    paths = [p for p in paths if 'cygwin64' not in p.split(os.sep)]
+    # Add the bindir to the PATH, needed for loading DLLs
+    paths.insert(0, os.path.join(PREFIX, 'bin'))
+    os.environ[b'PATH'] = os.pathsep.join(uniq(paths)).encode('ascii')
+    for k in env:
+        if k != 'PATH':
+            worker_env[k] = env[k]
