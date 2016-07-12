@@ -24,6 +24,14 @@ from .constants import (
 )
 
 
+if iswindows:
+    def split(x):
+        x = x.replace('\\', '\\\\')
+        return shlex.split(x)
+else:
+    split = shlex.split
+
+
 class ModifiedEnv(object):
 
     def __init__(self, **kwargs):
@@ -71,7 +79,7 @@ def run_shell(library_path=False):
 
 def run(*args, **kw):
     if len(args) == 1 and isinstance(args[0], type('')):
-        cmd = shlex.split(args[0])
+        cmd = split(args[0])
     else:
         cmd = args
     print(' '.join(pipes.quote(x) for x in cmd))
@@ -133,13 +141,13 @@ def apply_patch(name, level=0, reverse=False):
 
 def simple_build(configure_args=(), make_args=(), install_args=(), library_path=None, override_prefix=None, no_parallel=False, configure_name='./configure'):
     if isinstance(configure_args, type('')):
-        configure_args = shlex.split(configure_args)
+        configure_args = split(configure_args)
     if isinstance(make_args, type('')):
-        make_args = shlex.split(make_args)
+        make_args = split(make_args)
     if isinstance(install_args, type('')):
-        install_args = shlex.split(install_args)
+        install_args = split(install_args)
     run(configure_name, '--prefix=' + (override_prefix or build_dir()), *configure_args)
-    make_opts = [] if no_parallel else shlex.split(MAKEOPTS)
+    make_opts = [] if no_parallel else split(MAKEOPTS)
     run('make', *(make_opts + list(make_args)))
     mi = ['make'] + list(install_args) + ['install']
     run(*mi, library_path=library_path)
@@ -147,7 +155,7 @@ def simple_build(configure_args=(), make_args=(), install_args=(), library_path=
 
 def python_build(extra_args=()):
     if isinstance(extra_args, type('')):
-        extra_args = shlex.split(extra_args)
+        extra_args = split(extra_args)
     run(PYTHON, 'setup.py', 'install', '--root', build_dir(), *extra_args, library_path=True)
 
 
