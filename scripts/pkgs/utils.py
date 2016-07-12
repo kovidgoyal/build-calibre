@@ -396,7 +396,11 @@ def current_dir(path):
 def tempdir(prefix='tmp-'):
     tdir = mkdtemp(prefix)
     yield tdir
-    shutil.rmtree(tdir)
+    try:
+        shutil.rmtree(tdir)
+    except EnvironmentError:
+        time.sleep(10)  # idiotic windows mandatory file locking
+        shutil.rmtree(tdir)
 
 
 def windows_cmake_build(headers=None, binaries=None, libraries=None, header_dest='include', **kw):

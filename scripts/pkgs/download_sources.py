@@ -132,7 +132,12 @@ def get_git_clone(pkg, url, fname):
         if h != fhash:
             raise SystemExit('The hash of HEAD for %s has changed' % pkg['name'])
         with tarfile.open(fname, 'w:bz2') as tf:
-            tf.add(os.path.join(tdir, ddir), arcname=ddir)
+            def filter_tar(tar_info):
+                parts = tar_info.name.split('/')
+                if '.git' in parts:
+                    return
+                return tar_info
+            tf.add(os.path.join(tdir, ddir), arcname=ddir, filter=filter_tar)
 
 
 def try_once(pkg, url):
@@ -155,6 +160,8 @@ def download_pkg(pkg):
             try:
                 return try_once(pkg, url)
             except Exception as err:
+                import traceback
+                traceback.print_exc()
                 print('Download failed, with error:', type('')(err))
             finally:
                 print()
