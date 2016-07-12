@@ -72,7 +72,7 @@ def run_shell(library_path=False):
     if iswindows:
         from .constants import cygwin_paths
         paths = env['PATH'].split(os.pathsep)
-        paths.extend(cygwin_paths)
+        paths = cygwin_paths + paths
         env[b'PATH'] = os.pathsep.join(paths)
     return subprocess.Popen([sh, '-i'], env=env).wait()
 
