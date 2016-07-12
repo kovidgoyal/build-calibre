@@ -76,7 +76,7 @@ def run(*args, **kw):
         cmd = args
     print(' '.join(pipes.quote(x) for x in cmd))
     try:
-        p = subprocess.Popen(cmd, env=current_env(library_path=kw.get('library_path')))
+        p = subprocess.Popen(cmd, env=current_env(library_path=kw.get('library_path')), cwd=kw.get('cwd'))
     except EnvironmentError as err:
         if err.errno == errno.ENOENT:
             raise SystemExit('Could not find the program: %s' % cmd[0])
@@ -379,3 +379,29 @@ def current_dir(path):
     os.chdir(path)
     yield path
     os.chdir(cwd)
+
+
+def windows_cmake_build(headers=None, binaries=None, libraries=None, header_dest='include', **kw):
+    os.mkdir('build')
+    defs = {'CMAKE_BUILD_TYPE': 'Release'}
+    cmd = ['cmake', '-G', "NMake Makefiles"]
+    for d, val in kw.iteritems():
+        if val is None:
+            defs.pop(d, None)
+        else:
+            defs[d] = val
+    for k, v in defs.iteritems():
+        cmd.append('-D' + k + '=' + v)
+    cmd.append('..')
+    run(*cmd, cwd='build')
+    run('nmake', cwd='build')
+    with current_dir('build'):
+        if headers:
+            for pat in headers.split():
+                copy_headers(pat, header_dest)
+        if binaries:
+            for pat in binaries.split():
+                install_binaries(pat, 'bin')
+        if libraries:
+            for pat in libraries.split():
+                install_binaries(pat)
