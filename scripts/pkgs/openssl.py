@@ -7,7 +7,7 @@ from __future__ import (unicode_literals, division, absolute_import,
 import os
 import shutil
 
-from .constants import is64bit, CFLAGS, LDFLAGS, PREFIX, MAKEOPTS, isosx, build_dir
+from .constants import is64bit, CFLAGS, LDFLAGS, PREFIX, MAKEOPTS, isosx, build_dir, iswindows
 from .utils import run, install_binaries, install_tree
 
 
@@ -16,6 +16,19 @@ def main(args):
         run('sh ./Configure darwin64-x86_64-cc shared enable-ec_nistp_64_gcc_128 no-ssl2 --openssldir=' + build_dir())
         run('make ' + MAKEOPTS)
         run('make install')
+    elif iswindows:
+        conf = 'perl Configure VC-WIN32 enable-static-engine'.split()
+        if is64bit:
+            conf[2] = 'VC-WIN64A'
+        else:
+            conf.append('no-asm')
+        conf.append('--prefix=' + build_dir())
+        run(*conf)
+        bat = 'ms\\do_win64a.bat' if is64bit else 'ms\\do_ms.bat'
+        run(bat)
+        run('nmake -f ms\\ntdll.mak')
+        run('nmake -f ms\\ntdll.mak test')
+        run('nmake -f ms\\ntdll.mak install')
     else:
         optflags = ['enable-ec_nistp_64_gcc_128'] if is64bit else []
         run('./config', '--prefix=/usr', '--openssldir=/etc/ssl', 'shared',
