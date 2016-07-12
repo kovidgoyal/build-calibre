@@ -41,7 +41,7 @@ a('--dont-strip', default=False, action='store_true', help='Dont strip the binar
 a('--compression-level', default='9', choices=list('123456789'), help='Level of compression for the linux calibre tarball')
 a('--skip-calibre-tests', default=False, action='store_true', help='Skip the build tests when building calibre')
 
-args = parser.parse_args(args)
+args = parser.parse_args(args[1:])
 
 if args.shell:
     from pkgs.build_deps import init_env
