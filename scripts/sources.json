@@ -475,5 +475,14 @@
             "hash": "md5:089d52d40a088651302967b1d13c3825",
             "urls": ["pypi"]
         }
+    },
+
+    {
+        "name": "easylzma",
+        "windows": {
+            "filename": "easylzma-1753f61f673abdebc08fcf4a37eedd6da8a67ba1.tar.bz2",
+            "hash": "git:1753f61f673abdebc08fcf4a37eedd6da8a67ba1",
+            "urls": ["https://github.com/lloyd/easylzma.git"]
+        }
     }
 ]

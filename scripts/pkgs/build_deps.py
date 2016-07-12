@@ -22,7 +22,7 @@ python_deps = 'setuptools six cssutils dateutil dnspython mechanize pygments pyc
 
 all_deps = (
     # Build tools
-    'nasm cmake '
+    'nasm cmake easylzma '
     # Python and its dependencies
     'zlib bzip2 expat sqlite libffi openssl ncurses readline python '
     # Miscellaneous dependencies
@@ -39,6 +39,8 @@ if not islinux:
 if iswindows:
     for x in 'libusb libmtp bzip2'.split():
         all_deps.remove(x)
+else:
+    all_deps.remove('easylzma')
 if isosx:
     all_deps.remove('bzip2')
 if not isosx:

@@ -222,7 +222,10 @@ def copy_headers(pattern, destdir='include'):
     files = glob.glob(pattern)
     for f in files:
         dst = os.path.join(dest, os.path.basename(f))
-        shutil.copy2(f, dst)
+        if os.path.isdir(f):
+            shutil.copytree(f, dst)
+        else:
+            shutil.copy2(f, dst)
 
 
 def library_symlinks(full_name, destdir='lib'):
@@ -387,6 +390,13 @@ def current_dir(path):
     os.chdir(path)
     yield path
     os.chdir(cwd)
+
+
+@contextmanager
+def tempdir(prefix='tmp-'):
+    tdir = mkdtemp(prefix)
+    yield tdir
+    shutil.rmtree(tdir)
 
 
 def windows_cmake_build(headers=None, binaries=None, libraries=None, header_dest='include', **kw):
