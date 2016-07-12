@@ -64,12 +64,17 @@ def verify_hash(pkg, cleanup=False):
         with f:
             fhash = h(f.read()).hexdigest()
             matched = fhash == q
+    if iswindows:
+        def samefile(x, y):
+            return os.path.normcase(os.path.abspath(x)) == os.path.normcase(os.path.abspath(y))
+    else:
+        samefile = os.path.samefile
     if cleanup:
         prefix = pkg['filename'].partition('-')[0]
         e = ext(pkg['filename'])
         for m in glob.glob(os.path.join(SOURCES, prefix + '-*.' + e)):
             try:
-                is_samefile = os.path.samefile(fname, m)
+                is_samefile = samefile(fname, m)
             except EnvironmentError as err:
                 if err.errno != errno.ENOENT:
                     raise

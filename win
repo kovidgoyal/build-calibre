@@ -64,7 +64,7 @@ finally:
     if current_branch != 'vs2015':
         subprocess.check_call(['git', 'checkout', current_branch], cwd=calibre_dir)
 try:
-    run_main(VM, 'python', '/scripts/main.py', arch, *sys.argv[1:])
+    run_main(VM, 'python', '/scripts/main.py', *sys.argv[1:])
 finally:
     print()
     from_vm(rsync, output_dir, prefix='/cygdrive/c/')
