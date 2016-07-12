@@ -97,6 +97,7 @@ def build(dep, args, dest_dir):
         import traceback
         traceback.print_exc()
         print('\nDropping you into a shell')
+        sys.stdout.flush(), sys.stderr.flush()
         run_shell()
         raise SystemExit(1)
     create_package(m, output_dir, pkg_path(dep))
