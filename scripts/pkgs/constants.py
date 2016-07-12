@@ -22,7 +22,7 @@ PATCHES = ROOT + 'patches'
 SCRIPTS = ROOT + 'scripts'
 CALIBRE_DIR = ROOT + 'calibre'
 if iswindows:
-    tempfile.tempdir = 'C:\\t'
+    tempfile.tempdir = 'C:\\t\\t'
 is64bit = sys.maxsize > (1 << 32)
 PREFIX = os.path.join(SW, 'sw')
 BIN = os.path.join(PREFIX, 'bin')

@@ -97,7 +97,15 @@ def extract(source):
         with zipfile.ZipFile(source) as zf:
             zf.extractall()
     else:
-        run('tar', 'xf', source)
+        env = {}
+        tar = 'tar'
+        if iswindows:
+            source = '/cygdrive/' + source.replace(os.sep, '/').replace(':', '')
+            cbin = 'C:/cygwin64/bin'
+            env['PATH'] = os.environ['PATH'] + os.pathsep + cbin
+            tar = cbin + '/' + tar
+        with ModifiedEnv(**env):
+            run(tar, 'xf', source)
 
 
 def chdir_for_extract(name):
@@ -248,6 +256,8 @@ def create_package(module, src_dir, outfile):
         if hasattr(module, 'filter_pkg') and module.filter_pkg(parts):
             return
         tar_info.uid, tar_info.gid, tar_info.mtime = 1000, 100, 0
+        if iswindows and tar_info.name.rpartition('.')[-1].lower() in ('pyd', 'exe', 'dll'):
+            tar_info.mode = 0o777
         return tar_info
 
     c = pkg_ext.split('.')[-1]
