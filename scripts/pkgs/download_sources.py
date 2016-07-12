@@ -14,8 +14,10 @@ import time
 import sys
 import urllib
 import urlparse
+import tarfile
 
 from .constants import SOURCES, iswindows
+from .utils import tempdir, run
 
 sources_file = os.path.join(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))), 'sources.json')
@@ -41,7 +43,7 @@ def parse_sources():
     if _parsed_source is None:
         _parsed_source = ans = []
         for item in json.load(open(sources_file, 'rb')):
-            s = item.get('windows', item['unix']) if iswindows else \
+            s = item.get('windows', item.get('unix')) if iswindows else \
                 item['unix']
             s['name'] = item['name']
             s['urls'] = [process_url(x, s['filename']) for x in s['urls']]
@@ -53,7 +55,6 @@ def verify_hash(pkg, cleanup=False):
     fname = os.path.join(SOURCES, pkg['filename'])
     alg, q = pkg['hash'].partition(':')[::2]
     q = q.strip()
-    h = getattr(hashlib, alg.lower())
     matched = False
     try:
         f = open(fname, 'rb')
@@ -62,8 +63,12 @@ def verify_hash(pkg, cleanup=False):
             raise
     else:
         with f:
-            fhash = h(f.read()).hexdigest()
-            matched = fhash == q
+            if alg == 'git':
+                matched = True
+            else:
+                h = getattr(hashlib, alg.lower())
+                fhash = h(f.read()).hexdigest()
+                matched = fhash == q
     if iswindows:
         def samefile(x, y):
             return os.path.normcase(os.path.abspath(x)) == os.path.normcase(os.path.abspath(y))
@@ -115,13 +120,31 @@ def get_pypi_url(pkg):
         return urlparse.urljoin(base, m.group(1))
 
 
+def get_git_clone(pkg, url, fname):
+    with tempdir('git-') as tdir:
+        run('git clone --depth=1 ' + url, cwd=tdir)
+        ddir = os.listdir(tdir)[0]
+        with open(os.path.join(tdir, ddir, '.git', 'HEAD'), 'rb') as f:
+            ref = f.read().decode('utf-8').partition(' ')[-1].strip()
+        with open(os.path.join(tdir, ddir, '.git', ref), 'rb') as f:
+            h = f.read().decode('utf-8').strip()
+        fhash = pkg['hash'].partition(':')[-1]
+        if h != fhash:
+            raise SystemExit('The hash of HEAD for %s has changed' % pkg['name'])
+        with tarfile.open(fname, 'w:bz2') as tf:
+            tf.add(os.path.join(tdir, ddir), arcname=ddir)
+
+
 def try_once(pkg, url):
     filename = pkg['filename']
     fname = os.path.join(SOURCES, filename)
     if url == 'pypi':
         url = get_pypi_url(pkg)
     print('Downloading', filename, 'from', url)
-    urllib.urlretrieve(url, fname, reporthook)
+    if pkg['hash'].startswith('git:'):
+        get_git_clone(pkg, url, fname)
+    else:
+        urllib.urlretrieve(url, fname, reporthook)
     if not verify_hash(pkg):
         raise SystemExit('The hash of the downloaded file: %s does not match the saved hash' % filename)
 
