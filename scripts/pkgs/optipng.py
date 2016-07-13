@@ -5,8 +5,13 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 
-from .utils import simple_build
+from .constants import iswindows
+from .utils import simple_build, run, install_binaries
 
 
 def main(args):
-    simple_build('-with-system-libs')
+    if iswindows:
+        run('nmake -f build\\visualc.mk')
+        install_binaries('src\\optipng\optipng.exe', 'bin')
+    else:
+        simple_build('-with-system-libs')
