@@ -31,7 +31,7 @@ if iswindows:
 
         bindir = 'PCbuild\\amd64' if is64bit else 'PCbuild'
         install_binaries(bindir + os.sep + '*.exe', 'private\\python')
-        install_binaries(bindir + os.sep + 'python*.dll', 'private\\python\\DLLs')
+        install_binaries(bindir + os.sep + 'python*.dll', 'private\\python')
         install_binaries(bindir + os.sep + '*.pyd', 'private\\python\\DLLs')
         install_binaries(bindir + os.sep + '*.dll', 'private\\python\\DLLs')
         for x in glob.glob(os.path.join(build_dir(), 'private\\python\\DLLs\\python*.dll')):
@@ -92,6 +92,9 @@ def install_name_change_predicate(p):
 
 
 def post_install_check():
+    if iswindows:
+        # Ensure the system python27.dll is not being loaded
+        run(PYTHON, '-c', "import sys; 'MSC v.1900' not in sys.version and sys.exit(1)")
     mods = '_ssl zlib bz2 ctypes sqlite3'.split()
     if not iswindows:
         mods.extend('readline _curses'.split())
