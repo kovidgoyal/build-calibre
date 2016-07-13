@@ -4,11 +4,23 @@
 
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
+import os
 
-from .constants import PREFIX
-from .utils import simple_build
+from .constants import PREFIX, iswindows
+from .utils import simple_build, run, install_tree, walk, install_binaries
 
 
 def main(args):
-    simple_build('--disable-dependency-tracking --disable-static --enable-shared --without-python --without-debug --with-iconv={0} --with-zlib={0}'.format(
-        PREFIX))
+    if iswindows:
+        run(*('cscript.exe configure.js include=C:/cygwin64/home/kovid/sw/include lib={0}/lib prefix={0} zlib=yes iconv=no'.format(
+            PREFIX.replace(os.sep, '/')).split()), cwd='win32')
+        run('nmake /f Makefile.msvc', cwd='win32')
+        install_tree('include/libxml', 'include/libxml2')
+        for f in walk('.'):
+            if f.endswith('.dll'):
+                install_binaries(f, 'bin')
+            elif f.endswith('.lib'):
+                install_binaries(f)
+    else:
+        simple_build('--disable-dependency-tracking --disable-static --enable-shared --without-python --without-debug --with-iconv={0} --with-zlib={0}'.format(
+            PREFIX))

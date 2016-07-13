@@ -37,7 +37,7 @@ if not islinux:
     for x in 'libffi ncurses readline libgpg-error libgcrypt glib dbus dbusglib dbuspython'.split():
         all_deps.remove(x)
 if iswindows:
-    for x in 'libusb libmtp bzip2'.split():
+    for x in 'libusb libmtp bzip2 iconv'.split():
         all_deps.remove(x)
 else:
     all_deps.remove('easylzma')
