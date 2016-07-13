@@ -195,7 +195,7 @@ def lcopy(src, dst):
             return lcopy(src, dst)
 
 
-def install_binaries(pattern, destdir='lib', do_symlinks=False):
+def install_binaries(pattern, destdir='lib', do_symlinks=False, fname_map=os.path.basename):
     dest = os.path.join(build_dir(), destdir)
     ensure_dir(dest)
     files = glob.glob(pattern)
@@ -203,7 +203,7 @@ def install_binaries(pattern, destdir='lib', do_symlinks=False):
     if not files:
         raise ValueError('The pattern %s did not match any actual files' % pattern)
     for f in files:
-        dst = os.path.join(dest, os.path.basename(f))
+        dst = os.path.join(dest, fname_map(f))
         islink = lcopy(f, dst)
         if not islink:
             os.chmod(dst, 0o755)
