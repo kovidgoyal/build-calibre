@@ -5,8 +5,15 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 
-from .utils import simple_build
+from .constants import iswindows
+from .utils import simple_build, run, install_binaries, copy_headers
 
 
 def main(args):
-    simple_build('--disable-dependency-tracking --disable-static')
+    if iswindows:
+        run('nmake /f Makefile.vc CFG=release-dynamic RTLIBCFG=dynamic OBJDIR=output')
+        install_binaries('output/release-dynamic/*/bin/*.dll', 'bin')
+        install_binaries('output/release-dynamic/*/lib/*.lib', 'lib')
+        copy_headers('src/webp')
+    else:
+        simple_build('--disable-dependency-tracking --disable-static')
