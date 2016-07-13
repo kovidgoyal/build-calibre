@@ -182,6 +182,11 @@
             "filename": "icu4c-57_1-src.tgz",
             "hash": "md5:976734806026a4ef8bdd17937c8898b9",
             "urls": ["http://download.icu-project.org/files/icu4c/57.1/{filename}"]
+        },
+        "windows": {
+            "filename": "icu4c-57_1-src.zip",
+            "hash": "sha1:aaa014177845c16deba888450c0c34e8bd57e736",
+            "urls": ["http://download.icu-project.org/files/icu4c/57.1/{filename}"]
         }
     },
 
