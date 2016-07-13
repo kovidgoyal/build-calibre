@@ -162,7 +162,9 @@ def download_pkg(pkg):
             except Exception as err:
                 import traceback
                 traceback.print_exc()
+                sys.stderr.flush()
                 print('Download failed, with error:', type('')(err))
+                sys.stdout.flush()
             finally:
                 print()
     raise SystemExit(
