@@ -87,6 +87,15 @@
     },
 
     {
+        "name": "pywin32",
+        "windows": {
+            "filename":"pywin32-dd5760063f88a300403c74f3e81f3437b8396d8f.tar.bz2",
+            "hash":"git:dd5760063f88a300403c74f3e81f3437b8396d8f",
+            "urls":["https://github.com/kovidgoyal/pywin32.git"]
+        }
+    },
+
+    {
         "name": "setuptools",
         "unix": {
             "filename": "setuptools-23.1.0.tar.gz",
