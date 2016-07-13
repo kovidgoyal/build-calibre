@@ -26,7 +26,7 @@ if iswindows:
 is64bit = sys.maxsize > (1 << 32)
 PREFIX = os.path.join(SW, 'sw')
 BIN = os.path.join(PREFIX, 'bin')
-PYTHON = os.path.join(BIN, 'python')
+PYTHON = os.path.join(PREFIX, 'private', 'python', 'python.exe') if iswindows else os.path.join(BIN, 'python')
 
 worker_env = {}
 
