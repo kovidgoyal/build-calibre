@@ -4,9 +4,17 @@
 
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
+import os
 
-from .utils import simple_build
+from .constants import iswindows, PREFIX
+from .utils import simple_build, windows_cmake_build
 
 
 def main(args):
-    simple_build('--disable-dependency-tracking --disable-static')
+    if iswindows:
+        windows_cmake_build(
+            PNG_SHARED='1', ZLIB_INCLUDE_DIR=os.path.join(PREFIX, 'include'), ZLIB_LIBRARY=os.path.join(PREFIX, 'lib', 'zdll.lib'),
+            binaries='libpng*.dll', libraries='libpng*.lib', headers='pnglibconf.h ../png.h ../pngconf.h'
+        )
+    else:
+        simple_build('--disable-dependency-tracking --disable-static')
