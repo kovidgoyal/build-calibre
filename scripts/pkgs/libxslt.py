@@ -4,12 +4,29 @@
 
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
+import os
 
-from .constants import PREFIX
-from .utils import simple_build
+from .constants import PREFIX, iswindows
+from .utils import simple_build, install_binaries, install_tree, run, replace_in_file, walk
 
 
 def main(args):
-    simple_build(
-        '--disable-dependency-tracking --disable-static --enable-shared --without-python --without-debug --with-libxml-prefix={0}'
-        ' --with-libxml-include-prefix={0}/include/libxml2'.format(PREFIX))
+    if iswindows:
+        run(*('cscript.exe configure.js include={0}/include include={0}/include/libxml2 lib={0}/lib prefix={0} zlib=yes iconv=no'.format(
+            PREFIX.replace(os.sep, '/')).split()), cwd='win32')
+        replace_in_file('libxslt/win32config.h', '#define snprintf _snprintf', '')
+        for f in walk('.'):
+            if os.path.basename(f).startswith('Makefile'):
+                replace_in_file(f, '/OPT:NOWIN98', '', missing_ok=True)
+        run('nmake /f Makefile.msvc', cwd='win32')
+        install_tree('libxslt', 'include')
+        install_tree('libexslt', 'include')
+        for f in walk('.'):
+            if f.endswith('.dll'):
+                install_binaries(f, 'bin')
+            elif f.endswith('.lib'):
+                install_binaries(f)
+    else:
+        simple_build(
+            '--disable-dependency-tracking --disable-static --enable-shared --without-python --without-debug --with-libxml-prefix={0}'
+            ' --with-libxml-include-prefix={0}/include/libxml2'.format(PREFIX))

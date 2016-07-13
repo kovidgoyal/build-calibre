@@ -163,7 +163,7 @@ def python_build(extra_args=()):
     run(PYTHON, 'setup.py', 'install', '--root', build_dir(), *extra_args, library_path=True)
 
 
-def replace_in_file(path, old, new):
+def replace_in_file(path, old, new, missing_ok=False):
     if isinstance(old, type('')):
         old = old.encode('utf-8')
     if isinstance(new, type('')):
@@ -174,7 +174,7 @@ def replace_in_file(path, old, new):
             nraw = raw.replace(old, new)
         else:
             nraw = old.sub(new, raw)
-        if raw == nraw:
+        if raw == nraw and not missing_ok:
             raise SystemExit('Failed to patch: ' + path)
         f.seek(0), f.truncate()
         f.write(nraw)

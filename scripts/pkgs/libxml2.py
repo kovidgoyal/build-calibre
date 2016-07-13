@@ -12,7 +12,7 @@ from .utils import simple_build, run, install_tree, walk, install_binaries
 
 def main(args):
     if iswindows:
-        run(*('cscript.exe configure.js include=C:/cygwin64/home/kovid/sw/include lib={0}/lib prefix={0} zlib=yes iconv=no'.format(
+        run(*('cscript.exe configure.js include={0}/include lib={0}/lib prefix={0} zlib=yes iconv=no'.format(
             PREFIX.replace(os.sep, '/')).split()), cwd='win32')
         run('nmake /f Makefile.msvc', cwd='win32')
         install_tree('include/libxml', 'include/libxml2')
