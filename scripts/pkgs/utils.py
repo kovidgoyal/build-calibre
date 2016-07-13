@@ -83,16 +83,18 @@ def run(*args, **kw):
     else:
         cmd = args
     print(' '.join(pipes.quote(x) for x in cmd))
+    sys.stdout.flush()
     try:
         p = subprocess.Popen(cmd, env=current_env(library_path=kw.get('library_path')), cwd=kw.get('cwd'))
     except EnvironmentError as err:
         if err.errno == errno.ENOENT:
             raise SystemExit('Could not find the program: %s' % cmd[0])
         raise
-    sys.stdout.flush()
-    if p.wait() != 0:
-        print('The following command failed, with return code:', p.wait(),
-              file=sys.stderr)
+    rc = p.wait()
+    if kw.get('no_check'):
+        return rc
+    if rc != 0:
+        print('The following command failed, with return code:', rc, file=sys.stderr)
         print(' '.join(pipes.quote(x) for x in cmd))
         print('Dropping you into a shell')
         sys.stdout.flush()
@@ -203,6 +205,8 @@ def install_binaries(pattern, destdir='lib', do_symlinks=False):
         islink = lcopy(f, dst)
         if not islink:
             os.chmod(dst, 0o755)
+        if iswindows and os.path.exists(f + '.manifest'):
+            shutil.copy(f + '.manifest', dst + '.manifest')
     if do_symlinks:
         library_symlinks(files[0], destdir=destdir)
 
