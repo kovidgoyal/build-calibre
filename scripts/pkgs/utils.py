@@ -262,7 +262,7 @@ def create_package(module, src_dir, outfile):
     def filter_tar(tar_info):
         parts = tar_info.name.split('/')
         for p in parts:
-            if p in exclude or p.rpartition('.')[-1] in ('pyc', 'pyo', 'la'):
+            if p in exclude or p.rpartition('.')[-1] in ('pyc', 'pyo', 'la', 'chm'):
                 return
         if hasattr(module, 'filter_pkg') and module.filter_pkg(parts):
             return
