@@ -70,6 +70,7 @@ def install_pkgs(other_deps=all_deps, dest_dir=PREFIX):
             sys.stdout.flush()
             install_package(pkg, dest_dir)
     print()
+    sys.stdout.flush()
 
 
 def build(dep, args, dest_dir):
