@@ -84,8 +84,9 @@ def run(*args, **kw):
         cmd = args
     print(' '.join(pipes.quote(x) for x in cmd))
     sys.stdout.flush()
+    env = current_env(library_path=kw.get('library_path'))
     try:
-        p = subprocess.Popen(cmd, env=current_env(library_path=kw.get('library_path')), cwd=kw.get('cwd'))
+        p = subprocess.Popen(cmd, env=env, cwd=kw.get('cwd'))
     except EnvironmentError as err:
         if err.errno == errno.ENOENT:
             raise SystemExit('Could not find the program: %s' % cmd[0])
