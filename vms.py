@@ -129,12 +129,12 @@ def to_vm(rsync, output_dir, prefix='/'):
         rsync.to_vm(x, prefix + x)
 
     rsync.to_vm('sources-cache', prefix + 'sources')
-    rsync.to_vm(output_dir, prefix + 'sw')
+    rsync.to_vm(output_dir, prefix + 'sw', '/sw')
 
 
 def from_vm(rsync, output_dir, prefix='/'):
     print('Mirroring data from VM...')
-    rsync.from_vm(prefix + 'sw', output_dir)
+    rsync.from_vm(prefix + 'sw', output_dir, '/sw')
     rsync.from_vm(prefix + 'sources', 'sources-cache')
 
 
