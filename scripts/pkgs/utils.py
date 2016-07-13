@@ -136,7 +136,8 @@ def extract_source():
 def apply_patch(name, level=0, reverse=False):
     if not os.path.isabs(name):
         name = os.path.join(PATCHES, name)
-    args = ['patch', '-p%d' % level, '-i', name]
+    patch = 'C:/cygwin64/bin/patch' if iswindows else 'patch'
+    args = [patch, '-p%d' % level, '-i', name]
     if reverse:
         args.insert(1, '-R')
     run(*args)
