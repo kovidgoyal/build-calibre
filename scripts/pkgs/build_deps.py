@@ -92,7 +92,7 @@ def build(dep, args, dest_dir):
             if dep in python_deps:
                 python_build()
                 # TODO: The next line will likely need to be changed on windows
-                output_dir = os.path.join(output_dir, 'sw', 'sw')
+                output_dir = os.path.join(output_dir, os.path.basename(SW), os.path.basename(PREFIX))
             else:
                 simple_build()
         if isosx:
