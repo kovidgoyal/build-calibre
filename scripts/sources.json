@@ -466,6 +466,11 @@
             "filename": "libplist-1.12.tar.bz2",
             "hash": "md5:8b04b0f09f2398022dcd4fba75012997",
             "urls": ["http://www.libimobiledevice.org/downloads/{filename}"]
+        },
+        "windows": {
+            "filename": "libplist-7085a615837fabe6b5f784e14a320a00b6458df0.tar.bz2",
+            "hash": "git:7085a615837fabe6b5f784e14a320a00b6458df0",
+            "urls": ["https://github.com/kovidgoyal/libplist.git"]
         }
     },
 

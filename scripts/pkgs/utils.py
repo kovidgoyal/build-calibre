@@ -295,7 +295,7 @@ def set_title(x):
         print('''\033]2;%s\007''' % x)
 
 
-def walk(path):
+def walk(path='.'):
     ''' A nice interface to os.walk '''
     for dirpath, dirnames, filenames in os.walk(path):
         for f in filenames:
