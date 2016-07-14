@@ -115,6 +115,7 @@ class Rsync(object):
         excludes = ['--exclude=' + x for x in excludes]
         cmd = ['rsync', '-a', '-e', ssh, '--delete', '--delete-excluded'] + excludes + [from_ + '/', to]
         # print(' '.join(cmd))
+        print('Syncing', from_)
         p = subprocess.Popen(cmd)
         if p.wait() != 0:
             raise SystemExit(p.wait())
