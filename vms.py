@@ -84,8 +84,9 @@ def shutdown_vm(name, max_wait=15):
             max_wait = 5 + shutdown_time - start_time
         while is_vm_running(name) and time.time() - start_time <= max_wait:
             time.sleep(0.1)
-        print('Timed out waiting for %s to shutdown cleanly, forcing shutdown' % name)
-        subprocess.check_call(('VBoxManage controlvm %s poweroff' % name).split())
+        if is_vm_running(name):
+            print('Timed out waiting for %s to shutdown cleanly, forcing shutdown' % name)
+            subprocess.check_call(('VBoxManage controlvm %s poweroff' % name).split())
     finally:
         if shp.poll() is None:
             shp.kill()
