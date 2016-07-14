@@ -480,6 +480,11 @@
             "filename": "libusbmuxd-1.0.10.tar.bz2",
             "hash": "md5:e5351ff6f6eedcb50701e02d91cc480c",
             "urls": ["http://www.libimobiledevice.org/downloads/{filename}"]
+        },
+        "windows": {
+            "filename": "libusbmuxd-b43867d16fd29d711c32e2401a73d2e78473d03a.tar.bz2",
+            "hash": "git:b43867d16fd29d711c32e2401a73d2e78473d03a",
+            "urls": ["https://github.com/kovidgoyal/libusbmuxd.git"]
         }
     },
 
