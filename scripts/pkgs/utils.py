@@ -268,7 +268,7 @@ def create_package(module, src_dir, outfile):
     def filter_tar(tar_info):
         parts = tar_info.name.split('/')
         for p in parts:
-            if p in exclude or p.rpartition('.')[-1] in ('pyc', 'pyo', 'la', 'chm'):
+            if p in exclude or p.rpartition('.')[-1] in ('pyc', 'pyo', 'la', 'chm', 'cpp', 'rst', 'md'):
                 return
         if hasattr(module, 'filter_pkg') and module.filter_pkg(parts):
             return
@@ -409,7 +409,7 @@ def tempdir(prefix='tmp-'):
         shutil.rmtree(tdir)
 
 
-def windows_cmake_build(headers=None, binaries=None, libraries=None, header_dest='include', **kw):
+def windows_cmake_build(headers=None, binaries=None, libraries=None, header_dest='include', nmake_target='', **kw):
     os.mkdir('build')
     defs = {'CMAKE_BUILD_TYPE': 'Release'}
     cmd = ['cmake', '-G', "NMake Makefiles"]
@@ -422,7 +422,10 @@ def windows_cmake_build(headers=None, binaries=None, libraries=None, header_dest
         cmd.append('-D' + k + '=' + v)
     cmd.append('..')
     run(*cmd, cwd='build')
-    run('nmake', cwd='build')
+    if nmake_target:
+        run('nmake ' + nmake_target, cwd='build')
+    else:
+        run('nmake', cwd='build')
     with current_dir('build'):
         if headers:
             for pat in headers.split():
