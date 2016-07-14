@@ -15,9 +15,10 @@ import sys
 import urllib
 import urlparse
 import tarfile
+import shutil
 
 from .constants import SOURCES, iswindows
-from .utils import tempdir, run
+from .utils import tempdir, walk, run
 
 sources_file = os.path.join(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))), 'sources.json')
@@ -131,13 +132,13 @@ def get_git_clone(pkg, url, fname):
         fhash = pkg['hash'].partition(':')[-1]
         if h != fhash:
             raise SystemExit('The hash of HEAD for %s has changed' % pkg['name'])
+        fdir = os.path.join(tdir, ddir)
+        for f in walk(os.path.join(fdir, '.git')):
+            os.chmod(f, 0o666)  # Needed to prevent shutil.rmtree from failing
+        shutil.rmtree(os.path.join(fdir, '.git'))
         with tarfile.open(fname, 'w:bz2') as tf:
-            def filter_tar(tar_info):
-                parts = tar_info.name.split('/')
-                if '.git' in parts:
-                    return
-                return tar_info
-            tf.add(os.path.join(tdir, ddir), arcname=ddir, filter=filter_tar)
+            tf.add(fdir, arcname=ddir)
+        shutil.rmtree(fdir)
 
 
 def try_once(pkg, url):
