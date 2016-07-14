@@ -15,23 +15,48 @@ islinux = not iswindows and not isosx
 pkg_ext = 'tar.gz'
 py_ver = '2.7'
 
+
+def uniq(vals):
+    ''' Remove all duplicates from vals, while preserving order.  '''
+    vals = vals or ()
+    seen = set()
+    seen_add = seen.add
+    return list(x for x in vals if x not in seen and not seen_add(x))
+
+
 ROOT = 'C:\\' if iswindows else '/'
+is64bit = sys.maxsize > (1 << 32)
 SW = ROOT + 'sw'
+if iswindows:
+    is64bit = os.environ['BUILD_ARCH'] == '64'
+    SW += '64' if is64bit else '32'
 SOURCES = ROOT + 'sources'
 PATCHES = ROOT + 'patches'
 SCRIPTS = ROOT + 'scripts'
 CALIBRE_DIR = ROOT + 'calibre'
 if iswindows:
     tempfile.tempdir = 'C:\\t\\t'
-is64bit = sys.maxsize > (1 << 32)
 PREFIX = os.path.join(SW, 'sw')
 BIN = os.path.join(PREFIX, 'bin')
 PYTHON = os.path.join(PREFIX, 'private', 'python', 'python.exe') if iswindows else os.path.join(BIN, 'python')
 
 worker_env = {}
+cygwin_paths = []
 
 if iswindows:
     CFLAGS = CPPFLAGS = LIBDIR = LDFLAGS = ''
+    from vcvars import query_vcvarsall
+    env = query_vcvarsall(is64bit)
+    # Remove cygwin paths from environment
+    paths = [p.replace('/', os.sep) for p in env['PATH'].split(os.pathsep)]
+    cygwin_paths = [p.encode('ascii') for p in paths if 'cygwin64' in p.split(os.sep)]
+    paths = [p for p in paths if 'cygwin64' not in p.split(os.sep)]
+    # Add the bindir to the PATH, needed for loading DLLs
+    paths.insert(0, os.path.join(PREFIX, 'bin'))
+    os.environ[b'PATH'] = os.pathsep.join(uniq(paths)).encode('ascii')
+    for k in env:
+        if k != 'PATH':
+            worker_env[k] = env[k]
 else:
     CFLAGS = worker_env['CFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
     CPPFLAGS = worker_env['CPPFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
@@ -137,33 +162,3 @@ def putenv(**kw):
             worker_env.pop(key, None)
         else:
             worker_env[key] = val
-
-
-def uniq(vals):
-    ''' Remove all duplicates from vals, while preserving order.  '''
-    vals = vals or ()
-    seen = set()
-    seen_add = seen.add
-    return list(x for x in vals if x not in seen and not seen_add(x))
-
-
-cygwin_paths = []
-
-
-def set_64bit(val):
-    global is64bit, cygwin_paths
-    is64bit = val
-    if not iswindows:
-        return
-    from vcvars import query_vcvarsall
-    env = query_vcvarsall(is64bit)
-    # Remove cygwin paths from environment
-    paths = [p.replace('/', os.sep) for p in env['PATH'].split(os.pathsep)]
-    cygwin_paths = [p.encode('ascii') for p in paths if 'cygwin64' in p.split(os.sep)]
-    paths = [p for p in paths if 'cygwin64' not in p.split(os.sep)]
-    # Add the bindir to the PATH, needed for loading DLLs
-    paths.insert(0, os.path.join(PREFIX, 'bin'))
-    os.environ[b'PATH'] = os.pathsep.join(uniq(paths)).encode('ascii')
-    for k in env:
-        if k != 'PATH':
-            worker_env[k] = env[k]

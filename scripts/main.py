@@ -9,10 +9,17 @@ import argparse
 import shutil
 import tempfile
 import sys
-from pkgs.constants import SW, pkg_ext, islinux, iswindows, set_64bit
-from pkgs.utils import run_shell
 
 args = sys.argv
+
+if 'win32' in sys.platform.lower():
+    arch = args[1].decode('utf-8')
+    del args[1]
+    os.environ['BUILD_ARCH'] = arch
+
+from pkgs.constants import SW, pkg_ext, islinux
+from pkgs.utils import run_shell
+
 
 if hasattr(os, 'geteuid') and os.geteuid() == 0:
     import pwd
@@ -23,11 +30,6 @@ if hasattr(os, 'geteuid') and os.geteuid() == 0:
 if islinux:
     os.environ['HOME'] = tempfile.gettempdir()
     os.chdir(tempfile.gettempdir())
-
-if iswindows:
-    arch = args[1].decode('utf-8')
-    del args[1]
-    set_64bit(arch == '64')
 
 parser = argparse.ArgumentParser(description='Build calibre dependencies')
 a = parser.add_argument

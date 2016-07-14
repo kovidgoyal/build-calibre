@@ -58,8 +58,9 @@ if os.path.exists(os.path.join(calibre_dir, 'setup.py')):
     current_branch = subprocess.check_output('git rev-parse --abbrev-ref HEAD'.split(), cwd=calibre_dir).decode('utf-8').strip()
     if current_branch != 'vs2015':
         subprocess.check_call('git checkout vs2015'.split(), cwd=calibre_dir)
+
 try:
-    to_vm(rsync, output_dir, prefix='/cygdrive/c/')
+    to_vm(rsync, output_dir, prefix='/cygdrive/c/', name='sw' + arch)
 finally:
     if current_branch != 'vs2015':
         subprocess.check_call(['git', 'checkout', current_branch], cwd=calibre_dir)
@@ -67,4 +68,4 @@ try:
     run_main(VM, 'python', '/scripts/main.py', *sys.argv[1:])
 finally:
     print()
-    from_vm(rsync, output_dir, prefix='/cygdrive/c/')
+    from_vm(rsync, output_dir, prefix='/cygdrive/c/', name='sw' + arch)

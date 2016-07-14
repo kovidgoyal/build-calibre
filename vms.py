@@ -119,7 +119,7 @@ class Rsync(object):
             raise SystemExit(p.wait())
 
 
-def to_vm(rsync, output_dir, prefix='/'):
+def to_vm(rsync, output_dir, prefix='/', name='sw'):
     print('Mirroring data to the VM...')
     calibre_dir = os.environ.get('CALIBRE_SRC_DIR', os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'calibre'))
     if os.path.exists(os.path.join(calibre_dir, 'setup.py')):
@@ -129,12 +129,12 @@ def to_vm(rsync, output_dir, prefix='/'):
         rsync.to_vm(x, prefix + x)
 
     rsync.to_vm('sources-cache', prefix + 'sources')
-    rsync.to_vm(output_dir, prefix + 'sw', '/sw')
+    rsync.to_vm(output_dir, prefix + name, '/sw')
 
 
-def from_vm(rsync, output_dir, prefix='/'):
+def from_vm(rsync, output_dir, prefix='/', name='sw'):
     print('Mirroring data from VM...')
-    rsync.from_vm(prefix + 'sw', output_dir, '/sw')
+    rsync.from_vm(prefix + name, output_dir, '/sw')
     rsync.from_vm(prefix + 'sources', 'sources-cache')
 
 
