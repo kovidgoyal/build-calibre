@@ -41,7 +41,8 @@ def mkdir(x):
 
 mkdir('sources-cache')
 mkdir('build')
-output_dir = os.path.join(abspath('build'), 'linux' + arch)
+mkdir('build/linux')
+output_dir = os.path.join(abspath('build'), 'linux', arch)
 mkdir(output_dir)
 
 
