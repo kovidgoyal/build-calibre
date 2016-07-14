@@ -38,7 +38,7 @@ To build the 64bit and 32bit dependencies for calibre, run:
 ./linux 32
 ```
 
-The output (after a very long time) will be in `build/linux[32|63]`
+The output (after a very long time) will be in `build/linux/[32|63]`
 
 Now you can build calibre itself using these dependencies, to do that, run:
 
@@ -47,7 +47,7 @@ CALIBRE_SRC_DIR=/whatever ./linux 64 calibre
 CALIBRE_SRC_DIR=/whatever ./linux 32 calibre
 ```
 
-The output will be `build/linux[32|64]/calibre-*.txz` which are the linux
+The output will be `build/linux/[32|64]/calibre-*.txz` which are the linux
 binary installers for calibre.
 
 
