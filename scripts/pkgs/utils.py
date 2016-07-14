@@ -127,6 +127,8 @@ def chdir_for_extract(name):
 def extract_source():
     source = current_source()
     chdir_for_extract(source)
+    print('Extracting source:'. source)
+    sys.stdout.flush()
     extract(source)
     x = os.listdir('.')
     if len(x) == 1:
