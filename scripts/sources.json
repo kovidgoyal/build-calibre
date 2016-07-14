@@ -494,6 +494,11 @@
             "filename": "libimobiledevice-1.2.0.tar.bz2",
             "hash": "md5:8757900ba7bbe2ef5f54342415d0223e",
             "urls": ["http://www.libimobiledevice.org/downloads/{filename}"]
+        },
+        "windows": {
+            "filename": "libimobiledevice-9ad34e11da5fd0343894b5066f44e4c02af9ed60.tar.bz2",
+            "hash": "git:9ad34e11da5fd0343894b5066f44e4c02af9ed60",
+            "urls": ["https://github.com/kovidgoyal/libimobiledevice.git"]
         }
     },
 
