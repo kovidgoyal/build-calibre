@@ -14,3 +14,5 @@ def main(args):
 
 def filter_pkg(parts):
     return 'Help' in parts
+
+pkg_exclude_extensions = frozenset()

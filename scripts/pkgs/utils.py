@@ -287,6 +287,7 @@ def ensure_dir(path):
 def create_package(module, src_dir, outpath):
 
     exclude = getattr(module, 'pkg_exclude_names', frozenset('doc man info test tests gtk-doc README'.split()))
+    exclude_extensions = getattr(module, 'pkg_exclude_extensions', frozenset(('pyc', 'pyo', 'la', 'chm', 'cpp', 'rst', 'md')))
 
     try:
         shutil.rmtree(outpath)
@@ -304,7 +305,7 @@ def create_package(module, src_dir, outpath):
         def is_ok(name):
             parts = name.split('/')
             for p in parts:
-                if p in exclude or p.rpartition('.')[-1] in ('pyc', 'pyo', 'la', 'chm', 'cpp', 'rst', 'md'):
+                if p in exclude or p.rpartition('.')[-1] in exclude_extensions:
                     return False
             if hasattr(module, 'filter_pkg') and module.filter_pkg(parts):
                 return False
