@@ -44,8 +44,11 @@ def parse_sources():
     if _parsed_source is None:
         _parsed_source = ans = []
         for item in json.load(open(sources_file, 'rb')):
-            s = item.get('windows', item.get('unix')) if iswindows else \
-                item['unix']
+            try:
+                s = item.get('windows', item.get('unix')) if iswindows else \
+                    item['unix']
+            except KeyError:
+                continue
             s['name'] = item['name']
             s['urls'] = [process_url(x, s['filename']) for x in s['urls']]
             ans.append(s)
