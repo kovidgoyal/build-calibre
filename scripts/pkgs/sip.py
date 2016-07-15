@@ -17,9 +17,11 @@ def main(args):
     elif iswindows:
         b = os.path.join(b, 'private', 'python')
     cmd = [PYTHON, 'configure.py', '--no-pyi', '--bindir=%s/bin' % build_dir()]
-    cmd += ['--destdir=%s/lib/python2.7/site-packages' % b,
+    sp = 'Lib' if iswindows else 'lib/python2.7'
+    inc = 'include' if iswindows else 'include/python2.7'
+    cmd += ['--destdir=%s/%s/site-packages' % (b, sp),
             '--sipdir=%s/share/sip' % b,
-            '--incdir=%s/include/python2.7' % b]
+            '--incdir=%s/%s' % (b, inc)]
     run(*cmd, library_path=True)
     if iswindows:
         run('nmake'), run('nmake install')
@@ -30,4 +32,5 @@ def main(args):
     if iswindows:
         q = q.replace(os.sep, os.sep + os.sep)
         r = r.replace(os.sep, os.sep + os.sep)
-    replace_in_file(os.path.join(b, 'lib/python2.7/site-packages/sipconfig.py'), q, r)
+    p = 'Lib' if iswindows else 'lib/python2.7'
+    replace_in_file(os.path.join(b, p, 'site-packages/sipconfig.py'), q, r)
