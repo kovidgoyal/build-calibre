@@ -59,6 +59,10 @@ def pkg_path(dep):
     return os.path.join(SW, dep + '.' + pkg_ext)
 
 
+def has_pkg(dep):
+    return os.path.exists(pkg_path(dep))
+
+
 def install_pkgs(other_deps=all_deps, dest_dir=PREFIX):
     other_deps = tuple(other_deps)
     if other_deps:
@@ -125,7 +129,7 @@ def init_env(deps=all_deps):
 
 
 def main(args):
-    deps = args.deps or all_deps
+    deps = args.deps or [d for d in all_deps if not has_pkg(d)]
 
     for dep in deps:
         if dep not in all_deps:
