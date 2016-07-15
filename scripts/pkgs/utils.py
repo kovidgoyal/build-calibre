@@ -312,6 +312,10 @@ def create_package(module, src_dir, outpath):
             return True
 
         for d in tuple(dirnames):
+            if not iswindows and os.path.islink(os.path.join(dirpath, d)):
+                dirnames.remove(d)
+                filenames.append(d)
+                continue
             name = get_name(d)
             if is_ok(name):
                 try:
@@ -332,8 +336,12 @@ def create_package(module, src_dir, outpath):
 
 def install_package(pkg_path, dest_dir):
     for dirpath, dirnames, filenames in os.walk(pkg_path):
-        for x in dirnames:
+        for x in tuple(dirnames):
             d = os.path.join(dirpath, x)
+            if not iswindows and os.path.islink(d):
+                filenames.append(x)
+                dirnames.remove(x)
+                continue
             name = os.path.relpath(d, pkg_path)
             try:
                 os.makedirs(os.path.join(dest_dir, name))
