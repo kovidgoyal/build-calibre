@@ -130,6 +130,9 @@ def init_env(deps=all_deps):
 
 def main(args):
     deps = args.deps or [d for d in all_deps if not has_pkg(d)]
+    if not deps:
+        print('All dependencies already built, if you want to re-build, use the --clean option')
+        raise SystemExit(0)
 
     for dep in deps:
         if dep not in all_deps:
