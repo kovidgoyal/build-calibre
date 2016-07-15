@@ -431,6 +431,11 @@
             "filename": "PyQt5_gpl-5.6.tar.gz",
             "hash": "sha1:8920e4094470ff93f79e257c37c46f5cd0bff7ab",
             "urls": ["http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.6/{filename}"]
+        },
+        "windows": {
+            "filename": "PyQt5_gpl-5.6.zip",
+            "hash": "sha1:63a03d0f6e7f6e2e9dc90311020fbb2a2edc8cf0",
+            "urls": ["http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.6/{filename}"]
         }
     },
 

@@ -53,6 +53,7 @@ if iswindows:
     paths = [p for p in paths if 'cygwin64' not in p.split(os.sep)]
     # Add the bindir to the PATH, needed for loading DLLs
     paths.insert(0, os.path.join(PREFIX, 'bin'))
+    paths.insert(0, os.path.join(PREFIX, 'qt', 'bin'))
     os.environ[b'PATH'] = os.pathsep.join(uniq(paths)).encode('ascii')
     for k in env:
         if k != 'PATH':
@@ -104,8 +105,8 @@ CMAKE = os.path.join(PREFIX, 'bin', 'cmake') if isosx else 'cmake'
 
 QT_PREFIX = os.path.join(PREFIX, 'qt')
 QT_DLLS = ['Qt5' + x for x in (
-    'Core', 'Gui',  'Network', 'PrintSupport', 'Positioning', 'Sensors', 'Sql',
-    'Svg', 'WebKit', 'WebKitWidgets', 'Widgets',  'Multimedia', 'OpenGL',
+    'Core', 'Gui', 'Network', 'PrintSupport', 'Positioning', 'Sensors', 'Sql',
+    'Svg', 'WebKit', 'WebKitWidgets', 'Widgets', 'Multimedia', 'OpenGL',
     'MultimediaWidgets', 'Xml',  # 'XmlPatterns',
 )]
 QT_PLUGINS = [
