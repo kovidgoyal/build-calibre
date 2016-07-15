@@ -104,7 +104,7 @@ You need a VirtualBox virtual machine of Windows 7 64bit named
     * Install git: https://git-scm.com/download/win
     * Ensure that all the above tools are in PATH so that they can be run in a
       command prompt using just their names.
-    * Create the folders: C:\sw C:\sources C:\patches C:\scripts C:\calibre C:\t
+    * Create the folders: C:\sw64 C:\sw32 C:\sources C:\patches C:\scripts C:\calibre C:\t
     * Install cygwin, with the: vim, dos2unix, rsync, openssh, unzip, wget, make, zsh, bash-completion, curl
       packages
     * Edit /etc/passwd and replace all occurrences of /bin/bash with /bin/zsh (in
