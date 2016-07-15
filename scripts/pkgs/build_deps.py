@@ -60,16 +60,18 @@ def pkg_path(dep):
 
 
 def install_pkgs(other_deps=all_deps, dest_dir=PREFIX):
-    print('Installing previously compiled packages:', end=' ')
-    sys.stdout.flush()
-    for dep in other_deps:
-        pkg = pkg_path(dep)
-        if os.path.exists(pkg):
-            print(dep, end=', ')
-            sys.stdout.flush()
-            install_package(pkg, dest_dir)
-    print()
-    sys.stdout.flush()
+    other_deps = tuple(other_deps)
+    if other_deps:
+        print('Installing %d previously compiled packages:' % len(other_deps), end=' ')
+        sys.stdout.flush()
+        for dep in other_deps:
+            pkg = pkg_path(dep)
+            if os.path.exists(pkg):
+                print(dep, end=', ')
+                sys.stdout.flush()
+                install_package(pkg, dest_dir)
+        print()
+        sys.stdout.flush()
 
 
 def build(dep, args, dest_dir):

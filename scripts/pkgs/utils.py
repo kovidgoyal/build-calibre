@@ -27,8 +27,12 @@ if iswindows:
     def split(x):
         x = x.replace('\\', '\\\\')
         return shlex.split(x)
+
+    def issymlink(x):
+        return False
 else:
     split = shlex.split
+    issymlink = os.path.islink
 
 
 class ModifiedEnv(object):
@@ -215,7 +219,7 @@ else:
 
 def lcopy(src, dst, no_hardlinks=False):
     try:
-        if not iswindows and os.path.islink(src):
+        if issymlink(src):
             linkto = os.readlink(src)
             os.symlink(linkto, dst)
             return True
@@ -326,7 +330,7 @@ def create_package(module, src_dir, outpath):
             return True
 
         for d in tuple(dirnames):
-            if not iswindows and os.path.islink(os.path.join(dirpath, d)):
+            if issymlink(os.path.join(dirpath, d)):
                 dirnames.remove(d)
                 filenames.append(d)
                 continue
@@ -352,7 +356,7 @@ def install_package(pkg_path, dest_dir):
     for dirpath, dirnames, filenames in os.walk(pkg_path):
         for x in tuple(dirnames):
             d = os.path.join(dirpath, x)
-            if not iswindows and os.path.islink(d):
+            if issymlink(d):
                 filenames.append(x)
                 dirnames.remove(x)
                 continue
