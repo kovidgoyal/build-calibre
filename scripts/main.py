@@ -61,5 +61,5 @@ else:
     if args.clean:
         for x in os.listdir(SW):
             if x.endswith('.' + pkg_ext):
-                os.remove(os.path.join(SW, x))
+                shutil.rmtree(os.path.join(SW, x))
     main(args)

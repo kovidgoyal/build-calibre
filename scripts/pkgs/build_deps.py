@@ -76,7 +76,7 @@ def install_pkgs(other_deps=all_deps, dest_dir=PREFIX):
 def build(dep, args, dest_dir):
     set_title('Building ' + dep)
     set_current_source(filename_for_dep(dep))
-    output_dir = mkdtemp(prefix=dep + '-')
+    output_dir = todir = mkdtemp(prefix=dep + '-')
     set_build_dir(output_dir)
     try:
         m = importlib.import_module('pkgs.' + dep)
@@ -84,7 +84,7 @@ def build(dep, args, dest_dir):
         if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), dep + '.py')):
             raise
         m = None
-    extract_source()
+    tsdir = extract_source()
     try:
         if hasattr(m, 'main'):
             m.main(args)
@@ -107,6 +107,8 @@ def build(dep, args, dest_dir):
     install_package(pkg_path(dep), dest_dir)
     if hasattr(m, 'post_install_check'):
         m.post_install_check()
+    shutil.rmtree(todir)
+    shutil.rmtree(tsdir)
 
 
 def init_env(deps=all_deps):

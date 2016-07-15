@@ -14,13 +14,12 @@ import sys
 import errno
 import glob
 import shutil
-import tarfile
 import zipfile
 import stat
 
 from .constants import (
     build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR,
-    worker_env, pkg_ext, islinux, PREFIX, iswindows
+    worker_env, islinux, PREFIX, iswindows
 )
 
 
@@ -122,17 +121,19 @@ def extract(source):
 def chdir_for_extract(name):
     tdir = mkdtemp(prefix=os.path.basename(name).split('-')[0] + '-')
     os.chdir(tdir)
+    return tdir
 
 
 def extract_source():
     source = current_source()
-    chdir_for_extract(source)
+    tdir = chdir_for_extract(source)
     print('Extracting source:', source)
     sys.stdout.flush()
     extract(source)
     x = os.listdir('.')
     if len(x) == 1:
         os.chdir(x[0])
+    return tdir
 
 
 def apply_patch(name, level=0, reverse=False, convert_line_endings=False):
@@ -184,15 +185,32 @@ def replace_in_file(path, old, new, missing_ok=False):
         f.seek(0), f.truncate()
         f.write(nraw)
 
+if iswindows:
+    import ctypes
+    chl = ctypes.windll.kernel32.CreateHardLinkW
 
-def lcopy(src, dst):
+    def hardlink(src, dst):
+        if not chl(unicode(dst), unicode(src)):
+            print('Failed to hardlink: %s to %s' % (src, dst))
+            raise ctypes.WinError()
+        # Ensure the directory entry is updated, see
+        # http://blogs.msdn.com/b/oldnewthing/archive/2011/12/26/10251026.aspx
+        open(dst, 'rb').close()
+else:
+    hardlink = os.link
+
+
+def lcopy(src, dst, no_hardlinks=False):
     try:
-        if os.path.islink(src):
+        if not iswindows and os.path.islink(src):
             linkto = os.readlink(src)
             os.symlink(linkto, dst)
             return True
         else:
-            shutil.copy(src, dst)
+            if no_hardlinks:
+                shutil.copy(src, dst)
+            else:
+                hardlink(src, dst)
             return False
     except EnvironmentError as err:
         if err.errno == errno.EEXIST:
@@ -266,33 +284,65 @@ def ensure_dir(path):
             raise
 
 
-def create_package(module, src_dir, outfile):
+def create_package(module, src_dir, outpath):
 
     exclude = getattr(module, 'pkg_exclude_names', frozenset('doc man info test tests gtk-doc README'.split()))
 
-    def filter_tar(tar_info):
-        parts = tar_info.name.split('/')
-        for p in parts:
-            if p in exclude or p.rpartition('.')[-1] in ('pyc', 'pyo', 'la', 'chm', 'cpp', 'rst', 'md'):
-                return
-        if hasattr(module, 'filter_pkg') and module.filter_pkg(parts):
-            return
-        tar_info.uid, tar_info.gid, tar_info.mtime = 1000, 100, 0
-        if iswindows and tar_info.name.rpartition('.')[-1].lower() in ('pyd', 'exe', 'dll'):
-            tar_info.mode = 0o777
-        return tar_info
+    try:
+        shutil.rmtree(outpath)
+    except EnvironmentError as err:
+        if err.errno != errno.ENOENT:
+            raise
 
-    c = pkg_ext.split('.')[-1]
-    with tarfile.open(outfile, 'w:' + c) as archive:
-        for x in os.listdir(src_dir):
-            path = os.path.join(src_dir, x)
-            if os.path.isdir(path):
-                archive.add(path, arcname=x, filter=filter_tar)
+    os.mkdir(outpath)
+
+    for dirpath, dirnames, filenames in os.walk(src_dir):
+
+        def get_name(x):
+            return os.path.relpath(os.path.join(dirpath, x), src_dir).replace(os.sep, '/')
+
+        def is_ok(name):
+            parts = name.split('/')
+            for p in parts:
+                if p in exclude or p.rpartition('.')[-1] in ('pyc', 'pyo', 'la', 'chm', 'cpp', 'rst', 'md'):
+                    return False
+            if hasattr(module, 'filter_pkg') and module.filter_pkg(parts):
+                return False
+            return True
+
+        for d in tuple(dirnames):
+            name = get_name(d)
+            if is_ok(name):
+                try:
+                    os.makedirs(os.path.join(outpath, name))
+                except EnvironmentError as err:
+                    if err.errno != errno.EEXIST:
+                        raise
+            else:
+                dirnames.remove(d)
+
+        for f in filenames:
+            name = get_name(f)
+            if is_ok(name):
+                # on linux hardlinking fails silently because the package is
+                # built in tmpfs and outpath is on a different volume
+                lcopy(os.path.join(dirpath, f), os.path.join(outpath, name), no_hardlinks=islinux)
 
 
 def install_package(pkg_path, dest_dir):
-    with tarfile.open(pkg_path) as archive:
-        archive.extractall(dest_dir)
+    for dirpath, dirnames, filenames in os.walk(pkg_path):
+        for x in dirnames:
+            d = os.path.join(dirpath, x)
+            name = os.path.relpath(d, pkg_path)
+            try:
+                os.makedirs(os.path.join(dest_dir, name))
+            except EnvironmentError as err:
+                if err.errno != errno.EEXIST:
+                    raise
+        for x in filenames:
+            f = os.path.join(dirpath, x)
+            name = os.path.relpath(f, pkg_path)
+            lcopy(f, os.path.join(dest_dir, name))
 
 
 def set_title(x):
