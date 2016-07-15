@@ -190,14 +190,27 @@ if iswindows:
     chl = ctypes.windll.kernel32.CreateHardLinkW
 
     def hardlink(src, dst):
-        if not chl(unicode(dst), unicode(src)):
+        if not chl(unicode(dst), unicode(src), None):
             print('Failed to hardlink: %s to %s' % (src, dst))
             raise ctypes.WinError()
         # Ensure the directory entry is updated, see
         # http://blogs.msdn.com/b/oldnewthing/archive/2011/12/26/10251026.aspx
         open(dst, 'rb').close()
+
+    def rmtree(x, tries=10):
+        for i in range(tries):
+            try:
+                return shutil.rmtree(x)
+            except WindowsError as err:
+                if i == tries - 1:
+                    raise
+                if err.winerror == 32:  # sharing violation (file open in another process)
+                    time.sleep(1)
+                    continue
+                raise
 else:
     hardlink = os.link
+    rmtree = shutil.rmtree
 
 
 def lcopy(src, dst, no_hardlinks=False):
@@ -216,6 +229,7 @@ def lcopy(src, dst, no_hardlinks=False):
         if err.errno == errno.EEXIST:
             os.unlink(dst)
             return lcopy(src, dst)
+        raise
 
 
 def install_binaries(pattern, destdir='lib', do_symlinks=False, fname_map=os.path.basename):
@@ -329,7 +343,7 @@ def create_package(module, src_dir, outpath):
         for f in filenames:
             name = get_name(f)
             if is_ok(name):
-                # on linux hardlinking fails silently because the package is
+                # on linux hardlinking fails because the package is
                 # built in tmpfs and outpath is on a different volume
                 lcopy(os.path.join(dirpath, f), os.path.join(outpath, name), no_hardlinks=islinux)
 

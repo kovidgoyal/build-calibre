@@ -6,7 +6,6 @@ from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import sys
 import importlib
-import shutil
 import os
 import tempfile
 
@@ -16,7 +15,7 @@ from pkgs.constants import (
 from pkgs.download_sources import download, filename_for_dep
 from pkgs.utils import (
     run_shell, install_package, create_package, extract_source, simple_build,
-    python_build, set_title, fix_install_names)
+    python_build, set_title, fix_install_names, rmtree)
 
 python_deps = 'setuptools six cssutils dateutil dnspython mechanize pygments pycrypto apsw lxml pillow netifaces psutil dbuspython macfsevents'.strip().split()
 
@@ -52,7 +51,7 @@ if not isosx:
 
 def ensure_clear_dir(dest_dir):
     if os.path.exists(dest_dir):
-        shutil.rmtree(dest_dir)
+        rmtree(dest_dir)
     os.makedirs(dest_dir)
 
 
@@ -75,6 +74,7 @@ def install_pkgs(other_deps=all_deps, dest_dir=PREFIX):
 
 def build(dep, args, dest_dir):
     set_title('Building ' + dep)
+    owd = os.getcwdu()
     set_current_source(filename_for_dep(dep))
     output_dir = todir = mkdtemp(prefix=dep + '-')
     set_build_dir(output_dir)
@@ -107,8 +107,9 @@ def build(dep, args, dest_dir):
     install_package(pkg_path(dep), dest_dir)
     if hasattr(m, 'post_install_check'):
         m.post_install_check()
-    shutil.rmtree(todir)
-    shutil.rmtree(tsdir)
+    os.chdir(owd)
+    rmtree(todir)
+    rmtree(tsdir)
 
 
 def init_env(deps=all_deps):
@@ -147,4 +148,4 @@ def main(args):
                 print('Remaining deps:', ' '.join(deps))
 
     # After a successful build, remove the unneeded sw dir
-    shutil.rmtree(dest_dir)
+    rmtree(dest_dir)
