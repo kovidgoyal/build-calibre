@@ -48,7 +48,7 @@ def main(args):
         # libudev.so.0). And according to the incompetent udev developers, we
         # cannot use mismatching udev client and daemon versions.
         # http://www.marshut.com/yiqmk/can-apps-ship-their-own-copy-of-libudev.html
-        conf += ' -qt-xcb -glib -no-libudev -openssl -gtkstyle -qtpcre '
+        conf += ' -qt-xcb -glib -no-libudev -openssl -gtkstyle -qt-pcre '
     elif isosx:
         conf += ' -no-pkg-config -framework -no-openssl -securetransport '
     elif iswindows:
