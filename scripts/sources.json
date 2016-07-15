@@ -403,6 +403,11 @@
             "filename": "qt-everywhere-opensource-src-5.5.1.tar.xz",
             "hash": "sha1:5933651d46691ff6e919a49f5a380b9a217d30fb",
             "urls": ["http://download.qt.io/official_releases/qt/5.5/5.5.1/single/{filename}"]
+        },
+        "windows": {
+            "filename": "qt-everywhere-opensource-src-5.5.1.zip",
+            "hash": "sha1:310750e37ca6bf7408ef07343187d60025289e17",
+            "urls": ["http://download.qt.io/official_releases/qt/5.5/5.5.1/single/{filename}"]
         }
     },
 

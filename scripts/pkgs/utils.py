@@ -127,7 +127,7 @@ def chdir_for_extract(name):
 def extract_source():
     source = current_source()
     chdir_for_extract(source)
-    print('Extracting source:'. source)
+    print('Extracting source:', source)
     sys.stdout.flush()
     extract(source)
     x = os.listdir('.')
@@ -135,13 +135,16 @@ def extract_source():
         os.chdir(x[0])
 
 
-def apply_patch(name, level=0, reverse=False):
+def apply_patch(name, level=0, reverse=False, convert_line_endings=False):
     if not os.path.isabs(name):
         name = os.path.join(PATCHES, name)
     patch = 'C:/cygwin64/bin/patch' if iswindows else 'patch'
     args = [patch, '-p%d' % level, '-i', name]
     if reverse:
         args.insert(1, '-R')
+    if iswindows and convert_line_endings:
+        run('C:/cygwin64/bin/unix2dos', name)
+        args.insert(1, '--binary')
     run(*args)
 
 
