@@ -85,6 +85,7 @@ cmd = [
     '-v', abspath('scripts') + ':/scripts:ro',
     '-v', abspath('patches') + ':/patches:ro',
     '-v', output_dir + ':/sw:rw',
+    '--tmpfs', '/tmp:rw,nodev,nosuid,size=4G,noatime,exec',
     '--rm=true',
     '--interactive=' + ('true' if sys.stdin.isatty() else 'false'),
     '--tty=' + ('true' if sys.stdin.isatty() else 'false'),
