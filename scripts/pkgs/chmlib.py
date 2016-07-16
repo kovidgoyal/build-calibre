@@ -7,7 +7,7 @@ from __future__ import (unicode_literals, division, absolute_import,
 import os
 
 from .constants import isosx, iswindows
-from .utils import simple_build, run, install_binaries
+from .utils import simple_build, run, install_binaries, copy_headers
 
 
 def main(args):
@@ -17,6 +17,7 @@ def main(args):
             run('cl.exe /c /nologo /MD /W3 /DWIN32 -c ' + f)
         run('lib.exe -nologo chm_lib.obj lzx.obj -OUT:chmlib.lib')
         install_binaries('chmlib.lib')
+        copy_headers('chm_lib.h')
     else:
         conf = '--disable-dependency-tracking'
         if isosx:
