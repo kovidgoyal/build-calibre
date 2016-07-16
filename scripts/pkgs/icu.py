@@ -7,6 +7,7 @@ from __future__ import (unicode_literals, division, absolute_import,
 import os
 import shutil
 import glob
+import re
 
 from .constants import build_dir, isosx, MAKEOPTS, LIBDIR, iswindows
 from .utils import apply_patch, simple_build, install_binaries, run, current_env, ModifiedEnv
@@ -26,7 +27,10 @@ def main(args):
             run('C:/cygwin64/bin/make')  # parallel builds fail, so no MAKEOPTS
             run('C:/cygwin64/bin/make install')
             for dll in glob.glob(os.path.join(build_dir(), 'lib', '*.dll')):
-                os.rename(dll, os.path.join(build_dir(), 'bin', os.path.basename(dll)))
+                if re.search(r'\d+', os.path.basename(dll)) is not None:
+                    os.rename(dll, os.path.join(build_dir(), 'bin', os.path.basename(dll)))
+            for dll in glob.glob(os.path.join(build_dir(), 'lib', '*.dll')):
+                os.remove(dll)
     elif isosx:
         run('./runConfigureICU MacOSX --disable-samples --prefix=' + build_dir())
         run('make ' + MAKEOPTS)
