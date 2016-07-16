@@ -12,6 +12,6 @@ from .utils import simple_build, run, install_binaries
 def main(args):
     if iswindows:
         run('nmake -f build\\visualc.mk')
-        install_binaries('src\\optipng\optipng.exe', 'bin')
+        install_binaries('src\\optipng\optipng.exe', 'bin', fname_map=lambda x: 'optipng-calibre.exe')
     else:
         simple_build('-with-system-libs')
