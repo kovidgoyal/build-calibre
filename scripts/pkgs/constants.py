@@ -54,6 +54,8 @@ if iswindows:
     # Add the bindir to the PATH, needed for loading DLLs
     paths.insert(0, os.path.join(PREFIX, 'bin'))
     paths.insert(0, os.path.join(PREFIX, 'qt', 'bin'))
+    # Needed for pywintypes27.dll which is used by the win32api module
+    paths.insert(0, os.path.join(PREFIX, r'private\python\Lib\site-packages\pywin32_system32'))
     os.environ[b'PATH'] = os.pathsep.join(uniq(paths)).encode('ascii')
     for k in env:
         if k != 'PATH':
