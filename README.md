@@ -105,11 +105,15 @@ You need a VirtualBox virtual machine of Windows 7 64bit named
     * Ensure that all the above tools are in PATH so that they can be run in a
       command prompt using just their names.
     * Create the folders: C:\sw64 C:\sw32 C:\sources C:\patches C:\scripts C:\calibre C:\t
+    * Take the ucrtbase.dll and `api-ms*.dll` files from a calibre install and
+      put them into c:\ucrt\x86 and c:\ucrt\x64 folders for 32-bit and 64-bit
+      respectively.
+
+Now you need to install [cygwin](https://www.cygwin.com/setup-x86_64.exe)
     * Install cygwin, with the: vim, dos2unix, rsync, openssh, unzip, wget, make, zsh, bash-completion, curl
       packages
     * Edit /etc/passwd and replace all occurrences of /bin/bash with /bin/zsh (in
       a cygwin prompt)
-
     * Setup a password for your windows user account
     * Follow the steps here:
       http://pcsupport.about.com/od/windows7/ht/auto-logon-windows-7.htm to allow the
@@ -146,3 +150,21 @@ You need a VirtualBox virtual machine of Windows 7 64bit named
     * Start sshd with::
         net start sshd
     * See http://www.kgx.net.nz/2010/03/cygwin-sshd-and-windows-7/ for details
+
+To build the 64bit and 32bit dependencies for calibre, run:
+
+```
+./win 64
+./win 32
+```
+
+The output (after a very long time) will be in `build/win/[32|63]`
+
+Now you can build calibre itself using these dependencies, to do that, run:
+
+```
+CALIBRE_SRC_DIR=/whatever ./win 64 calibre
+CALIBRE_SRC_DIR=/whatever ./win 32 calibre
+```
+
+

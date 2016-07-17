@@ -9,7 +9,7 @@ import shutil
 import subprocess
 
 from .build_deps import init_env
-from .constants import putenv, mkdtemp, PREFIX, CALIBRE_DIR, PYTHON, isosx
+from .constants import putenv, mkdtemp, PREFIX, CALIBRE_DIR, PYTHON, isosx, iswindows
 from .utils import run, run_shell
 from freeze import initialize_constants
 
@@ -34,12 +34,14 @@ def main(args):
         CALIBRE_SETUP_EXTENSIONS_PATH=ext_dir,
         QMAKE=os.path.join(PREFIX, 'qt', 'bin', 'qmake'),
         SIP_BIN=os.path.join(PREFIX, 'bin', 'sip'),
-        HOME=CALIBRE_DIR,
         SW=PREFIX
     )
     os.chdir(CALIBRE_DIR)
     ld = os.path.join(PREFIX, 'qt', 'lib')
-    run('env', library_path=ld)
+    if not iswindows:
+        run('env', library_path=ld)
+    else:
+        os.environ['SIP_DIR'] = os.path.join(os.path.dirname(PYTHON), 'share', 'sip')
     cmd = [PYTHON, 'setup.py', 'build', '--build-dir=' + build_dir, '--output-dir=' + ext_dir]
     if args.only:
         cmd.append('--only=' + args.only)
@@ -48,6 +50,8 @@ def main(args):
     if not args.only:
         if isosx:
             from freeze.osx import main as freeze
+        elif iswindows:
+            from freeze.windows import main as freeze
         else:
             from freeze.linux import main as freeze
         freeze(args, ext_dir, test_runner)
