@@ -129,4 +129,15 @@ def query_vcvarsall(is64bit=True):
             return env[k]
         except KeyError:
             return env[k.lower()]
+
+    # We have to insert the correct path to MSBuild.exe so that the one
+    # from the .net frameworks is not used.
+    paths = g('PATH').split(os.pathsep)
+    for i, p in enumerate(tuple(paths)):
+        if os.path.exists(os.path.join(p, 'MSBuild.exe')):
+            if '.net' in p.lower():
+                paths.insert(i, r'C:\Program Files (x86)\MSBuild\14.0\bin' + (r'\amd64' if is64bit else ''))
+                env["PATH"] = os.pathsep.join(paths)
+            break
+
     return {k: g(k) for k in 'PATH LIB INCLUDE LIBPATH WINDOWSSDKDIR VS140COMNTOOLS UCRTVERSION UNIVERSALCRTSDKDIR'.split()}
