@@ -114,11 +114,17 @@ QT_PLUGINS = [
     'playlistformats', 'sqldrivers',
     # 'audio', 'printsupport', 'bearer', 'position',
 ]
-if islinux:
-    QT_PLUGINS.append('platforminputcontexts')
-
 PYQT_MODULES = ('Qt', 'QtCore', 'QtGui', 'QtNetwork',  # 'QtMultimedia', 'QtMultimediaWidgets',
                 'QtPrintSupport', 'QtSensors', 'QtSvg', 'QtWebKit', 'QtWebKitWidgets', 'QtWidgets')
+if islinux:
+    QT_PLUGINS.append('platforminputcontexts')
+    QT_DLLS += ['Qt5DBus', 'Qt5XcbQpa']
+elif isosx:
+    QT_DLLS += ['Qt5DBus']
+else:
+    QT_DLLS += ['Qt5WinExtras']
+    PYQT_MODULES += ('QtWinExtras',)
+
 CODESIGN_KEYCHAIN = '/Users/kovid/codesign.keychain'
 
 _build_dir = None

@@ -32,7 +32,6 @@ from .sign import sign_app
 
 abspath, join, basename, dirname = os.path.abspath, os.path.join, os.path.basename, os.path.dirname
 
-QT_DLLS = QT_DLLS + ['Qt5DBus']
 QT_FRAMEWORKS = [x.replace('5', '') for x in QT_DLLS]
 
 LICENSE = open('LICENSE', 'rb').read()
