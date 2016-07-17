@@ -6,6 +6,7 @@ from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 
 import sys
+import errno
 import os
 import cPickle
 import shutil
@@ -657,7 +658,13 @@ class Freeze(object):
         ''' Copy a directory d into a dmg named volname '''
         print('\nSigning...')
         sys.stdout.flush()
-        destdir = SW
+        destdir = os.path.join(SW, 'dist')
+        try:
+            shutil.rmtree(destdir)
+        except EnvironmentError as err:
+            if err.errno != errno.ENOENT:
+                raise
+        os.mkdir(destdir)
         dmg = os.path.join(destdir, volname + '.dmg')
         if os.path.exists(dmg):
             os.unlink(dmg)

@@ -47,7 +47,7 @@ CALIBRE_SRC_DIR=/whatever ./linux 64 calibre
 CALIBRE_SRC_DIR=/whatever ./linux 32 calibre
 ```
 
-The output will be `build/linux/[32|64]/calibre-*.txz` which are the linux
+The output will be `build/linux/[32|64]/dist/calibre-*.txz` which are the linux
 binary installers for calibre.
 
 
@@ -82,7 +82,7 @@ Now you can build calibre itself using these dependencies, to do that, run:
 CALIBRE_SRC_DIR=/whatever ./osx calibre
 ```
 
-The output will be `build/osx/calibre-*.dmg` which is the OS X
+The output will be `build/osx/dist/calibre-*.dmg` which is the OS X
 binary installer for calibre.
 
 

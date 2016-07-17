@@ -12,6 +12,7 @@ import glob
 import subprocess
 import tarfile
 import time
+import errno
 
 from pkgs.constants import (
     PREFIX, py_ver, QT_PREFIX, QT_DLLS, CALIBRE_DIR, mkdtemp, QT_PLUGINS,
@@ -246,7 +247,13 @@ def strip_binaries(env):
 
 def create_tarfile(env, compression_level='9'):
     print('Creating archive...')
-    base = SW
+    base = os.path.join(SW, 'dist')
+    try:
+        shutil.rmtree(base)
+    except EnvironmentError as err:
+        if err.errno != errno.ENOENT:
+            raise
+    os.mkdir(base)
     dist = os.path.join(base, '%s-%s-%s.tar' % (calibre_constants['appname'], calibre_constants['version'], arch))
     with tarfile.open(dist, mode='w', format=tarfile.PAX_FORMAT) as tf:
         cwd = os.getcwd()
