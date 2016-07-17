@@ -94,7 +94,6 @@ void launch_calibre(LPCTSTR exe, LPCTSTR config_dir) {
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
     BOOL fSuccess; 
-    TCHAR cmdline[BUFSIZE];
 
     if (! SetEnvironmentVariable(_T("CALIBRE_CONFIG_DIRECTORY"), config_dir)) {
         show_last_error(_T("Failed to set environment variables"));
@@ -136,7 +135,7 @@ void launch_calibre(LPCTSTR exe, LPCTSTR config_dir) {
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    LPTSTR app_dir, config_dir, exe, library_dir, too_long;
+    LPTSTR app_dir, config_dir, exe;
 
     app_dir = get_app_dir();
     config_dir = (LPTSTR)calloc(BUFSIZE, sizeof(TCHAR));
