@@ -74,7 +74,7 @@ def shutdown_vm(name, max_wait=15):
             time.sleep(0.1)
         subprocess.Popen(SSH + ['-O', 'exit', name])
         if is_host_reachable(name):
-            print('Timed out waiting for %s to shutdown cleanly after %s seconds, forcing shutdown' % (time.time() - start_time, name))
+            print('Timed out waiting for %s to shutdown cleanly after %.1f seconds, forcing shutdown' % (name, time.time() - start_time))
             subprocess.check_call(('VBoxManage controlvm %s poweroff' % name).split())
             return
         print('SSH server shutdown, now waiting for VM to poweroff...')
@@ -85,7 +85,7 @@ def shutdown_vm(name, max_wait=15):
         while is_vm_running(name) and time.time() - start_time <= max_wait:
             time.sleep(0.1)
         if is_vm_running(name):
-            print('Timed out waiting for %s to shutdown cleanly after %s seconds, forcing shutdown' % (time.time() - start_time, name))
+            print('Timed out waiting for %s to shutdown cleanly after %.1f seconds, forcing shutdown' % (name, time.time() - start_time))
             subprocess.check_call(('VBoxManage controlvm %s poweroff' % name).split())
     finally:
         if shp.poll() is None:
