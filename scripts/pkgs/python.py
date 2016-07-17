@@ -19,10 +19,18 @@ if iswindows:
         # try to download its own nasm instead using the one we installed above (the python
         # build script fails to mark its nasm as executable, and therefore errors out)
         replace_in_file('PCbuild\\build.bat', '%1', '"/p:PlatformToolset=v140"')
-        os.makedirs('externals/nasm-2.11.06')
 
-        run('PCbuild\\build.bat', '-e', '--no-tkinter', '-c', 'Release', '-m', '--no-tkinter', '--no-bsddb',
-            '-p', ('x64' if is64bit else 'Win32'), '-t', 'Build')
+        os.makedirs('externals/nasm-2.11.06')
+        # os.makedirs('externals/openssl-1.0.2h')
+        # os.makedirs('externals/sqlite-3.8.11.0')
+        # os.makedirs('externals/bzip2-1.0.6')
+
+        # vcvarsall.bat causes the wrong MSBuild.exe to be found in PATH,
+        # so prevent build.bat from calling it, since we have called it
+        # already and fixed the paths, anyway.
+        replace_in_file('PCbuild\\build.bat', re.compile(r'^call.+env.bat.+$', re.MULTILINE), '')
+        run('PCbuild\\build.bat', '-e', '--no-tkinter', '--no-bsddb', '-c', 'Release', '-m',
+            '-p', ('x64' if is64bit else 'Win32'), '-v', '-t', 'Build')
         # Run the tests
         # run('PCbuild\\amd64\\python.exe', 'Lib/test/regrtest.py', '-u', 'network,cpu,subprocess,urlfetch')
 
