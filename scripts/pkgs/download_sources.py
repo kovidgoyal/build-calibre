@@ -9,7 +9,6 @@ import re
 import hashlib
 import json
 import errno
-import glob
 import time
 import sys
 import urllib
@@ -33,10 +32,18 @@ def ext(fname):
 
 
 _parsed_source = None
+all_filenames = set()
 
 
 def process_url(url, filename):
     return url.replace('{filename}', filename)
+
+
+def add_filenames(item):
+    for q in ('windows', 'unix'):
+        q = item.get(q)
+        if q is not None:
+            all_filenames.add(q['filename'].lower())
 
 
 def parse_sources():
@@ -44,6 +51,7 @@ def parse_sources():
     if _parsed_source is None:
         _parsed_source = ans = []
         for item in json.load(open(sources_file, 'rb')):
+            add_filenames(item)
             try:
                 s = item.get('windows', item.get('unix')) if iswindows else \
                     item['unix']
@@ -55,7 +63,7 @@ def parse_sources():
     return _parsed_source
 
 
-def verify_hash(pkg, cleanup=False):
+def verify_hash(pkg):
     fname = os.path.join(SOURCES, pkg['filename'])
     alg, q = pkg['hash'].partition(':')[::2]
     q = q.strip()
@@ -73,23 +81,6 @@ def verify_hash(pkg, cleanup=False):
                 h = getattr(hashlib, alg.lower())
                 fhash = h(f.read()).hexdigest()
                 matched = fhash == q
-    if iswindows:
-        def samefile(x, y):
-            return os.path.normcase(os.path.abspath(x)) == os.path.normcase(os.path.abspath(y))
-    else:
-        samefile = os.path.samefile
-    if cleanup:
-        prefix = pkg['filename'].partition('-')[0]
-        e = ext(pkg['filename'])
-        for m in glob.glob(os.path.join(SOURCES, prefix + '-*.' + e)):
-            try:
-                is_samefile = samefile(fname, m)
-            except EnvironmentError as err:
-                if err.errno != errno.ENOENT:
-                    raise
-                is_samefile = False
-            if not is_samefile:
-                os.remove(m)
     return matched
 
 start_time = 0
@@ -177,11 +168,19 @@ def download_pkg(pkg):
         'Downloading of %s failed after three tries, giving up.' % pkg['name'])
 
 
+def cleanup_cache(sources):
+    if os.path.exists(SOURCES):
+        existing = {x.lower(): x for x in os.listdir(SOURCES)}
+        for extra in set(existing) - all_filenames:
+            os.remove(os.path.join(SOURCES, existing[extra]))
+
+
 def download(pkgs=None):
     sources = parse_sources()
+    cleanup_cache(sources)
     for pkg in sources:
         if not pkgs or pkg['name'] in pkgs:
-            if not verify_hash(pkg, cleanup=True):
+            if not verify_hash(pkg):
                 download_pkg(pkg)
 
 
