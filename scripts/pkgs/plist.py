@@ -17,6 +17,8 @@ def main(args):
                         r'C:\cygwin64\home\kovid\sw\include\libxml2', os.path.join(PREFIX, 'include', 'libxml2'))
         replace_in_file('VisualStudio/libplist/libplist/libplist.vcxproj',
                         r'C:\cygwin64\home\kovid\sw\lib', os.path.join(PREFIX, 'lib'))
+        if not is64bit:
+            replace_in_file('VisualStudio/libplist/libplist/libplist.vcxproj', '$(PlatformName)\\', '')
         run('MSBuild.exe', 'VisualStudio/libplist/libplist.sln', '/t:Build', '/p:Platform=' + plat, '/p:Configuration=Release')
         copy_headers('include/plist')
         for f in walk():
