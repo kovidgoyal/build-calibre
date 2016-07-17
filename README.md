@@ -167,4 +167,4 @@ CALIBRE_SRC_DIR=/whatever ./win 64 calibre
 CALIBRE_SRC_DIR=/whatever ./win 32 calibre
 ```
 
-
+The installers will be in `build/win/[32|64]/dist`
