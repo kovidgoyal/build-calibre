@@ -9,6 +9,7 @@ import os
 import tempfile
 import shutil
 import subprocess
+import re
 
 base = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(base, 'scripts'))
@@ -39,7 +40,17 @@ def create_bundle(osname, bitness=''):
     finally:
         shutil.rmtree(tdir)
 
-for osname in 'linux win'.split():
-    for bitness in '64 32'.split():
-        create_bundle(osname, bitness)
-create_bundle('osx')
+
+if len(sys.argv) > 1:
+    which = sys.argv[-1]
+    m = re.match(r'(osx|win|linux)(32|64)?', sys.argv[-1])
+    if m is None:
+        raise SystemExit('Usage: export [linux32|linux64|win32|win64|osx]')
+    osname = m.group(1)
+    bitness = m.group(2) if osname != 'osx' else ''
+    create_bundle(osname, bitness)
+else:
+    for osname in 'linux win'.split():
+        for bitness in '64 32'.split():
+            create_bundle(osname, bitness)
+    create_bundle('osx')
