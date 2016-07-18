@@ -6,12 +6,8 @@ from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 
 import os
-import sys
 import subprocess
 import _winreg as winreg
-
-plat = 'amd64' if sys.maxsize > 2**32 else 'x86'
-
 
 RegOpenKeyEx = winreg.OpenKeyEx
 RegEnumKey = winreg.EnumKey
