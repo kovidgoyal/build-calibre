@@ -40,8 +40,6 @@ def main(args):
     ld = os.path.join(PREFIX, 'qt', 'lib')
     if not iswindows:
         run('env', library_path=ld)
-    else:
-        os.environ['SIP_DIR'] = os.path.join(os.path.dirname(PYTHON), 'share', 'sip')
     cmd = [PYTHON, 'setup.py', 'build', '--build-dir=' + build_dir, '--output-dir=' + ext_dir]
     if args.only:
         cmd.append('--only=' + args.only)
