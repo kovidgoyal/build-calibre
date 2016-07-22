@@ -16,7 +16,12 @@ either untar the official calibre source distribution tarball, or checkout
 calibre from github and run `python setup.py bootstrap`.
 
 Then set the environment variable `CALIBRE_SRC_DIR` to point to the location of
-the calibre source code.
+the calibre source code. For example, if you untarred the calibre source
+tarball into: `/usr/src/calibre-src` then set the environment variable as:
+
+```
+export CALIBRE_SRC_DIR=/usr/src/calibre-src
+```
 
 The code in this repository is intended to run on linux.
 
@@ -55,7 +60,7 @@ OS X
 ------
 
 You need a VirtualBox virtual machine of OS X 10.9 (Mavericks) named
-`osx-calibre-build`. To setup the VM, follow the steps
+`osx-calibre-build`. To setup OSX inside the VM, follow the steps
 
   * Turn on Remote Login under Network (SSHD)
   * Create a user account named `kovid` and enable password-less login for SSH
@@ -68,7 +73,7 @@ You need a VirtualBox virtual machine of OS X 10.9 (Mavericks) named
     requires the full XCode.
   * Run `sudo mkdir -p /calibre /scripts /sources /sw /patches && sudo chown kovid:staff /calibre /scripts /sources /sw /patches`
 
-To build the dependencies for calibre, run:
+Now that the VM is ready, you can start building. To build the dependencies for calibre, run:
 
 ```
 ./osx
@@ -109,7 +114,9 @@ You need a VirtualBox virtual machine of Windows 7 64bit named
       put them into c:\ucrt\x86 and c:\ucrt\x64 folders for 32-bit and 64-bit
       respectively.
 
-Now you need to install [cygwin](https://www.cygwin.com/setup-x86_64.exe)
+Now you need to install [cygwin](https://www.cygwin.com/setup-x86_64.exe) and
+setup ssh access.
+
     * Install cygwin, with the: vim, dos2unix, rsync, openssh, unzip, wget, make, zsh, bash-completion, curl
       packages
     * Edit /etc/passwd and replace all occurrences of /bin/bash with /bin/zsh (in
@@ -158,7 +165,7 @@ To build the 64bit and 32bit dependencies for calibre, run:
 ./win 32
 ```
 
-The output (after a very long time) will be in `build/win/[32|63]`
+The output (after a very long time) will be in `build/win/[32|64]`
 
 Now you can build calibre itself using these dependencies, to do that, run:
 
