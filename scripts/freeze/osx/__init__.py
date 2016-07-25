@@ -155,8 +155,9 @@ class Freeze(object):
 
     FID = '@executable_path/../Frameworks'
 
-    def __init__(self, build_dir, ext_dir, test_runner, test_launchers=False, dont_strip=False):
+    def __init__(self, build_dir, ext_dir, test_runner, test_launchers=False, dont_strip=False, sign_installers=False):
         self.build_dir = build_dir
+        self.sign_installers = sign_installers
         self.ext_dir = ext_dir
         self.test_runner = test_runner
         self.dont_strip = dont_strip
@@ -671,9 +672,10 @@ class Freeze(object):
         tdir = tempfile.mkdtemp()
         appdir = os.path.join(tdir, os.path.basename(d))
         shutil.copytree(d, appdir, symlinks=True)
-        with timeit() as times:
-            sign_app(appdir)
-        print('Signing completed in %d minutes %d seconds' % tuple(times))
+        if self.sign_installers:
+            with timeit() as times:
+                sign_app(appdir)
+            print('Signing completed in %d minutes %d seconds' % tuple(times))
         os.symlink('/Applications', os.path.join(tdir, 'Applications'))
         size_in_mb = int(subprocess.check_output(['du', '-s', '-k', tdir]).decode('utf-8').split()[0]) / 1024.
         cmd = ['/usr/bin/hdiutil', 'create', '-srcfolder', tdir, '-volname', volname, '-format', format]
@@ -696,4 +698,4 @@ class Freeze(object):
 
 def main(args, ext_dir, test_runner):
     build_dir = abspath(join(mkdtemp('frozen-'), APPNAME + '.app'))
-    Freeze(build_dir, ext_dir, test_runner, dont_strip=args.dont_strip)
+    Freeze(build_dir, ext_dir, test_runner, dont_strip=args.dont_strip, sign_installers=args.sign_installers)

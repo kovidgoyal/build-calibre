@@ -42,6 +42,7 @@ a('--only', default=None, help='Build only a single calibre extension')
 a('--dont-strip', default=False, action='store_true', help='Dont strip the binaries when building calibre')
 a('--compression-level', default='9', choices=list('123456789'), help='Level of compression for the linux calibre tarball')
 a('--skip-calibre-tests', default=False, action='store_true', help='Skip the build tests when building calibre')
+a('--sign-installers', default=False, action='store_true', help='Sign the binary installer, needs signing keys to be installed in the VMs')
 
 args = parser.parse_args(args[1:])
 

@@ -46,9 +46,6 @@ def get_executable(info_path):
 
 
 def sign_app(appdir):
-    if not os.path.exists(CODESIGN_KEYCHAIN):
-        print('WARNING: The key-chain for codesigning (%s) does not exist, not signing the app' % CODESIGN_KEYCHAIN)
-        return
     appdir = os.path.abspath(appdir)
     subprocess.check_call(['security', 'unlock-keychain', '-p', 'keychains are stupid', CODESIGN_KEYCHAIN])
     with current_dir(os.path.join(appdir, 'Contents')):

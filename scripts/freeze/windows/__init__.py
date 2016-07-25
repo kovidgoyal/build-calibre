@@ -662,4 +662,5 @@ def main(args, ext_dir, test_runner):
     if not is64bit:
         build_portable(env)
         build_portable_installer(env)
-    sign_installers(env)
+    if args.sign_installers:
+        sign_installers(env)
