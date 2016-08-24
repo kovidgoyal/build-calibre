@@ -301,8 +301,8 @@
     {
         "name": "netifaces",
         "unix": {
-            "filename": "netifaces-0.10.4.tar.gz",
-            "hash": "md5:36da76e2cfadd24cc7510c2c0012eb1e",
+            "filename": "netifaces-0.10.5.tar.gz",
+            "hash": "md5:5b4d1f1310ed279e6df27ef3a9b71519",
             "urls": ["pypi"]
         }
     },
