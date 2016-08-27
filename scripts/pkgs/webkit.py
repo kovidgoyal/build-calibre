@@ -7,13 +7,18 @@ from __future__ import (unicode_literals, division, absolute_import,
 import os
 import shutil
 
-from .constants import MAKEOPTS, build_dir, iswindows, PREFIX
+from .constants import MAKEOPTS, build_dir, iswindows, PREFIX, isosx
 from .utils import run, run_shell, replace_in_file
 
 
 def main(args):
     # Do not build webkit2
     replace_in_file('Tools/qmake/mkspecs/features/configure.prf', 'build_webkit2 \\', '\\')
+    if isosx:
+        # Bug in qtwebkit, the OBJC API gets turned on if
+        # MAC_OSX_DEPLOYMENT_TARGET >= 10.9 (which we do in the qt build)
+        # However it is broken, so disable it explicitly here
+        replace_in_file('Source/JavaScriptCore/API/JSBase.h', '#define JSC_OBJC_API_ENABLED (', '#define JSC_OBJC_API_ENABLED (0 && ')
 
     os.mkdir('build'), os.chdir('build')
     lp = os.path.join(PREFIX, 'qt', 'lib')

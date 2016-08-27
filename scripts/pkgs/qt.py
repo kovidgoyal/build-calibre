@@ -29,6 +29,10 @@ def main(args):
     cflags, ldflags = CFLAGS, LDFLAGS
     if isosx:
         ldflags = '-L' + LIBDIR
+        # The following is needed as without it the Qt build system does not add the
+        # necessary -stdlib=libc++ when linking. Probably, you can get rid of
+        # this on newer OS X systems/newer Qt versions
+        replace_in_file('qtbase/mkspecs/macx-clang/qmake.conf', 'MACOSX_DEPLOYMENT_TARGET = 10.7', 'MACOSX_DEPLOYMENT_TARGET = 10.9')
     os.mkdir('build'), os.chdir('build')
     configure = os.path.abspath('..\\configure.bat') if iswindows else '../configure'
     # Slim down Qt
@@ -47,10 +51,13 @@ def main(args):
         # Ubuntu 12.04 has gcc 4.6.3 which does not support c++11
         conf += ' -qt-xcb -glib -openssl -gtkstyle -qt-pcre -c++std c++98'
     elif isosx:
-        conf += ' -no-pkg-config -framework -no-openssl -securetransport '
+        # Use c++11 rather than the newest available for maximum backwards
+        # compat
+        conf += ' -no-pkg-config -framework -no-openssl -securetransport -no-freetype -no-fontconfig -c++std c++11'
     elif iswindows:
         # Qt links incorrectly against libpng and libjpeg, so use the bundled copy
-        conf += ' -openssl -ltcg -platform win32-msvc2015 -mp -no-plugin-manifests -no-angle -opengl desktop -qt-libpng -qt-libjpeg '
+        conf += (' -openssl -ltcg -platform win32-msvc2015 -mp -no-plugin-manifests -no-freetype -no-fontconfig'
+                 ' -no-angle -opengl desktop -qt-libpng -qt-libjpeg ')
         # The following config items are not supported on windows
         conf = conf.replace('-v -silent ', ' ')
         cflags = '-I {}/include'.format(PREFIX).replace(os.sep, '/')
