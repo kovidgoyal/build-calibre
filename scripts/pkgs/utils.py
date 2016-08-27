@@ -185,7 +185,7 @@ def replace_in_file(path, old, new, missing_ok=False):
         else:
             nraw = old.sub(new, raw)
         if raw == nraw and not missing_ok:
-            raise ValueError('Failed to patch: ' + path)
+            raise ValueError('Failed (pattern not found) to patch: ' + path)
         f.seek(0), f.truncate()
         f.write(nraw)
 
