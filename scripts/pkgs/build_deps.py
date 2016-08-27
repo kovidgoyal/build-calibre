@@ -29,7 +29,7 @@ all_deps = (
     # PDF libraries
     'poppler podofo '
     # Qt
-    'libgpg-error libgcrypt glib dbus dbusglib qt sip pyqt '
+    'libgpg-error libgcrypt glib dbus dbusglib qt webkit sip pyqt '
 ).strip().split() + python_deps
 
 if not islinux:

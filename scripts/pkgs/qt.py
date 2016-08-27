@@ -7,7 +7,7 @@ from __future__ import (unicode_literals, division, absolute_import,
 import os
 
 from .constants import CFLAGS, LDFLAGS, MAKEOPTS, build_dir, isosx, islinux, LIBDIR, iswindows, PREFIX
-from .utils import run, apply_patch, run_shell, replace_in_file, ModifiedEnv, current_env
+from .utils import run, run_shell, replace_in_file, ModifiedEnv, current_env
 
 
 def main(args):
@@ -26,29 +26,26 @@ def main(args):
             'qtbase/src/corelib/plugin/qsystemlibrary.cpp',
             'searchOrder << QFileInfo(qAppFileName()).path();',
             r'''searchOrder << (QFileInfo(qAppFileName()).path().replace(QLatin1Char('/'), QLatin1Char('\\')) + QString::fromLatin1("\\app\\DLLs\\"));''')
-    elif isosx:
-        # Patch below is needed for Qt < 5.6
-        # https://codereview.qt-project.org/#/c/125923/
-        apply_patch('qt-5.5-osx-dock-window-resizable.patch')
-    # Slim down Qt
-    apply_patch('qt-slim.patch', convert_line_endings=iswindows)
-    replace_in_file('qtwebkit/Tools/qmake/mkspecs/features/configure.prf', 'build_webkit2 \\', '\\')
     cflags, ldflags = CFLAGS, LDFLAGS
     if isosx:
         ldflags = '-L' + LIBDIR
     os.mkdir('build'), os.chdir('build')
     configure = os.path.abspath('..\\configure.bat') if iswindows else '../configure'
+    # Slim down Qt
+    # For the list of modules and their dependencies, see .gitmodules
+    skip_modules = (
+        # To add web engine remove qtwebengine and qtwebview from this list
+        'qtdeclarative qtactiveqt qtscript qttools qtxmlpatterns qttranslations qtdoc'
+        ' qt3d qtgraphicaleffects qtquickcontrols qtquickcontrols2 qtwebengine qtwebview'
+        ' qtcanvas3d'
+    ).split()
     conf = configure + (
         ' -v -silent -opensource -confirm-license -prefix {}/qt -release -nomake examples -nomake tests'
-        ' -no-sql-odbc -no-sql-psql -no-qml-debug -no-c++11 -icu '
+        ' -no-sql-odbc -no-sql-psql -no-qml-debug -icu -qt-harfbuzz'
     ).format(build_dir())
     if islinux:
-        # libudev is disabled because systemd based distros use libudev.so.1 while
-        # non systemd based distros use libudev.so.0 (debian stable currently uses
-        # libudev.so.0). And according to the incompetent udev developers, we
-        # cannot use mismatching udev client and daemon versions.
-        # http://www.marshut.com/yiqmk/can-apps-ship-their-own-copy-of-libudev.html
-        conf += ' -qt-xcb -glib -no-libudev -openssl -gtkstyle -qt-pcre '
+        # Ubuntu 12.04 has gcc 4.6.3 which does not support c++11
+        conf += ' -qt-xcb -glib -openssl -gtkstyle -qt-pcre -c++std c++98'
     elif isosx:
         conf += ' -no-pkg-config -framework -no-openssl -securetransport '
     elif iswindows:
@@ -56,10 +53,10 @@ def main(args):
         conf += ' -openssl -ltcg -platform win32-msvc2015 -mp -no-plugin-manifests -no-angle -opengl desktop -qt-libpng -qt-libjpeg '
         # The following config items are not supported on windows
         conf = conf.replace('-v -silent ', ' ')
-        conf.replace('-no-c++11', '')
         cflags = '-I {}/include'.format(PREFIX).replace(os.sep, '/')
         ldflags = '-L {}/lib'.format(PREFIX).replace(os.sep, '/')
-    conf += ' ' + cflags + ' ' + ldflags
+    skip_modules = ' '.join('-skip ' + x for x in skip_modules)
+    conf += ' ' + skip_modules + ' ' + cflags + ' ' + ldflags
     run(conf, library_path=True)
     # run_shell()
     run_shell
