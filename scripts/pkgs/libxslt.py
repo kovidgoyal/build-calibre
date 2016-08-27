@@ -5,8 +5,9 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import os
+import re
 
-from .constants import PREFIX, iswindows
+from .constants import PREFIX, iswindows, islinux, build_dir
 from .utils import simple_build, install_binaries, install_tree, run, replace_in_file, walk
 
 
@@ -30,3 +31,5 @@ def main(args):
         simple_build(
             '--disable-dependency-tracking --disable-static --enable-shared --without-python --without-debug --with-libxml-prefix={0}'
             ' --with-libxml-include-prefix={0}/include/libxml2'.format(PREFIX))
+        if islinux:
+            replace_in_file(os.path.join(build_dir(), 'lib/pkgconfig/libxslt.pc'), re.compile(br'^prefix=.+$', re.M), b'prefix=%s' % PREFIX)
