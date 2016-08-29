@@ -72,8 +72,8 @@ def main(args):
         with ModifiedEnv(PATH=os.path.abspath('../gnuwin32/bin') + os.pathsep + current_env()['PATH']):
             run('nmake')
         run('nmake install')
-        shutil.copyfile('.././qtbase/src/3rdparty/sqlite/sqlite3.c', os.path.join(build_dir(), 'qt'))
-        shutil.copytree('gnuwin32', os.path.join(build_dir(), 'qt', 'gnuwin32'))
+        shutil.copy2('../qtbase/src/3rdparty/sqlite/sqlite3.c', os.path.join(build_dir(), 'qt'))
+        shutil.copytree('../gnuwin32', os.path.join(build_dir(), 'qt', 'gnuwin32'))
     else:
         run('make ' + MAKEOPTS, library_path=True)
         run('make install')
