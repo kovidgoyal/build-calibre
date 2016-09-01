@@ -66,7 +66,7 @@ def main(args):
     skip_modules = ' '.join('-skip ' + x for x in skip_modules)
     conf += ' ' + skip_modules + ' ' + cflags + ' ' + ldflags
     run(conf, library_path=True)
-    run_shell()
+    # run_shell()
     run_shell
     if iswindows:
         with ModifiedEnv(PATH=os.path.abspath('../gnuwin32/bin') + os.pathsep + current_env()['PATH']):
