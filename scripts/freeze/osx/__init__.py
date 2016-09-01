@@ -621,7 +621,9 @@ class Freeze(object):
         tf = join(dirname(abspath(__file__)), 'calibre-notifier.app.tar.bz2')
         with tarfile.open(tf) as tf:
             tf.extractall(self.contents_dir)
-        os.rename(join(self.contents_dir, 'notifier.app'), join(self.contents_dir, 'calibre-notifier.app'))
+        dest = join(self.contents_dir, 'calibre-notifier.app')
+        os.rename(join(self.contents_dir, 'notifier.app'), dest)
+        shutil.copy2(join(self.resources_dir, 'calibre.icns'), join(dest, 'Contents', 'Resources', 'library.icns'))
 
     @flush
     def create_gui_apps(self):
