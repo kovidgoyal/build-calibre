@@ -17,7 +17,7 @@ if is64bit:
     UPGRADE_CODE = '5DD881FF-756B-4097-9D82-8C0F11D521EA'
 else:
     UPGRADE_CODE = 'BEB2A80D-E902-4DAD-ADF9-8BD2DA42CFE1'
-MINVERHUMAN = 'Windows Vista'
+MINVERHUMAN = 'Windows Vista SP2'
 
 CANDLE = WIXP + r'\bin\candle.exe'
 LIGHT = WIXP + r'\bin\light.exe'
