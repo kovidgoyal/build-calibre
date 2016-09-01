@@ -122,7 +122,8 @@ if islinux:
     QT_PLUGINS.append('platforminputcontexts')
     QT_DLLS += ['Qt5DBus', 'Qt5XcbQpa']
 elif isosx:
-    QT_DLLS += ['Qt5DBus']
+    QT_DLLS += ['Qt5DBus', 'QtMacExtras']
+    PYQT_MODULES += ('QtMacExtras',)
 else:
     QT_DLLS += ['Qt5WinExtras']
     PYQT_MODULES += ('QtWinExtras',)
