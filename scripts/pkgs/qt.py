@@ -57,7 +57,7 @@ def main(args):
         conf += ' -no-pkg-config -framework -no-openssl -securetransport -no-freetype -no-fontconfig -c++std c++11'
     elif iswindows:
         # Qt links incorrectly against libpng and libjpeg, so use the bundled copy
-        conf += (' -openssl -ltcg -platform win32-msvc2015 -mp -no-plugin-manifests -no-freetype -no-fontconfig'
+        conf += (' -openssl -directwrite -ltcg -platform win32-msvc2015 -mp -no-plugin-manifests -no-freetype -no-fontconfig'
                  ' -no-angle -opengl desktop -qt-libpng -qt-libjpeg ')
         # The following config items are not supported on windows
         conf = conf.replace('-v -silent ', ' ')
@@ -66,7 +66,7 @@ def main(args):
     skip_modules = ' '.join('-skip ' + x for x in skip_modules)
     conf += ' ' + skip_modules + ' ' + cflags + ' ' + ldflags
     run(conf, library_path=True)
-    # run_shell()
+    run_shell()
     run_shell
     if iswindows:
         with ModifiedEnv(PATH=os.path.abspath('../gnuwin32/bin') + os.pathsep + current_env()['PATH']):
