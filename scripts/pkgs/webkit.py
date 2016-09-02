@@ -9,10 +9,12 @@ import re
 import shutil
 
 from .constants import MAKEOPTS, build_dir, iswindows, PREFIX, isosx
-from .utils import walk, run, run_shell, replace_in_file, ModifiedEnv, current_env
+from .utils import walk, run, run_shell, replace_in_file, ModifiedEnv, current_env, apply_patch
 
 
 def main(args):
+    # Control font hinting
+    apply_patch('webkit_control_hinting.patch')
     # Do not build webkit2
     replace_in_file('Tools/qmake/mkspecs/features/configure.prf', 'build_webkit2 \\', '\\')
     if isosx:

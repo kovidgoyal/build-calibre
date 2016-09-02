@@ -1,0 +1,37 @@
+--- Source/WebCore/platform/graphics/qt/FontCustomPlatformDataQt.cpp	2016-09-02 14:06:35.253193429 +0530
++++ Source/WebCore/platform/graphics/qt/FontCustomPlatformDataQt.cpp	2016-09-02 14:08:22.376795560 +0530
+@@ -28,6 +28,7 @@
+ #include "WOFFFileFormat.h"
+ #endif
+ #include <QStringList>
++#include <stdlib.h>
+ 
+ namespace WebCore {
+ 
+@@ -62,7 +63,7 @@ FontCustomPlatformData* createFontCustom
+     }
+ #endif // !USE(ZLIB)
+     // Pixel size doesn't matter at this point, it is set in FontCustomPlatformData::fontPlatformData.
+-    QRawFont rawFont(fontData, /*pixelSize = */0, QFont::PreferDefaultHinting);
++    QRawFont rawFont(fontData, /*pixelSize = */0, getenv("CALIBRE_WEBKIT_NO_HINTING") ? QFont::PreferNoHinting : QFont::PreferDefaultHinting);
+     if (!rawFont.isValid())
+         return 0;
+ 
+--- Source/WebCore/platform/graphics/qt/FontPlatformDataQt.cpp	2016-09-02 13:58:50.968063575 +0530
++++ Source/WebCore/platform/graphics/qt/FontPlatformDataQt.cpp	2016-09-02 14:06:17.307049914 +0530
+@@ -26,6 +26,7 @@
+ 
+ #include "Font.h"
+ #include <wtf/text/WTFString.h>
++#include <stdlib.h>
+ 
+ namespace WebCore {
+ 
+@@ -102,6 +103,7 @@ FontPlatformData::FontPlatformData(const
+     font.setWeight(toQFontWeight(description.weight()));
+     font.setWordSpacing(wordSpacing);
+     font.setLetterSpacing(QFont::AbsoluteSpacing, letterSpacing);
++    if (getenv("CALIBRE_WEBKIT_NO_HINTING")) font.setHintingPreference(QFont::PreferNoHinting);
+     switch (description.fontSmoothing()) {
+         case AutoSmoothing:
+             if (Font::shouldUseSmoothing())
