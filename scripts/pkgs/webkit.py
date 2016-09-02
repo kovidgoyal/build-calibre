@@ -14,7 +14,7 @@ from .utils import walk, run, run_shell, replace_in_file, ModifiedEnv, current_e
 
 def main(args):
     # Control font hinting
-    apply_patch('webkit_control_hinting.patch')
+    apply_patch('webkit_control_hinting.patch', convert_line_endings=iswindows)
     # Do not build webkit2
     replace_in_file('Tools/qmake/mkspecs/features/configure.prf', 'build_webkit2 \\', '\\')
     if isosx:
