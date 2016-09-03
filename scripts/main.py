@@ -46,7 +46,7 @@ a('--sign-installers', default=False, action='store_true', help='Sign the binary
 
 args = parser.parse_args(args[1:])
 
-if args.shell:
+if args.shell or args.deps == ['shell']:
     from pkgs.build_deps import init_env
     dest_dir = init_env()
     try:
