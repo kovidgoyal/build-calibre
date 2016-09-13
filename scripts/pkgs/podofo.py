@@ -14,6 +14,10 @@ from .utils import walk, run, ModifiedEnv, install_binaries, replace_in_file, in
 
 def main(args):
     if iswindows:
+        # cmake cannot find openssl
+        replace_in_file('CMakeLists.txt', 'FIND_PACKAGE(LIBCRYPTO)',
+                        'SET(LIBCRYPTO_FOUND "1")\nSET(LIBCRYPTO_INCLUDE_DIR "{0}/include")\nSET(LIBCRYPTO_LIBRARIES "{0}/lib/libeay32.lib")'.format(
+                            PREFIX.replace(os.sep, '/')))
         windows_cmake_build(
             WANT_LIB64='FALSE', PODOFO_BUILD_SHARED='TRUE', PODOFO_BUILD_STATIC='False', FREETYPE_INCLUDE_DIR="{}/include/freetype2".format(PREFIX),
             nmake_target='podofo_shared'
