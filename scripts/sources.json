@@ -48,8 +48,8 @@
     {
         "name": "openssl",
         "unix": {
-            "filename": "openssl-1.0.2h.tar.gz",
-            "hash": "sha256:1d4007e53aad94a5b2002fe045ee7bb0b3d98f1a47f8b2bc851dcd1c74332919",
+            "filename": "openssl-1.0.2i.tar.gz",
+            "hash": "sha256:9287487d11c9545b6efb287cdb70535d4e9b284dd10d51441d9b9963d000de6f",
             "urls": ["https://www.openssl.org/source/{filename}"]
         }
     },
