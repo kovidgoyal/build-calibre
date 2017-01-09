@@ -38,7 +38,7 @@ if iswindows:
     tempfile.tempdir = 'C:\\t\\t'
 PREFIX = os.path.join(SW, 'sw')
 BIN = os.path.join(PREFIX, 'bin')
-PYTHON = os.path.join(PREFIX, 'private', 'python', 'python.exe') if iswindows else os.path.join(BIN, 'python')
+PYTHON = os.path.join(PREFIX, 'private', 'python', 'python.exe') if iswindows else os.path.join(BIN, 'python3')
 
 worker_env = {}
 cygwin_paths = []

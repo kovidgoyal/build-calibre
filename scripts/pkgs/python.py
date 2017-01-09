@@ -68,10 +68,7 @@ else:
             simple_build(conf)
 
         bindir = os.path.join(build_dir(), 'bin')
-        P = os.path.join(bindir, 'python')
-        replace_in_file(P + '-config', re.compile(br'^#!.+/bin/', re.MULTILINE), '#!' + PREFIX + '/bin/')
         if isosx:
-            bindir = os.path.join(build_dir(), 'bin')
             for f in os.listdir(bindir):
                 l = os.path.join(bindir, f)
                 if os.path.islink(l):
