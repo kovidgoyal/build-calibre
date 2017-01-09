@@ -31,17 +31,17 @@ if islinux:
     os.environ['HOME'] = tempfile.gettempdir()
     os.chdir(tempfile.gettempdir())
 
-parser = argparse.ArgumentParser(description='Build calibre dependencies')
+parser = argparse.ArgumentParser(description='Build kitty dependencies')
 a = parser.add_argument
 a('deps', nargs='*', default=[], help='Which dependencies to build')
 a('--shell', default=False, action='store_true',
   help='Start a shell in the container')
 a('--clean', default=False, action='store_true',
   help='Remove previously built packages')
-a('--only', default=None, help='Build only a single calibre extension')
-a('--dont-strip', default=False, action='store_true', help='Dont strip the binaries when building calibre')
-a('--compression-level', default='9', choices=list('123456789'), help='Level of compression for the linux calibre tarball')
-a('--skip-calibre-tests', default=False, action='store_true', help='Skip the build tests when building calibre')
+a('--only', default=None, help='Build only a single kitty extension')
+a('--dont-strip', default=False, action='store_true', help='Dont strip the binaries when building kitty')
+a('--compression-level', default='9', choices=list('123456789'), help='Level of compression for the linux kitty tarball')
+a('--skip-kitty-tests', default=False, action='store_true', help='Skip the build tests when building kitty')
 a('--sign-installers', default=False, action='store_true', help='Sign the binary installer, needs signing keys to be installed in the VMs')
 
 args = parser.parse_args(args[1:])
@@ -54,8 +54,8 @@ if args.shell or args.deps == ['shell']:
     finally:
         shutil.rmtree(dest_dir)
 
-if args.deps == ['calibre']:
-    from pkgs.build_calibre import main
+if args.deps == ['kitty']:
+    from pkgs.build_kitty import main
     main(args)
 else:
     from pkgs.build_deps import main
