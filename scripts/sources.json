@@ -27,6 +27,15 @@
     },
 
     {
+        "name": "glew",
+        "unix": {
+            "filename": "glew-2.0.0.tgz",
+            "hash": "sha1:6e15c84f7e1fad34cd3679f784a233744ddf048f",
+            "urls": ["http://downloads.sourceforge.net/sourceforge/glew/{filename}"]
+        }
+    },
+
+    {
         "name": "sqlite",
         "unix": {
             "filename": "sqlite-autoconf-3130000.tar.gz",
