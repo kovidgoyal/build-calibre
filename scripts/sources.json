@@ -36,6 +36,15 @@
     },
 
     {
+        "name": "glfw",
+        "unix": {
+            "filename": "glfw-3.2.1.zip",
+            "hash": "sha1:d40d8d491e53c105a01a02b4b53242ab7b2d27c3",
+            "urls": ["https://github.com/glfw/glfw/releases/download/3.2.1/{filename}"]
+        }
+    },
+
+    {
         "name": "sqlite",
         "unix": {
             "filename": "sqlite-autoconf-3130000.tar.gz",
