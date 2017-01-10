@@ -22,3 +22,10 @@ def main(args):
     run('make', *split(MAKEOPTS))
     run('make install')
     replace_in_file(os.path.join(build_dir(), 'lib/pkgconfig/glfw3.pc'), re.compile(br'^prefix=.+$', re.M), b'prefix=%s' % PREFIX)
+
+
+def install_name_change(old_name, is_dep):
+    bn = os.path.basename(old_name)
+    if bn.startswith('libglfw'):
+        return os.path.join(PREFIX, 'lib', bn)
+    return old_name
