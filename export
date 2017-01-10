@@ -36,7 +36,7 @@ def create_bundle(osname, bitness=''):
             print('\tCreating bundle...')
             os.fchmod(tf.fileno(), 0o644)
             subprocess.check_call(['tar', '-caf', tf.name] + os.listdir(tdir), cwd=tdir)
-            subprocess.check_call(['scp', tf.name, 'download.calibre-ebook.com:/srv/download/travis/' + name])
+            subprocess.check_call(['scp', tf.name, 'download.calibre-ebook.com:/srv/download/travis/kitty/' + name])
     finally:
         shutil.rmtree(tdir)
 
@@ -50,7 +50,7 @@ if len(sys.argv) > 1:
     bitness = m.group(2) if osname != 'osx' else ''
     create_bundle(osname, bitness)
 else:
-    for osname in 'linux win'.split():
-        for bitness in '64 32'.split():
-            create_bundle(osname, bitness)
+    # for osname in 'linux win'.split():
+    #     for bitness in '64 32'.split():
+    #         create_bundle(osname, bitness)
     create_bundle('osx')
