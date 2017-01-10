@@ -29,7 +29,7 @@ def build_kitty(args):
     os.chdir(KITTY_DIR)
     cmd = [PYTHON, 'setup.py', 'build']
     if args.quick_build:
-        cmd.append('--debug')
+        cmd.append('--debug'), cmd.append('--incremental')
     run(*cmd)
     if not args.skip_kitty_tests:
         run_build_tests()

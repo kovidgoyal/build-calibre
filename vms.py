@@ -103,17 +103,20 @@ class Rsync(object):
         f = self.name + ':' + from_
         self(f, to, excludes)
 
-    def to_vm(self, from_, to, excludes=frozenset()):
+    def to_vm(self, from_, to, excludes=frozenset(), delete_excluded=True):
         t = self.name + ':' + to
-        self(from_, t, excludes)
+        self(from_, t, excludes, delete_excluded)
 
-    def __call__(self, from_, to, excludes=frozenset()):
+    def __call__(self, from_, to, excludes=frozenset(), delete_excluded=True):
         ssh = ' '.join(SSH)
         if isinstance(excludes, type('')):
             excludes = excludes.split()
         excludes = frozenset(excludes) | self.excludes
         excludes = ['--exclude=' + x for x in excludes]
-        cmd = ['rsync', '-a', '-e', ssh, '--delete', '--delete-excluded'] + excludes + [from_ + '/', to]
+        cmd = ['rsync', '-a', '-e', ssh, '--delete']
+        if delete_excluded:
+            cmd.append('--delete-excluded')
+        cmd += excludes + [from_ + '/', to]
         # print(' '.join(cmd))
         print('Syncing', from_)
         p = subprocess.Popen(cmd)
@@ -128,7 +131,7 @@ def get_kitty_dir():
 def send_kitty(rsync, prefix='/'):
     kitty_dir = get_kitty_dir()
     if os.path.exists(os.path.join(kitty_dir, 'setup.py')):
-        rsync.to_vm(kitty_dir, prefix + 'kitty', '/linux-package *.so *.pyd *.pyc')
+        rsync.to_vm(kitty_dir, prefix + 'kitty', '/linux-package /build *.so *.pyd *.pyc', delete_excluded=False)
 
 
 def to_vm(rsync, output_dir, prefix='/', name='sw', sync_sw=True):
