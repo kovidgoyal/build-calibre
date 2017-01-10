@@ -38,9 +38,14 @@ output_dir = os.path.join(abspath('build'), 'osx')
 mkdir(output_dir)
 
 ensure_vm(VM)
-to_vm(rsync, output_dir)
-try:
+quick_build = '--quick-build' in sys.argv
+to_vm(rsync, output_dir, sync_sw=not quick_build)
+if quick_build:
+    print('Updating kitty source code in VM...')
     run_main(VM, 'python', '/scripts/main.py', *sys.argv[1:])
-finally:
-    print()
-    from_vm(rsync, output_dir)
+else:
+    try:
+        run_main(VM, 'python', '/scripts/main.py', *sys.argv[1:])
+    finally:
+        print()
+        from_vm(rsync, output_dir)

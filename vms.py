@@ -125,17 +125,22 @@ def get_kitty_dir():
     return os.environ.get('KITTY_SRC_DIR', os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'kitty'))
 
 
-def to_vm(rsync, output_dir, prefix='/', name='sw'):
-    print('Mirroring data to the VM...')
+def send_kitty(rsync, prefix='/'):
     kitty_dir = get_kitty_dir()
     if os.path.exists(os.path.join(kitty_dir, 'setup.py')):
         rsync.to_vm(kitty_dir, prefix + 'kitty', '/linux-package *.so *.pyd *.pyc')
+
+
+def to_vm(rsync, output_dir, prefix='/', name='sw', sync_sw=True):
+    print('Mirroring data to the VM...')
+    send_kitty(rsync, prefix)
 
     for x in 'scripts patches'.split():
         rsync.to_vm(x, prefix + x)
 
     rsync.to_vm('sources-cache', prefix + 'sources')
-    rsync.to_vm(output_dir, prefix + name, '/sw')
+    if sync_sw:
+        rsync.to_vm(output_dir, prefix + name, '/sw')
 
 
 def from_vm(rsync, output_dir, prefix='/', name='sw'):

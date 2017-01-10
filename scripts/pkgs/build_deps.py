@@ -98,13 +98,15 @@ def build(dep, args, dest_dir):
     rmtree(tsdir)
 
 
-def init_env(deps=all_deps):
+def init_env(deps=all_deps, quick_build=False):
     dest_dir = PREFIX
-    ensure_clear_dir(dest_dir)
     tdir = tempfile.tempdir if iswindows else os.path.join(tempfile.gettempdir(), 't')
     ensure_clear_dir(tdir)
     set_tdir(tdir)
-    install_pkgs(deps, dest_dir)
+    do_clear = not (quick_build and os.path.exists(dest_dir))
+    if do_clear:
+        ensure_clear_dir(dest_dir)
+        install_pkgs(deps, dest_dir)
     return dest_dir
 
 

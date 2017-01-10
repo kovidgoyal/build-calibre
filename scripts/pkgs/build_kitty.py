@@ -23,23 +23,30 @@ def run_build_tests():
             raise SystemExit(p.wait())
 
 
-def main(args):
-    init_env()
+def build_kitty(args):
     initialize_constants()
     putenv(SW=PREFIX, PKGCONFIG_EXE=os.path.join(PREFIX, 'bin', 'pkg-config'))
     os.chdir(KITTY_DIR)
     cmd = [PYTHON, 'setup.py', 'build']
+    if args.quick_build:
+        cmd.append('--debug')
     run(*cmd)
     if not args.skip_kitty_tests:
         run_build_tests()
-    if False:
-        if isosx:
-            from freeze.osx import main as freeze
-        elif iswindows:
-            from freeze.windows import main as freeze
-        else:
-            from freeze.linux import main as freeze
-        freeze(args)
 
-    # After a successful run, remove the unneeded sw directory
-    shutil.rmtree(PREFIX)
+
+def main(args):
+    init_env(quick_build=args.quick_build)
+    build_kitty(args)
+    if not args.quick_build:
+        if False:
+            if isosx:
+                from freeze.osx import main as freeze
+            elif iswindows:
+                from freeze.windows import main as freeze
+            else:
+                from freeze.linux import main as freeze
+            freeze(args)
+
+        # After a successful run, remove the unneeded sw directory
+        shutil.rmtree(PREFIX)
