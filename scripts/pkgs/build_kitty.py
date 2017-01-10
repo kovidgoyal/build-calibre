@@ -1,0 +1,43 @@
+#!/usr/bin/env python2
+# vim:fileencoding=utf-8
+# License: GPLv3 Copyright: 2016, Kovid Goyal <kovid at kovidgoyal.net>
+
+from __future__ import (unicode_literals, division, absolute_import,
+                        print_function)
+import os
+import shutil
+import subprocess
+
+from .build_deps import init_env
+from .constants import putenv, PREFIX, KITTY_DIR, PYTHON, isosx, iswindows
+from .utils import run, run_shell
+from freeze import initialize_constants
+
+
+def run_build_tests():
+    p = subprocess.Popen([PYTHON, 'test.py'])
+    if p.wait() != 0:
+        run_shell()
+        raise SystemExit(p.wait())
+
+
+def main(args):
+    init_env()
+    initialize_constants()
+    putenv(SW=PREFIX, PKGCONFIG_EXE=os.path.join(PREFIX, 'bin', 'pkg-config'))
+    os.chdir(KITTY_DIR)
+    cmd = [PYTHON, 'setup.py', 'build']
+    run(*cmd)
+    if not args.skip_kitty_tests:
+        run_build_tests()
+    if False:
+        if isosx:
+            from freeze.osx import main as freeze
+        elif iswindows:
+            from freeze.windows import main as freeze
+        else:
+            from freeze.linux import main as freeze
+        freeze(args)
+
+    # After a successful run, remove the unneeded sw directory
+    shutil.rmtree(PREFIX)

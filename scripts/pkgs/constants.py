@@ -33,7 +33,7 @@ if iswindows:
 SOURCES = ROOT + 'sources'
 PATCHES = ROOT + 'patches'
 SCRIPTS = ROOT + 'scripts'
-CALIBRE_DIR = ROOT + 'calibre'
+KITTY_DIR = ROOT + 'kitty'
 if iswindows:
     tempfile.tempdir = 'C:\\t\\t'
 PREFIX = os.path.join(SW, 'sw')

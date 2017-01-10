@@ -38,7 +38,6 @@ a('--shell', default=False, action='store_true',
   help='Start a shell in the container')
 a('--clean', default=False, action='store_true',
   help='Remove previously built packages')
-a('--only', default=None, help='Build only a single kitty extension')
 a('--dont-strip', default=False, action='store_true', help='Dont strip the binaries when building kitty')
 a('--compression-level', default='9', choices=list('123456789'), help='Level of compression for the linux kitty tarball')
 a('--skip-kitty-tests', default=False, action='store_true', help='Skip the build tests when building kitty')
