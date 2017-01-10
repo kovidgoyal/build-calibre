@@ -5,10 +5,11 @@
 from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import os
+import re
 import shutil
 import glob
 
-from .constants import iswindows, is64bit, build_dir
+from .constants import iswindows, is64bit, build_dir, PREFIX
 from .utils import simple_build, replace_in_file, run, install_binaries
 
 
@@ -41,3 +42,8 @@ def main(args):
         # run_shell()
     else:
         simple_build('--disable-dependency-tracking --disable-static')
+        pc = os.path.join(build_dir(), 'lib/pkgconfig/freetype2.pc')
+        replace_in_file(pc, re.compile(br'^prefix=.+$', re.M), b'prefix=%s' % PREFIX)
+        replace_in_file(pc, re.compile(br'^exec_prefix=.+$', re.M), b'exec_prefix={prefix}')
+        replace_in_file(pc, re.compile(br'^libdir=.+$', re.M), b'libdir={prefix}/lib')
+        replace_in_file(pc, re.compile(br'^includedir=.+$', re.M), b'includedir={prefix}/include')
