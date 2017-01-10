@@ -10,15 +10,17 @@ import subprocess
 
 from .build_deps import init_env
 from .constants import putenv, PREFIX, KITTY_DIR, PYTHON, isosx, iswindows
-from .utils import run, run_shell
+from .utils import run, run_shell, ModifiedEnv, current_env
 from freeze import initialize_constants
 
 
 def run_build_tests():
-    p = subprocess.Popen([PYTHON, 'test.py'])
-    if p.wait() != 0:
-        run_shell()
-        raise SystemExit(p.wait())
+    # OS X before 10.11 has a wcwidth() implementation that is too old
+    with ModifiedEnv(ANCIENT_WCWIDTH='1'):
+        p = subprocess.Popen([PYTHON, 'test.py'], env=current_env())
+        if p.wait() != 0:
+            run_shell()
+            raise SystemExit(p.wait())
 
 
 def main(args):
