@@ -16,3 +16,4 @@ def main(args):
     run('make GLEW_DEST={} install'.format(build_dir()))
     replace_in_file(os.path.join(build_dir(), 'lib/pkgconfig/glew.pc'), re.compile(br'^prefix=.+$', re.M), b'prefix=%s' % PREFIX)
     replace_in_file(os.path.join(build_dir(), 'lib/pkgconfig/glew.pc'), re.compile(br'^libdir=.+$', re.M), b'libdir=${prefix}/lib')
+    replace_in_file(os.path.join(build_dir(), 'lib/pkgconfig/glew.pc'), re.compile(br'^Requires:.+$', re.M), b'')
