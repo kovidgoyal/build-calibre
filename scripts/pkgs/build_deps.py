@@ -19,7 +19,7 @@ from pkgs.utils import (
 
 all_deps = (
     # Build tools
-    'cmake '
+    'pkg-config cmake '
     # Python and its dependencies
     'zlib bzip2 expat sqlite libffi openssl ncurses readline python '
     # Miscellaneous dependencies
@@ -28,9 +28,9 @@ all_deps = (
 
 if isosx:
     all_deps.remove('bzip2')
-if not isosx:
-    all_deps.remove('nasm')
+else:
     all_deps.remove('cmake')
+    all_deps.remove('pkg-config')
 
 
 def ensure_clear_dir(dest_dir):

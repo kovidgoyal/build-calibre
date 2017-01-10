@@ -27,6 +27,15 @@
     },
 
     {
+        "name": "pkg-config",
+        "unix": {
+            "filename": "pkg-config-0.29.tar.gz",
+            "hash": "sha1:f4b19d203b3896a4293af4b62c7f908063c88a5a",
+            "urls": ["https://pkg-config.freedesktop.org/releases/{filename}"]
+        }
+    },
+
+    {
         "name": "glew",
         "unix": {
             "filename": "glew-2.0.0.tgz",
