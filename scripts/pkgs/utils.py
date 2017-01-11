@@ -100,9 +100,11 @@ def run(*args, **kw):
     if rc != 0:
         print('The following command failed, with return code:', rc)
         print(' '.join(pipes.quote(x) for x in cmd))
-        print('Dropping you into a shell')
         sys.stdout.flush()
-        run_shell(library_path=kw.get('library_path'))
+        if not kw.get('no_shell'):
+            print('Dropping you into a shell')
+            sys.stdout.flush()
+            run_shell(library_path=kw.get('library_path'))
         raise SystemExit(1)
 
 

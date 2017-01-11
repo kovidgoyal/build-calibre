@@ -30,7 +30,7 @@ def build_kitty(args):
     cmd = [PYTHON, 'setup.py', 'build']
     if args.quick_build:
         cmd.append('--debug'), cmd.append('--incremental')
-    run(*cmd)
+    run(*cmd, no_shell=args.quick_build)
     if not args.skip_kitty_tests:
         run_build_tests()
 
