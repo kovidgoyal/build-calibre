@@ -38,7 +38,9 @@ def build_kitty(args):
 def main(args):
     init_env(quick_build=args.quick_build)
     build_kitty(args)
-    if not args.quick_build:
+    if args.quick_build:
+        subprocess.Popen([PYTHON, '.', '-c', 'from kitty.fonts.core_text import develop; develop()'], env=current_env()).wait()
+    else:
         if False:
             if isosx:
                 from freeze.osx import main as freeze
