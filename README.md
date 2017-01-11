@@ -68,7 +68,7 @@ You need a VirtualBox virtual machine of macOS 10.12 (Sierra) named
     for that account (setup `~/.ssh/authorized_keys`)
   * Setup ssh into the VM from the host under the name: `osx-kitty-build`
   * Run gcc in a terminal and install the command line developer tools
-  * Run `mkdir -p /Users/Shared/buildbot && cd /Users/Shared/buildbot && mkdir calibre scripts sources sw patches`
+  * Run `mkdir -p /Users/Shared/buildbot && cd /Users/Shared/buildbot && mkdir kitty scripts sources sw patches`
 
 Now that the VM is ready, you can start building. To build the dependencies for calibre, run:
 

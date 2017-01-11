@@ -30,6 +30,7 @@ if isosx:
     all_deps.remove('bzip2')
     all_deps.remove('fontconfig')
     all_deps.remove('freetype')
+    all_deps.remove('glew')
 else:
     all_deps.remove('cmake')
     all_deps.remove('pkg-config')
