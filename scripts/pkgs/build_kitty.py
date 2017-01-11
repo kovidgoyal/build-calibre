@@ -15,7 +15,7 @@ from freeze import initialize_constants
 
 
 def run_build_tests():
-    # OS X before 10.11 has a wcwidth() implementation that is too old
+    # OS X has a wcwidth() implementation that is too old
     with ModifiedEnv(ANCIENT_WCWIDTH='1'):
         p = subprocess.Popen([PYTHON, 'test.py'], env=current_env())
         if p.wait() != 0:

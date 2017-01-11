@@ -39,13 +39,14 @@ mkdir(output_dir)
 
 ensure_vm(VM)
 quick_build = '--quick-build' in sys.argv
-to_vm(rsync, output_dir, sync_sw=not quick_build)
+prefix = '/Users/Shared/buildbot/'
+to_vm(rsync, output_dir, prefix=prefix, sync_sw=not quick_build)
 if quick_build:
     print('Updating kitty source code in VM...')
-    run_main(VM, 'python', '/scripts/main.py', *sys.argv[1:])
+    run_main(VM, 'python', prefix + 'scripts/main.py', *sys.argv[1:])
 else:
     try:
-        run_main(VM, 'python', '/scripts/main.py', *sys.argv[1:])
+        run_main(VM, 'python', prefix + 'scripts/main.py', *sys.argv[1:])
     finally:
         print()
-        from_vm(rsync, output_dir)
+        from_vm(rsync, output_dir, prefix=prefix)

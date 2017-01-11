@@ -25,6 +25,8 @@ def uniq(vals):
 
 
 ROOT = 'C:\\' if iswindows else '/'
+if isosx:
+    ROOT = '/Users/shared/buildbot/'
 is64bit = sys.maxsize > (1 << 32)
 SW = ROOT + 'sw'
 if iswindows:

@@ -60,19 +60,15 @@ binary installers for calibre.
 OS X
 ------
 
-You need a VirtualBox virtual machine of OS X 10.9 (Mavericks) named
+You need a VirtualBox virtual machine of macOS 10.12 (Sierra) named
 `osx-calibre-build`. To setup OSX inside the VM, follow the steps
 
   * Turn on Remote Login under Network (SSHD)
   * Create a user account named `kovid` and enable password-less login for SSH
     for that account (setup `~/.ssh/authorized_keys`)
-  * Setup ssh into the VM from the host under the name: `osx-calibre-build`
-  * Setup passwordless sudo in the Virtual Machine for the user account kovid
-  * Install XCode (version 6.2 is the latest that runs on Mavericks). Download
-    from https://developer.apple.com/download/more/
-    Note that installing only the command line tools is not sufficient as Qt
-    requires the full XCode.
-  * Run `sudo mkdir -p /calibre /scripts /sources /sw /patches && sudo chown kovid:staff /calibre /scripts /sources /sw /patches`
+  * Setup ssh into the VM from the host under the name: `osx-kitty-build`
+  * Run gcc in a terminal and install the command line developer tools
+  * Run `mkdir -p /Users/Shared/buildbot && cd /Users/Shared/buildbot && mkdir calibre scripts sources sw patches`
 
 Now that the VM is ready, you can start building. To build the dependencies for calibre, run:
 
