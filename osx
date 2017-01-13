@@ -7,8 +7,9 @@ from __future__ import (unicode_literals, division, absolute_import,
 import sys
 import os
 import errno
+import subprocess
 
-from vms import ensure_vm, shutdown_vm, Rsync, to_vm, from_vm, run_main
+from vms import ensure_vm, shutdown_vm, Rsync, to_vm, from_vm, run_main, get_calibre_dir
 VM = 'osx-calibre-build'
 rsync = Rsync(VM)
 base = os.path.dirname(os.path.abspath(__file__))
@@ -30,10 +31,17 @@ def mkdir(x):
             return
         raise
 
+
 mkdir('sources-cache')
 mkdir('build')
 output_dir = os.path.join(abspath('build'), 'osx')
 mkdir(output_dir)
+
+if 'calibre' in sys.argv:
+    # Ensure the iconssets are built
+    if not os.path.exists(os.path.join(get_calibre_dir(), 'icons', 'icns', 'calibre.iconset')):
+        print('Building iconsets...')
+        subprocess.check_call([sys.executable, os.path.join(get_calibre_dir(), 'icons', 'icns', 'make_iconsets.py')])
 
 ensure_vm(VM)
 to_vm(rsync, output_dir)

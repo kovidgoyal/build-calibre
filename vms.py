@@ -121,9 +121,13 @@ class Rsync(object):
             raise SystemExit(p.wait())
 
 
+def get_calibre_dir():
+    return os.environ.get('CALIBRE_SRC_DIR', os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'calibre'))
+
+
 def to_vm(rsync, output_dir, prefix='/', name='sw'):
     print('Mirroring data to the VM...')
-    calibre_dir = os.environ.get('CALIBRE_SRC_DIR', os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'calibre'))
+    calibre_dir = get_calibre_dir()
     if os.path.exists(os.path.join(calibre_dir, 'setup.py')):
         rsync.to_vm(calibre_dir, prefix + 'calibre', '/imgsrc /build /dist /manual /format_docs /translations /.build-cache /tags /Changelog* *.so *.pyd')
 
