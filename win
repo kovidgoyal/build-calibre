@@ -9,7 +9,7 @@ import os
 import errno
 import subprocess
 
-from vms import ensure_vm, shutdown_vm, Rsync, to_vm, from_vm, run_main
+from vms import ensure_vm, shutdown_vm, Rsync, to_vm, from_vm, run_main, get_calibre_dir
 VM = 'win-calibre-build'
 rsync = Rsync(VM)
 base = os.path.dirname(os.path.abspath(__file__))
@@ -29,6 +29,7 @@ def usage():
         ' [the rest of the command line is passed to main.py]'
     ) % sys.argv[0])
 
+
 arch = sys.argv[1].decode('utf-8')
 if arch not in '64 32'.split() or len(sys.argv) < 2:
     usage()
@@ -42,6 +43,7 @@ def mkdir(x):
             return
         raise
 
+
 mkdir('sources-cache')
 mkdir('build')
 mkdir('build/win')
@@ -53,11 +55,15 @@ ensure_vm(VM)
 # Currently, we need to switch calibre to the vs2015 branch to build it. This
 # will go away once vs2015 is merged into master
 current_branch = 'vs2015'
-calibre_dir = os.environ.get('CALIBRE_SRC_DIR', os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'calibre'))
+calibre_dir = get_calibre_dir()
 if os.path.exists(os.path.join(calibre_dir, 'setup.py')):
     current_branch = subprocess.check_output('git rev-parse --abbrev-ref HEAD'.split(), cwd=calibre_dir).decode('utf-8').strip()
     if current_branch != 'vs2015':
         subprocess.check_call('git checkout vs2015'.split(), cwd=calibre_dir)
+    if 'calibre' in sys.argv and not os.path.exists(os.path.join(calibre_dir, 'icons', 'library.ico')):
+        # Ensure .ico files are built
+        print('Building .ico icons...')
+        subprocess.check_call([sys.executable, os.path.join(calibre_dir, 'icons', 'make_ico_files.py')])
 
 try:
     to_vm(rsync, output_dir, prefix='/cygdrive/c/', name='sw' + arch)
