@@ -32,7 +32,7 @@ def main(args):
     if iswindows:
         # In VisualStudio 15 Update 3 the compiler crashes on the below
         # statement
-        replace_in_file('QtGui/sipQtGuipart2.cpp', 'return new QPicture[sipNrElem]', 'return NULL')
+        replace_in_file('QtGui/sipQtGuipart2.cpp', 'return new  ::QPicture[sipNrElem]', 'return NULL')
         run('nmake')
         run('nmake install')
     else:

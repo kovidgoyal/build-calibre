@@ -433,9 +433,9 @@
             "urls": ["https://sourceforge.net/projects/pyqt/files/sip/sip-4.19/{filename}"]
         },
         "windows": {
-            "filename": "sip-4.18.1.zip",
-            "hash": "sha1:c05864ca7f9b2957459b09a2393ed4b415ac2d91",
-            "urls": ["http://sourceforge.net/projects/pyqt/files/sip/sip-4.18.1/{filename}"]
+            "filename": "sip-4.19.zip",
+            "hash": "sha1:a4fa63c049af0c8cc207f694267ec4108ab7473b",
+            "urls": ["http://sourceforge.net/projects/pyqt/files/sip/sip-4.19/{filename}"]
         }
     },
 
@@ -447,9 +447,9 @@
             "urls": ["https://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.7.1/{filename}"]
         },
         "windows": {
-            "filename": "PyQt5_gpl-5.7.zip",
-            "hash": "sha1:5af88976fa3c3dd6b0f04a174f1f43c3e2b80ad3",
-            "urls": ["http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.7/{filename}"]
+            "filename": "PyQt5_gpl-5.7.1.zip",
+            "hash": "sha1:d86fd3f3f70f252625f10cfe9ae0d68350cb3ef0",
+            "urls": ["http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.7.1/{filename}"]
         }
     },
 
