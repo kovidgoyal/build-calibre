@@ -400,28 +400,28 @@
     {
         "name": "qt",
         "unix": {
-            "filename": "qt-everywhere-opensource-src-5.6.1-1.tar.xz",
-            "hash": "sha1:b014552b636c5c3ad72d7f9f7b687fde179cf861",
-            "urls": ["http://download.qt.io/official_releases/qt/5.6/5.6.1/single/{filename}"]
+            "filename": "qt-everywhere-opensource-src-5.6.2.tar.xz",
+            "hash": "sha1:42af05f2086c38a10ba1c707bbff7eca5fe55a22",
+            "urls": ["http://www.mirrorservice.org/sites/download.qt-project.org/archive/qt/5.6/5.6.2/single/{filename}"]
         },
         "windows": {
-            "filename": "qt-everywhere-opensource-src-5.6.1-1.zip",
-            "hash": "sha1:72a7e4094a6d18691b8decdd2ecdb205a16cca6e",
-            "urls": ["http://download.qt.io/official_releases/qt/5.6/5.6.1/single/{filename}"]
+            "filename": "qt-everywhere-opensource-src-5.6.2.zip",
+            "hash": "sha1:c7135b63fd63d708dc43143589dd6134256af075",
+            "urls": ["http://www.mirrorservice.org/sites/download.qt-project.org/archive/qt/5.6/5.6.2/single/{filename}"]
         }
     },
 
     {
         "name": "webkit",
         "unix": {
-            "filename":"qtwebkit-opensource-src-5.6.1.tar.xz",
-            "hash": "sha1:c1ebe5c366cde29b09004de60ad6da2857300bae",
-            "urls":["http://download.qt.io/community_releases/5.6/5.6.1/{filename}"]
+            "filename":"qtwebkit-opensource-src-5.6.2.tar.xz",
+            "hash": "sha1:3dba4ec72c784f03ef4bf62a199cf4e7e49a6562",
+            "urls":["http://www.mirrorservice.org/sites/download.qt-project.org/community_releases/5.6/5.6.2/{filename}"]
         },
         "windows": {
-            "filename":"qtwebkit-opensource-src-5.6.1.zip",
-            "hash": "sha1:38f7b1350b2a715398315696aae6918e747f13a4",
-            "urls":["http://download.qt.io/community_releases/5.6/5.6.1/{filename}"]
+            "filename":"qtwebkit-opensource-src-5.6.2.zip",
+            "hash": "sha1:0351be53d1d439582e8e610b6d64e882da3786e1",
+            "urls":["http://www.mirrorservice.org/sites/download.qt-project.org/community_releases/5.6/5.6.2/{filename}"]
         }
     },
 
