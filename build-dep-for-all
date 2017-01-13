@@ -27,7 +27,7 @@ def r(cmd):
 
 
 if len(sys.argv) < 2:
-    raise SystemExit('Usage: {} name-of-dependency-to-build'.format(sys.argv[0]))
+    raise SystemExit('Usage: {} names-of-dependencies-to-build'.format(sys.argv[0]))
 
 r('linux 64'), r('linux 32')
 r('win 64'), r('win 32')
