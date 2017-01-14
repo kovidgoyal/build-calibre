@@ -493,7 +493,11 @@ class Freeze(object):
             finally:
                 if tdir is not None:
                     shutil.rmtree(tdir)
-        shutil.rmtree(os.path.join(self.site_packages, 'calibre', 'plugins'))
+        try:
+            shutil.rmtree(os.path.join(self.site_packages, 'calibre', 'plugins'))
+        except OSError as err:
+            if err.errno != errno.ENOENT:
+                raise
         sp = join(self.resources_dir, 'Python', 'site-packages')
         for x in os.listdir(join(sp, 'PyQt5')):
             if x.endswith('.so') and x.rpartition('.')[0] not in PYQT_MODULES:
