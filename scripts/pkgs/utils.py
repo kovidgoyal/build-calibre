@@ -70,7 +70,7 @@ def current_env(library_path=False):
 
 
 def run_shell(library_path=False):
-    sh = '/bin/bash' if islinux else 'C:/cygwin64/bin/zsh' if iswindows else '/bin/zsh'
+    sh = 'C:/cygwin64/bin/zsh' if iswindows else '/bin/zsh'
     env = current_env(library_path=library_path)
     if iswindows:
         from .constants import cygwin_paths
@@ -188,6 +188,7 @@ def replace_in_file(path, old, new, missing_ok=False):
             raise ValueError('Failed (pattern not found) to patch: ' + path)
         f.seek(0), f.truncate()
         f.write(nraw)
+
 
 if iswindows:
     import ctypes

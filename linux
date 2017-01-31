@@ -9,6 +9,10 @@ import sys
 import os
 import subprocess
 import errno
+import shlex
+import tempfile
+import atexit
+import shutil
 
 base = os.path.dirname(os.path.abspath(__file__))
 
@@ -22,6 +26,7 @@ def usage():
         'Usage: %s 32|64'
         ' [the rest of the command line is passed to main.py]'
     ) % sys.argv[0])
+
 
 arch = sys.argv[1].decode('utf-8')
 if arch not in '64 32'.split() or len(sys.argv) < 2:
@@ -39,63 +44,106 @@ def mkdir(x):
         os.chown(abspath(x),
                  int(os.environ['SUDO_UID']), int(os.environ['SUDO_GID']))
 
+
 mkdir('sources-cache')
 mkdir('build')
 mkdir('build/linux')
 output_dir = os.path.join(abspath('build'), 'linux', arch)
 mkdir(output_dir)
+img_path = os.path.join(output_dir, 'container-1.aci')
+
+
+def call(*cmd):
+    if len(cmd) == 1 and isinstance(cmd[0], basestring):
+        cmd = shlex.split(cmd[0])
+    print('\033[92m', end='')
+    print(*cmd, end='\033[0m\n')
+    ret = subprocess.Popen(cmd).wait()
+    if ret != 0:
+        raise SystemExit(ret)
 
 
 def check_for_image(tag):
-    return bool(subprocess.check_output(('docker images -q calibre:%s' % tag).split()))
+    return os.path.exists(img_path)
 
 
-def build_docker():
-    DOCKERFILE = '''
-FROM {}
-MAINTAINER Kovid Goyal "kovid@kovidgoyal.net"
+def build_container():
+    cwd = os.getcwd()
+    os.chdir(output_dir)
+    image = 'ubuntu:precise' if arch == '64' else 'daald/ubuntu32:precise'
+    call('sudo acbuild begin docker://' + image)
+    try:
+        call('sudo acbuild set-name calibre' + arch)
+        call('sudo acbuild set-user kovid')
+        call('sudo acbuild set-group users')
+        call('sudo acbuild set-exec /bin/zsh')
+        call('sudo acbuild set-working-directory /tmp')
+        call('sudo acbuild environment add USER kovid')
+        call('sudo acbuild environment add IN_CONTAINER 1')
+        call('sudo acbuild environment add TERM xterm-256color')
+        call('sudo acbuild mount add sources /sources')
+        call('sudo acbuild mount add sw /sw')
+        call('sudo acbuild mount add tmp /tmp')
+        call('sudo acbuild mount add scripts /scripts --read-only')
+        call('sudo acbuild mount add patches /patches --read-only')
+        call('sudo acbuild mount add calibre /calibre --read-only')
+        call('sudo acbuild mount add terminfo /usr/share/terminfo --read-only')
+        for cmd in [
+                # Basic build environment
+                'apt-get update',
+                'apt-get install -y build-essential nasm python-argparse cmake chrpath zsh',
+                # Build time deps for Qt. See http://doc.qt.io/qt-5/linux-requirements.html and https://wiki.qt.io/Building_Qt_5_from_Git
+                'apt-get install -y flex bison gperf ruby libx11-dev libxext-dev libxfixes-dev'
+                ' libxi-dev libxrender-dev libxcb1-dev libx11-xcb-dev libxcb-glx0-dev xkb-data libglu1-mesa-dev libgtk2.0-dev',
+                # Cleanup
+                'apt-get clean',
+                # User account
+                'useradd --home-dir=/home/kovid --create-home --uid=1000 --gid=100 kovid',
+                'chsh -s /bin/zsh kovid',
+        ]:
+            cmd = ['sudo', 'acbuild', 'run', '--'] + shlex.split(cmd)
+            call(*cmd)
+        call('sudo acbuild write --overwrite ' + img_path)
+        call('sudo chown {}:{} {}'.format(os.getuid(), os.getgid(), img_path))
+    finally:
+        call('sudo acbuild end')
+        os.chdir(cwd)
 
-RUN useradd --home-dir=/tmp --uid=1000 --gid=100 kovid
-# Basic build environment
-RUN apt-get update && apt-get install -y build-essential nasm python-argparse cmake chrpath
-# Build time deps for Qt. See http://doc.qt.io/qt-5/linux-requirements.html and https://wiki.qt.io/Building_Qt_5_from_Git
-RUN apt-get install -y flex bison gperf ruby libx11-dev libxext-dev libxfixes-dev \
-    libxi-dev libxrender-dev libxcb1-dev libx11-xcb-dev libxcb-glx0-dev xkb-data libglu1-mesa-dev libgtk2.0-dev
 
-RUN apt-get clean
-'''.format('ubuntu:precise' if arch == '64' else 'daald/ubuntu32:precise')
-    with open(os.path.join(output_dir, 'dockerfile'), 'wb') as f:
-        f.write(DOCKERFILE.encode('utf-8'))
-    cmd = ('docker', 'build', '-t', ('calibre:' + arch), '-f', f.name, output_dir)
-    print(*cmd)
-    p = subprocess.Popen(cmd)
-    if p.wait() != 0:
-        raise SystemExit(p.wait())
-
-if sys.argv[2:] == ['docker']:
-    build_docker()
+if sys.argv[2:] == ['container']:
+    build_container()
     raise SystemExit(0)
 
 if not check_for_image(arch):
-    build_docker()
+    build_container()
+
+tdir = tempfile.mkdtemp()
+atexit.register(shutil.rmtree, tdir)
+zshrc = os.path.realpath(os.path.expanduser('~/.zshrc'))
+if os.path.exists(zshrc):
+    shutil.copy2(zshrc, os.path.join(tdir, '.zshrc'))
+else:
+    os.touch(os.path.join(tdir, '.zshrc'))
 
 cmd = [
-    'docker', 'run',
-    '-v', abspath('sources-cache') + ':/sources:rw',
-    '-v', abspath('scripts') + ':/scripts:ro',
-    '-v', abspath('patches') + ':/patches:ro',
-    '-v', output_dir + ':/sw:rw',
-    '--tmpfs', '/tmp:rw,nodev,nosuid,size=4G,noatime,exec',
-    '--rm=true',
+    'sudo', 'rkt', 'run', '--insecure-options=image',
+    '--volume=sw,kind=host,source=' + output_dir,
+    '--volume=tmp,kind=host,source=' + tdir,
+    '--volume=sources,kind=host,source=' + abspath('sources-cache'),
+    '--volume=scripts,kind=host,readOnly=true,source=' + abspath('scripts'),
+    '--volume=patches,kind=host,readOnly=true,source=' + abspath('patches'),
+    '--volume=terminfo,kind=host,readOnly=true,source=' + '/usr/share/terminfo',
+    img_path,
     '--interactive=' + ('true' if sys.stdin.isatty() else 'false'),
-    '--tty=' + ('true' if sys.stdin.isatty() else 'false'),
-    'calibre:' + arch,
-    'python', '/scripts/main.py',
+    '--hostname=calibre' + arch,
+    '--readonly-rootfs=true',
+    '--exec=python2',
+    '--', '/scripts/main.py',
 ]
+
 calibre_dir = os.environ.get('CALIBRE_SRC_DIR', os.path.join('..', 'calibre'))
 if os.path.exists(os.path.join(calibre_dir, 'setup.py')):
-    cmd[2:2] = ['-v', abspath(calibre_dir) + ':/calibre:ro']
+    idx = cmd.index(img_path)
+    cmd.insert(idx, '--volume=calibre,kind=host,readOnly=true,source=' + abspath(calibre_dir))
 cmd += sys.argv[2:]
-print(*cmd)
-
-raise SystemExit(subprocess.Popen(cmd).wait())
+call(*cmd)

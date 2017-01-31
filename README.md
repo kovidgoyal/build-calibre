@@ -25,7 +25,7 @@ export CALIBRE_SRC_DIR=/usr/src/calibre-src
 
 The code in this repository is intended to run on linux.
 
-To make the linux calibre builds, it uses docker.
+To make the linux calibre builds, it uses rkt and acbuild to create containers.
 
 To make the Windows and OS X builds it uses VirtualBox VMs. Instructions on
 creating the VMs are in their respective sections below.
@@ -33,8 +33,9 @@ creating the VMs are in their respective sections below.
 Linux
 -------
 
-You need to have docker installed and running as the linux
-builds are done in a docker container.
+You need to have [rkt](https://coreos.com/rkt/) and
+[acbuild](https://github.com/containers/build) installed as the linux builds
+are done in a rkt container. 
 
 To build the 64bit and 32bit dependencies for calibre, run:
 
