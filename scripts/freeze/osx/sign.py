@@ -23,7 +23,8 @@ def codesign(items):
     # servers, probably due to network congestion, so add --timestamp=none to
     # this command line. That means the signature will fail once your code
     # signing key expires and key revocation wont work, but...
-    subprocess.check_call(['codesign', '-s', 'Kovid Goyal', '--keychain', CODESIGN_KEYCHAIN] + list(items))
+    if items:
+        subprocess.check_call(['codesign', '-s', 'Kovid Goyal', '--keychain', CODESIGN_KEYCHAIN] + list(items))
 
 
 def files_in(folder):

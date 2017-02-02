@@ -12,7 +12,7 @@ from contextlib import closing
 
 
 from pkgs.constants import KITTY_DIR, LIBDIR, worker_env, PYTHON, cpu_count
-from pkgs.utils import run
+from pkgs.utils import walk, run
 
 kitty_constants = {}
 
@@ -65,4 +65,7 @@ def parallel_build(jobs, log=print, verbose=True):
 
 
 def py_compile(basedir):
-    run(PYTHON, '-m', 'compileall', '-f', '-q', basedir, library_path=True)
+    run(PYTHON, '-OO', '-m', 'compileall', '-f', '-q', '-b', basedir, library_path=True)
+    for f in walk(basedir):
+        if f.endswith('.py'):
+            os.remove(f)

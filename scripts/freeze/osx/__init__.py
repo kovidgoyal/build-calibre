@@ -17,7 +17,7 @@ import tempfile
 import time
 
 from pkgs.constants import KITTY_DIR, PREFIX, SW, get_py_ver
-from pkgs.utils import current_dir, timeit, walk
+from pkgs.utils import current_dir, timeit, walk, run_shell
 
 from .. import kitty_constants, py_compile
 from .sign import sign_app
@@ -25,8 +25,6 @@ from .sign import sign_app
 abspath, join, basename, dirname = os.path.abspath, os.path.join, os.path.basename, os.path.dirname
 
 LICENSE = open('LICENSE', 'rb').read()
-ENV = dict(
-    SSL_CERT_FILE='@executable_path/../Resources/mozilla-ca-certs.pem', )
 APPNAME, VERSION = kitty_constants['appname'], kitty_constants['version']
 
 
@@ -98,6 +96,12 @@ class Freeze(object):
 
         self.run()
 
+    def run_shell(self):
+        cwd = os.getcwd()
+        os.chdir(self.contents_dir)
+        run_shell()
+        os.chdir(cwd)
+
     def run(self):
         ret = 0
         self.create_skeleton()
@@ -108,6 +112,7 @@ class Freeze(object):
         self.compile_py_modules()
         if not self.dont_strip:
             self.strip_files()
+        # self.run_shell()
 
         ret = self.makedmg(self.build_dir, APPNAME + '-' + VERSION)
 
@@ -171,21 +176,19 @@ class Freeze(object):
     @flush
     def add_python_framework(self):
         print('\nAdding Python framework')
-        py_ver = self.py_ver
         src = join(PREFIX + '/python', 'Python.framework')
         x = join(self.frameworks_dir, 'Python.framework')
         curr = os.path.realpath(join(src, 'Versions', 'Current'))
         currd = join(x, 'Versions', basename(curr))
         rd = join(currd, 'Resources')
-        os.makedirs(rd), os.makedirs(join(currd, 'bin'))
+        os.makedirs(rd)
         shutil.copy2(join(curr, 'Resources', 'Info.plist'), rd)
         shutil.copy2(join(curr, 'Python'), currd)
-        shutil.copy2(join(curr, 'bin/python{}'.format(py_ver)), join(currd, 'bin'))
         self.set_id(
             join(currd, 'Python'),
             self.FID + '/Python.framework/Versions/%s/Python' % basename(curr))
-        os.symlink('../Frameworks/Python.framework/Versions/{0}/bin/python{0}'.format(py_ver), os.path.join(self.contents_dir, 'MacOS', 'python3'))
-        # The following is needed for codesign in OS X >= 10.9.5
+        self.fix_dependencies_in_lib(join(self.contents_dir, 'MacOS', 'kitty'))
+        # The following is needed for codesign
         with current_dir(x):
             os.symlink(basename(curr), 'Versions/Current')
             for y in ('Python', 'Resources'):
@@ -204,8 +207,6 @@ class Freeze(object):
 
     @flush
     def create_plist(self):
-        env = dict(**ENV)
-        env['KITTY_LAUNCHED_FROM_BUNDLE'] = '1'
         pl = dict(
             CFBundleDevelopmentRegion='English',
             CFBundleDisplayName=APPNAME,
@@ -225,7 +226,8 @@ class Freeze(object):
             CFBundleIconFile=APPNAME + '.icns',
             NSHighResolutionCapable=True,
             LSApplicationCategoryType='public.app-category.utilities',
-            LSEnvironment=env)
+            LSEnvironment={'KITTY_LAUNCHED_BY_LAUNCH_SERVICES': '1'},
+        )
         plistlib.writePlist(pl, join(self.contents_dir, 'Info.plist'))
 
     @flush
