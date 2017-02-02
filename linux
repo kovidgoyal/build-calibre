@@ -114,6 +114,11 @@ if sys.argv[2:] == ['container']:
     build_container()
     raise SystemExit(0)
 
+if sys.argv[1:] == ['shutdown']:
+    call('sudo rkt gc --grace-period=0s')
+    call('sudo rkt gc --grace-period=0s')  # actually delete pods
+    raise SystemExit(0)
+
 if not check_for_image(arch):
     build_container()
 
