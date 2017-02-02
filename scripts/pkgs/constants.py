@@ -7,13 +7,13 @@ from __future__ import (unicode_literals, division, absolute_import,
 import sys
 import os
 import tempfile
+import subprocess
 
 _plat = sys.platform.lower()
 iswindows = 'win32' in _plat or 'win64' in _plat
 isosx = 'darwin' in _plat
 islinux = not iswindows and not isosx
 pkg_ext = 'pkg'
-py_ver = '2.7'
 
 
 def uniq(vals):
@@ -44,6 +44,11 @@ PYTHON = os.path.join(PREFIX, 'private', 'python', 'python.exe') if iswindows el
 
 worker_env = {}
 cygwin_paths = []
+
+
+def get_py_ver():
+    return subprocess.check_output([PYTHON, '-c', 'import sysconfig; print(sysconfig.get_python_version())']).decode('utf-8').strip()
+
 
 if iswindows:
     CFLAGS = CPPFLAGS = LIBDIR = LDFLAGS = ''

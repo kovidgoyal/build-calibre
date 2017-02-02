@@ -51,18 +51,9 @@ def sign_app(appdir):
     with current_dir(os.path.join(appdir, 'Contents')):
         executables = {get_executable('Info.plist')}
 
-        # Sign the sub application bundles
-        sub_apps = glob('*.app')
-        for sa in sub_apps:
-            exe = get_executable(sa + '/Contents/Info.plist')
-            if exe in executables:
-                raise ValueError('Multiple app bundles share the same executable: %s' % exe)
-            executables.add(exe)
-        codesign(sub_apps)
-
-        # Sign everything in MacOS except the main executables of the various
-        # app bundles which will be signed automatically by codesign when
-        # signing the app bundles
+        # Sign everything in MacOS except the main executable
+        # which will be signed automatically by codesign when
+        # signing the app bundle
         with current_dir('MacOS'):
             items = set(os.listdir('.')) - executables
             codesign(expand_dirs(items))

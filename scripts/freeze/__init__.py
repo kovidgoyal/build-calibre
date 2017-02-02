@@ -12,7 +12,7 @@ from contextlib import closing
 
 
 from pkgs.constants import KITTY_DIR, LIBDIR, worker_env, PYTHON, cpu_count
-from pkgs.utils import walk, run
+from pkgs.utils import run
 
 kitty_constants = {}
 
@@ -25,7 +25,9 @@ def read_kitty_file(name):
 def initialize_constants():
     src = read_kitty_file('constants.py')
     nv = re.search(r'version\s+=\s+\((\d+), (\d+), (\d+)\)', src)
+    nv = re.search(r'version\s+=\s+\((\d+), (\d+), (\d+)\)', src)
     kitty_constants['version'] = '%s.%s.%s' % (nv.group(1), nv.group(2), nv.group(3))
+    kitty_constants['appname'] = re.search(r"^appname\s+=\s+'([^']+)'", src, flags=re.MULTILINE).group(1)
 
 
 def run_worker(job, decorate=True):
@@ -63,9 +65,4 @@ def parallel_build(jobs, log=print, verbose=True):
 
 
 def py_compile(basedir):
-    run(PYTHON, '-OO', '-c', 'import compileall; compileall.compile_dir("%s", force=True, quiet=True)' % basedir, library_path=True)
-
-    for f in walk(basedir):
-        ext = f.rpartition('.')[-1]
-        if ext in ('py', 'pyc'):
-            os.remove(f)
+    run(PYTHON, '-m', 'compileall', '-f', '-q', basedir, library_path=True)
