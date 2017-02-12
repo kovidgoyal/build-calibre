@@ -30,6 +30,10 @@ if hasattr(os, 'geteuid') and os.geteuid() == 0:
 if islinux:
     os.environ['HOME'] = tempfile.gettempdir()
     os.chdir(tempfile.gettempdir())
+    path = os.environ['PATH'].split(os.pathsep)
+    idx = path.index('/usr/bin')
+    path.insert(idx, '/bin')
+    os.environ['PATH'] = os.pathsep.join(path)
 
 parser = argparse.ArgumentParser(description='Build calibre dependencies')
 a = parser.add_argument
