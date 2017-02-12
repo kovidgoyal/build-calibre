@@ -188,7 +188,7 @@ def eintr_retry_call(func, *args, **kwargs):
 
 
 def singleinstance():
-    name = 'build-calibre-%s-singleinstance-%d' % (arch, os.geteuid())
+    name = 'build-calibre-%s-singleinstance' % arch
     if not isinstance(name, bytes):
         name = name.encode('utf-8')
     address = b'\0' + name.replace(b' ', b'_')
