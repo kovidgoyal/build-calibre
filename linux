@@ -141,7 +141,6 @@ def mount_all(tdir):
     mount('sources-cache', '/sources')
     mount('scripts', '/scripts', True)
     mount('patches', '/patches', True)
-    mount('/usr/share/terminfo', '/usr/share/terminfo', True)
     calibre_dir = os.environ.get('CALIBRE_SRC_DIR',
                                  os.path.join('..', 'calibre'))
     if os.path.exists(os.path.join(calibre_dir, 'setup.py')):
@@ -159,6 +158,16 @@ def umount_all():
         if mp.startswith(img_path):
             call('sudo', 'umount', '-l', mp)
     silent_calls = False
+
+
+def copy_terminfo():
+    raw = subprocess.check_output(['infocmp']).decode('utf-8').splitlines()[0]
+    path = raw.partition(':')[2].strip()
+    if path and os.path.exists(path):
+        bdir = os.path.basename(os.path.dirname(path))
+        dest = os.path.join(img_path, 'usr/share/terminfo', bdir)
+        call('sudo', 'mkdir', dest)
+        call('sudo', 'cp', '-a', path, dest)
 
 
 def shutdown():
@@ -194,7 +203,7 @@ def run():
                                                         os.getegid()),
             img_path, 'python2', '/scripts/main.py'
         ] + sys.argv[2:]
-        os.environ['TERM'] = 'xterm-256color'
+        copy_terminfo()
         os.environ.pop('LANG', None)
         for k in tuple(os.environ):
             if k.startswith('LC') or k.startswith('XAUTH'):
