@@ -5,11 +5,14 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import atexit
 import errno
+import fcntl
 import os
 import pwd
 import shlex
 import shutil
+import socket
 import subprocess
 import sys
 import tempfile
@@ -166,13 +169,45 @@ def copy_terminfo():
     if path and os.path.exists(path):
         bdir = os.path.basename(os.path.dirname(path))
         dest = os.path.join(img_path, 'usr/share/terminfo', bdir)
-        call('sudo', 'mkdir', dest)
+        call('sudo', 'mkdir', '-p', dest)
         call('sudo', 'cp', '-a', path, dest)
 
 
 def shutdown():
     pass
 
+
+def eintr_retry_call(func, *args, **kwargs):
+    while True:
+        try:
+            return func(*args, **kwargs)
+        except EnvironmentError as e:
+            if getattr(e, 'errno', None) == errno.EINTR:
+                continue
+            raise
+
+
+def singleinstance():
+    name = 'build-calibre-%s-singleinstance-%d' % (arch, os.geteuid())
+    if not isinstance(name, bytes):
+        name = name.encode('utf-8')
+    address = b'\0' + name.replace(b' ', b'_')
+    sock = socket.socket(family=socket.AF_UNIX)
+    try:
+        eintr_retry_call(sock.bind, address)
+    except socket.error as err:
+        if getattr(err, 'errno', None) == errno.EADDRINUSE:
+            return False
+        raise
+    fd = sock.fileno()
+    old_flags = fcntl.fcntl(fd, fcntl.F_GETFD)
+    fcntl.fcntl(fd, fcntl.F_SETFD, old_flags | fcntl.FD_CLOEXEC)
+    atexit.register(sock.close)
+    return True
+
+
+if not singleinstance():
+    raise SystemExit('Another instance of the linux container is running')
 
 if sys.argv[2:] == ['container']:
     build_container()
