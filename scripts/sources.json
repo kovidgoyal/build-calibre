@@ -428,28 +428,28 @@
     {
         "name": "sip",
         "unix": {
-            "filename": "sip-4.19.tar.gz",
-            "hash": "sha1:ac654bacb07dac8e86c138a9f30bf6a04e26845b",
-            "urls": ["https://sourceforge.net/projects/pyqt/files/sip/sip-4.19/{filename}"]
+            "filename": "sip-4.19.1.tar.gz",
+            "hash": "sha1:bfd95714ace97e9c79c6131784a0cf6300a71b82",
+            "urls": ["https://sourceforge.net/projects/pyqt/files/sip/sip-4.19.1/{filename}"]
         },
         "windows": {
-            "filename": "sip-4.19.zip",
-            "hash": "sha1:a4fa63c049af0c8cc207f694267ec4108ab7473b",
-            "urls": ["http://sourceforge.net/projects/pyqt/files/sip/sip-4.19/{filename}"]
+            "filename": "sip-4.19.1.zip",
+            "hash": "sha1:2c0844ea0304d11343168ee25a9ff11df1646c76",
+            "urls": ["http://sourceforge.net/projects/pyqt/files/sip/sip-4.19.1/{filename}"]
         }
     },
 
     {
         "name": "pyqt",
         "unix": {
-            "filename": "PyQt5_gpl-5.7.1.tar.gz",
-            "hash": "sha1:46aae31f8196d4beed878bc70ed9ed2938f3c73f",
-            "urls": ["https://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.7.1/{filename}"]
+            "filename": "PyQt5_gpl-5.8.tar.gz",
+            "hash": "sha1:104c4bfc451b2ed26e34e646ddf69cfc8c437226",
+            "urls": ["https://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.8/{filename}"]
         },
         "windows": {
-            "filename": "PyQt5_gpl-5.7.1.zip",
-            "hash": "sha1:d86fd3f3f70f252625f10cfe9ae0d68350cb3ef0",
-            "urls": ["http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.7.1/{filename}"]
+            "filename": "PyQt5_gpl-5.8.zip",
+            "hash": "sha1:adc7cd647b23c438788f62e1e804ca2ee0ad1529",
+            "urls": ["http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.8/{filename}"]
         }
     },
 
