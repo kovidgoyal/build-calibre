@@ -22,12 +22,14 @@ def create_bundle(osname, bitness=''):
     pkg_dir = os.path.join(base, 'build', osname)
     if bitness:
         pkg_dir = os.path.join(pkg_dir, bitness)
+    if osname == 'linux':
+        pkg_dir = os.path.join(pkg_dir, 'sw')
     tdir = tempfile.mkdtemp(dir=pkg_dir)
     name = osname
     if bitness:
         name += '-' + bitness
     name += '.tar.xz'
-    print('Installing packages for', osname, bitness, '...')
+    print('Installing packages for', osname, bitness, 'from', pkg_dir, '...')
     try:
         for x in os.listdir(pkg_dir):
             if x.endswith('.' + pkg_ext):
