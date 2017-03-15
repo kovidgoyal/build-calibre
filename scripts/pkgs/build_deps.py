@@ -25,7 +25,7 @@ all_deps = (
     # Python and its dependencies
     'zlib bzip2 expat sqlite libffi openssl ncurses readline python pywin32 '
     # Miscellaneous dependencies
-    'icu libjpeg libpng libwebp freetype fontconfig iconv libxml2 libxslt chmlib optipng mozjpeg libusb libmtp plist usbmuxd imobiledevice '
+    'icu libjpeg libpng libwebp jxrlib freetype fontconfig iconv libxml2 libxslt chmlib optipng mozjpeg libusb libmtp plist usbmuxd imobiledevice '
     # PDF libraries
     'poppler podofo '
     # Qt

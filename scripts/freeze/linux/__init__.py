@@ -29,7 +29,7 @@ arch = 'x86_64' if is64bit else 'i686'
 
 def binary_includes():
     return [
-        j(PREFIX, 'bin', x) for x in ('pdftohtml', 'pdfinfo', 'pdftoppm', 'optipng')] + [
+        j(PREFIX, 'bin', x) for x in ('pdftohtml', 'pdfinfo', 'pdftoppm', 'optipng', 'JxrDecApp')] + [
 
         j(PREFIX, 'private', 'mozjpeg', 'bin', x) for x in ('jpegtran', 'cjpeg')] + [
 
@@ -209,6 +209,7 @@ def build_launchers(env):
 def is_elf(path):
     with open(path, 'rb') as f:
         return f.read(4) == b'\x7fELF'
+
 
 STRIPCMD = ['strip']
 

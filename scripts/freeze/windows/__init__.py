@@ -139,7 +139,7 @@ def freeze(env, ext_dir):
                 raise
 
     bindir = os.path.join(PREFIX, 'bin')
-    for x in ('pdftohtml', 'pdfinfo', 'pdftoppm', 'jpegtran-calibre', 'cjpeg-calibre', 'optipng-calibre'):
+    for x in ('pdftohtml', 'pdfinfo', 'pdftoppm', 'jpegtran-calibre', 'cjpeg-calibre', 'optipng-calibre', 'JxrDecApp-calibre'):
         copybin(os.path.join(bindir, x + '.exe'))
     for f in glob.glob(os.path.join(bindir, '*.dll')):
         if re.search(r'(easylzma|icutest)', f.lower()) is None:

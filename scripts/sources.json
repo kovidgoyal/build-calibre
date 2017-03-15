@@ -236,6 +236,15 @@
     },
 
     {
+        "name": "jxrlib",
+        "unix": {
+            "filename": "jxrlib_1.1.orig.tar.gz",
+            "hash": "sha256:c7287b86780befa0914f2eeb8be2ac83e672ebd4bd16dc5574a36a59d9708303",
+            "urls": ["https://mirrorservice.org/sites/ftp.debian.org/debian/pool/main/j/jxrlib/{filename}"]
+        }
+    },
+
+    {
         "name": "freetype",
         "unix": {
             "filename": "freetype-2.6.3.tar.bz2",
