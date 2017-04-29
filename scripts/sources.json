@@ -143,8 +143,17 @@
     {
         "name": "mechanize",
         "unix": {
-            "filename": "mechanize-0.3.1.tar.gz",
-            "hash": "md5:a58abe7f7a30bed958384c1f3ba2234d",
+            "filename": "mechanize-0.3.2.tar.gz",
+            "hash": "md5:f98004a909f955c58abb330dd7997db5",
+            "urls": ["pypi"]
+        }
+    },
+
+    {
+        "name": "msgpack",
+        "unix": {
+            "filename": "msgpack-python-0.4.8.tar.gz",
+            "hash": "md5:dcd854fb41ee7584ebbf35e049e6be98",
             "urls": ["pypi"]
         }
     },
