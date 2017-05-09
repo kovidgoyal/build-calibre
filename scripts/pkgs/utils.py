@@ -70,6 +70,8 @@ def current_env(library_path=False):
 
 
 def run_shell(library_path=False):
+    if not sys.stdout.isatty():
+        raise SystemExit('STDOUT is not a tty, aborting...')
     sh = 'C:/cygwin64/bin/zsh' if iswindows else '/bin/zsh'
     env = current_env(library_path=library_path)
     if iswindows:
