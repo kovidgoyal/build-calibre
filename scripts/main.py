@@ -18,7 +18,7 @@ if 'win32' in sys.platform.lower():
     os.environ['BUILD_ARCH'] = arch
 
 from pkgs.constants import SW, pkg_ext, islinux
-from pkgs.utils import run_shell
+from pkgs.utils import run_shell, isatty
 
 
 if hasattr(os, 'geteuid') and os.geteuid() == 0:
@@ -47,8 +47,10 @@ a('--dont-strip', default=False, action='store_true', help='Dont strip the binar
 a('--compression-level', default='9', choices=list('123456789'), help='Level of compression for the linux calibre tarball')
 a('--skip-calibre-tests', default=False, action='store_true', help='Skip the build tests when building calibre')
 a('--sign-installers', default=False, action='store_true', help='Sign the binary installer, needs signing keys to be installed in the VMs')
+a('--no-tty', default=False, action='store_true', help='Assume stdout is not a tty regardless of isatty()')
 
 args = parser.parse_args(args[1:])
+isatty.no_tty = args.no_tty
 
 if args.shell or args.deps == ['shell']:
     from pkgs.build_deps import init_env

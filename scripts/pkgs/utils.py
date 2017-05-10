@@ -70,6 +70,8 @@ def current_env(library_path=False):
 
 
 def isatty():
+    if isatty.no_tty:
+        return False
     f = sys.stdout
     if f.isatty():
         return True
@@ -87,6 +89,9 @@ def isatty():
     name = data[4:].decode('utf-16').rstrip(u'\0')
     parts = name.split('-')
     return parts[0] == r'\cygwin' and parts[2].startswith('pty') and parts[4] == 'master'
+
+
+isatty.no_tty = False
 
 
 def run_shell(library_path=False):
