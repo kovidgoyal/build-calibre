@@ -69,8 +69,28 @@ def current_env(library_path=False):
     return env
 
 
+def isatty():
+    f = sys.stdout
+    if f.isatty():
+        return True
+    if not iswindows:
+        return False
+    # Check for a cygwin ssh pipe
+    buf = ctypes.create_string_buffer(1024)
+    h = msvcrt.get_osfhandle(f.fileno())
+    if get_file_type(h) != 3:
+        return False
+    ret = get_file_info_by_handle(h, 2, buf, ctypes.sizeof(buf))
+    if not ret:
+        raise ctypes.WinError()
+    data = buf.raw
+    name = data[4:].decode('utf-16').rstrip(u'\0')
+    parts = name.split('-')
+    return parts[0] == r'\cygwin' and parts[2].startswith('pty') and parts[4] == 'master'
+
+
 def run_shell(library_path=False):
-    if not sys.stdout.isatty():
+    if not isatty():
         raise SystemExit('STDOUT is not a tty, aborting...')
     sh = 'C:/cygwin64/bin/zsh' if iswindows else '/bin/zsh'
     env = current_env(library_path=library_path)
@@ -194,7 +214,15 @@ def replace_in_file(path, old, new, missing_ok=False):
 
 if iswindows:
     import ctypes
+    import msvcrt
+    from ctypes import wintypes
     chl = ctypes.windll.kernel32.CreateHardLinkW
+    get_file_type = ctypes.windll.kernel32.GetFileType
+    get_file_type.argtypes = [wintypes.HANDLE]
+    get_file_type.restype = wintypes.DWORD
+    get_file_info_by_handle = ctypes.windll.kernel32.GetFileInformationByHandleEx
+    get_file_info_by_handle.argtypes = [wintypes.HANDLE, ctypes.c_int, wintypes.LPVOID, wintypes.DWORD]
+    get_file_info_by_handle.restype = wintypes.BOOL
 
     def hardlink(src, dst):
         if not chl(unicode(dst), unicode(src), None):
@@ -376,7 +404,7 @@ def install_package(pkg_path, dest_dir):
 
 
 def set_title(x):
-    if sys.stdout.isatty():
+    if isatty():
         print('''\033]2;%s\007''' % x)
 
 
