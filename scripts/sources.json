@@ -346,9 +346,10 @@
     {
         "name": "poppler",
         "unix": {
-            "filename": "poppler-0.45.0.tar.xz",
-            "hash": "sha1:695b2ffcd5006c1041f3cb9fe7aa874dbd23de86",
-            "urls": ["http://poppler.freedesktop.org/{filename}"]
+            "comment": "versions of poppler > 0.52 require a c++11 compiler which we dont have in linux (Ubuntu precise has gcc 4.6)",
+            "filename": "poppler-0.52.0.tar.xz",
+            "hash": "sha1:82ca0263a0c22ec2efe3f8b3be5e4071b197807f",
+            "urls": ["https://poppler.freedesktop.org/{filename}"]
         }
     },
 
