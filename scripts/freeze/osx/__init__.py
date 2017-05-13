@@ -412,7 +412,7 @@ class Freeze(object):
     @flush
     def add_poppler(self):
         print('\nAdding poppler')
-        for x in ('libpoppler.62.dylib',):
+        for x in ('libpoppler.66.dylib',):
             self.install_dylib(os.path.join(PREFIX, 'lib', x))
         for x in ('pdftohtml', 'pdftoppm', 'pdfinfo'):
             self.install_dylib(os.path.join(PREFIX, 'bin', x), False)

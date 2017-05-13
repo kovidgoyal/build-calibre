@@ -35,7 +35,7 @@ def binary_includes():
 
         j(PREFIX, 'lib', 'lib' + x) for x in (
             'usb-1.0.so.0', 'mtp.so.9', 'expat.so.1', 'sqlite3.so.0', 'ffi.so.6',
-            'podofo.so.0.9.4', 'z.so.1', 'bz2.so.1.0', 'poppler.so.62', 'dbus-1.so.3',
+            'podofo.so.0.9.4', 'z.so.1', 'bz2.so.1.0', 'poppler.so.66', 'dbus-1.so.3',
             'iconv.so.2', 'xml2.so.2', 'xslt.so.1', 'jpeg.so.8', 'png16.so.16', 'webp.so.6',
             'exslt.so.0', 'imobiledevice.so.6', 'usbmuxd.so.4', 'plist.so.3', 'ncursesw.so.6',
             'ssl.so.1.0.0', 'crypto.so.1.0.0', 'readline.so.6', 'chm.so.0', 'icudata.so.57',
