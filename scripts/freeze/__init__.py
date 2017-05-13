@@ -64,7 +64,7 @@ def parallel_build(jobs, log=print, verbose=True):
 
 
 def py_compile(basedir):
-    run(PYTHON, '-OO', '-m', 'compileall', '-f', '-q', '-b', basedir, library_path=True)
+    run(PYTHON, '-OO', '-m', 'compileall', '-d', os.path.basename(basedir), '-f', '-q', '-b', basedir, library_path=True)
     for f in walk(basedir):
         if f.endswith('.py'):
             os.remove(f)
