@@ -31,6 +31,8 @@ def usage():
 
 
 arch = sys.argv[1].decode('utf-8')
+if arch == 'shutdown':
+    raise SystemExit(0)
 if arch not in '64 32'.split() or len(sys.argv) < 2:
     usage()
 
