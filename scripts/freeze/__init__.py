@@ -95,7 +95,7 @@ def parallel_build(jobs, log=print, verbose=True):
 
 
 def py_compile(basedir):
-    run(PYTHON, '-OO', '-c', 'import compileall; compileall.compile_dir("%s", force=True, quiet=True)' % basedir, library_path=True)
+    run(PYTHON, '-OO', '-m', 'compileall', '-d', '', '-f', '-q', basedir, library_path=True)
 
     for f in walk(basedir):
         ext = f.rpartition('.')[-1]
