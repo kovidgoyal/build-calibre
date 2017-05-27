@@ -150,6 +150,15 @@
     },
 
     {
+        "name": "regex",
+        "unix": {
+            "filename": "regex-2017.05.26.tar.gz",
+            "hash": "md5:8f9d6e46ceae5b52456cfc5f2163a6fb",
+            "urls": ["pypi"]
+        }
+    },
+
+    {
         "name": "msgpack",
         "unix": {
             "filename": "msgpack-python-0.4.8.tar.gz",
