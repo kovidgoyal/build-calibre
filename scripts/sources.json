@@ -159,6 +159,15 @@
     },
 
     {
+        "name": "chardet",
+        "unix": {
+            "filename": "chardet-3.0.3.tar.gz",
+            "hash": "md5:d92908d1b0b61dbbd63fb18d33c6493a",
+            "urls": ["pypi"]
+        }
+    },
+
+    {
         "name": "msgpack",
         "unix": {
             "filename": "msgpack-python-0.4.8.tar.gz",

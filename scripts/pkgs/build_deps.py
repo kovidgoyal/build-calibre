@@ -17,7 +17,7 @@ from pkgs.utils import (
     run_shell, install_package, create_package, extract_source, simple_build,
     python_build, set_title, fix_install_names, rmtree)
 
-python_deps = ('setuptools six cssutils dateutil dnspython mechanize msgpack regex'
+python_deps = ('setuptools six cssutils dateutil dnspython mechanize msgpack regex chardet'
                ' pygments pycrypto apsw lxml pillow netifaces psutil dbuspython macfsevents').strip().split()
 
 all_deps = (
