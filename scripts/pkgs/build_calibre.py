@@ -15,6 +15,9 @@ from freeze import initialize_constants
 
 
 def run_build_tests(path_to_calibre_debug, cwd_on_failure):
+    if isosx:
+        # Skipping Qt build test as it causes crashes in the macOS VM
+        os.environ['SKIP_QT_BUILD_TEST'] = '1'
     p = subprocess.Popen([path_to_calibre_debug, '--test-build'])
     if p.wait() != 0:
         os.chdir(cwd_on_failure)
