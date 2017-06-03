@@ -319,8 +319,8 @@
     {
         "name": "lxml",
         "unix": {
-            "filename": "lxml-3.6.0.tar.gz",
-            "hash": "md5:5957cc384bd6e83934be35c057ec03b6",
+            "filename": "lxml-3.8.0.tar.gz",
+            "hash": "md5:e54e2fae44d684d6b9c636fe189e93ff",
             "urls": ["pypi"]
         }
     },
