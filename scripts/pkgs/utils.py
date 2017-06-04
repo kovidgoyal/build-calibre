@@ -18,8 +18,8 @@ import zipfile
 import stat
 
 from .constants import (
-    build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR,
-    worker_env, islinux, PREFIX, iswindows
+    build_dir, current_source, mkdtemp, PATCHES, PYTHON, MAKEOPTS, LIBDIR, SW,
+    worker_env, islinux, PREFIX, iswindows, isosx
 )
 
 
@@ -198,6 +198,12 @@ def python_build(extra_args=()):
     if isinstance(extra_args, type('')):
         extra_args = split(extra_args)
     run(PYTHON, 'setup.py', 'install', '--root', build_dir(), *extra_args, library_path=True)
+
+
+def python_install():
+    ddir = 'python' if isosx else 'private' if iswindows else 'lib'
+    os.rename(os.path.join(build_dir(), os.path.basename(SW), os.path.basename(PREFIX), ddir), os.path.join(build_dir(), ddir))
+    shutil.rmtree(os.path.join(build_dir(), os.path.basename(SW)))
 
 
 def replace_in_file(path, old, new, missing_ok=False):
