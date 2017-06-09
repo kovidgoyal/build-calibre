@@ -336,6 +336,15 @@
     },
 
     {
+        "name": "html5-parser",
+        "unix": {
+            "filename": "html5-parser-0.3.2.tar.gz",
+            "hash": "md5:72dca7b2fb1bf486d1f3b2a1f57c8d05",
+            "urls": ["pypi"]
+        }
+    },
+
+    {
         "name": "pillow",
         "unix": {
             "filename": "Pillow-3.2.0.tar.gz",

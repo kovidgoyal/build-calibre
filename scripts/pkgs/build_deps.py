@@ -18,7 +18,7 @@ from pkgs.utils import (
     python_build, set_title, fix_install_names, rmtree)
 
 python_deps = ('setuptools six cssutils dateutil dnspython mechanize msgpack regex chardet dukpy'
-               ' pygments pycrypto apsw lxml pillow netifaces psutil dbuspython macfsevents').strip().split()
+               ' pygments pycrypto apsw lxml html5-parser pillow netifaces psutil dbuspython macfsevents').strip().split()
 
 all_deps = (
     # Build tools
@@ -85,10 +85,11 @@ def build(dep, args, dest_dir):
     set_current_source(filename_for_dep(dep))
     output_dir = todir = mkdtemp(prefix=dep + '-')
     set_build_dir(output_dir)
+    idep = dep.replace('-', '_')
     try:
-        m = importlib.import_module('pkgs.' + dep)
+        m = importlib.import_module('pkgs.' + idep)
     except ImportError:
-        if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), dep + '.py')):
+        if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), idep + '.py')):
             raise
         m = None
     tsdir = extract_source()
