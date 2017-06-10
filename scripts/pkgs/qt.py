@@ -57,8 +57,10 @@ def main(args):
         conf += ' -no-pkg-config -framework -no-openssl -securetransport -no-freetype -no-fontconfig -c++std c++11'
     elif iswindows:
         # Qt links incorrectly against libpng and libjpeg, so use the bundled copy
+        # Use dynamic OpenGl, as per:
+        # https://doc.qt.io/qt-5/windows-requirements.html#dynamically-loading-graphics-drivers
         conf += (' -openssl -directwrite -ltcg -platform win32-msvc2015 -mp -no-plugin-manifests -no-freetype -no-fontconfig'
-                 ' -no-angle -opengl desktop -qt-libpng -qt-libjpeg ')
+                 ' -no-angle -opengl dynamic -qt-libpng -qt-libjpeg ')
         # The following config items are not supported on windows
         conf = conf.replace('-v -silent ', ' ')
         cflags = '-I {}/include'.format(PREFIX).replace(os.sep, '/')
