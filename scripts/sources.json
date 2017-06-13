@@ -338,8 +338,8 @@
     {
         "name": "html5-parser",
         "unix": {
-            "filename": "html5-parser-0.3.2.tar.gz",
-            "hash": "md5:72dca7b2fb1bf486d1f3b2a1f57c8d05",
+            "filename": "html5-parser-0.3.3.tar.gz",
+            "hash": "md5:a994b4ce5baaa181cdacd1e2d507a6bd",
             "urls": ["pypi"]
         }
     },
