@@ -456,7 +456,7 @@ class Freeze(object):
         for x in (
                 'usb-1.0.0', 'mtp.9', 'chm.0', 'sqlite3.0',
                 'icudata.57', 'icui18n.57', 'icuio.57', 'icuuc.57',
-                'xslt.1', 'exslt.0', 'xml2.2', 'z.1',
+                'xslt.1', 'exslt.0', 'xml2.2', 'z.1', 'unrar',
                 'crypto.1.0.0', 'ssl.1.0.0', 'iconv.2',  # 'ltdl.7'
         ):
             print('\nAdding', x)

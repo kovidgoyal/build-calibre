@@ -18,6 +18,15 @@
     },
 
     {
+        "name": "unrar",
+        "unix": {
+            "filename": "unrarsrc-5.5.4.tar.gz",
+            "hash": "sha1:380cb2e0cf65954b6d345bc95333052660ed91cb",
+            "urls": ["http://www.rarlab.com/rar/{filename}"]
+        }
+    },
+
+    {
         "name": "expat",
         "unix": {
             "filename": "expat-2.2.0.tar.bz2",
