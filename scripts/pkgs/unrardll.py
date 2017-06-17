@@ -20,3 +20,14 @@ def main(args):
     with ModifiedEnv(**env):
         python_build()
     python_install()
+
+
+def install_name_change_predicate(x):
+    return x.endswith('unrar.so')
+
+
+def install_name_change(old_name, is_dep):
+    bn = os.path.basename(old_name)
+    if bn.startswith('libunrar'):
+        return os.path.join(PREFIX, 'lib', bn)
+    return old_name
