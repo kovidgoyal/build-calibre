@@ -10,14 +10,9 @@ from .utils import copy_headers, install_binaries, replace_in_file, run
 
 
 def main(args):
+    replace_in_file('dll.cpp', 'WideToChar', 'WideToUtf')
     if iswindows:
         PL = 'x64' if is64bit else 'Win32'
-        with open('dll.def', 'ab') as f:
-            for symbol in (
-                    'RARProcessFileW ?IsLink@@YA_NI@Z ?IsArcDir@Archive@@QEAA_NXZ'
-                    ' ?GetComment@Archive@@QEAA_NPEAV?$Array@_W@@@Z ?cleandata@@YAXPEAX_K@Z').split():
-                f.write(b'\r\n  ' + symbol.encode('ascii'))
-
         run('msbuild.exe', 'UnRARDll.vcxproj', '/t:Build', '/p:Platform=' + PL, '/p:Configuration=Release')
         install_binaries('./build/*/Release/unrar.dll', 'bin')
         install_binaries('./build/*/Release/UnRAR.lib', 'lib')
