@@ -50,6 +50,7 @@ def main(args):
                 '-DFREETYPE_INCLUDE_DIR={}/include/freetype2'.format(PREFIX),
                 '-DFREETYPE_LIBRARIES=-lfreetype',
                 '-DCMAKE_BUILD_TYPE=RELEASE',
+                '-DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE',
                 '-DPODOFO_BUILD_SHARED:BOOL=TRUE',
                 '-DPODOFO_BUILD_STATIC:BOOL=FALSE',
                 '-DCMAKE_INSTALL_PREFIX=' + PREFIX,
@@ -66,6 +67,7 @@ def main(args):
             if islinux:
                 # libpodofo.so has RPATH set which is just wrong. Remove it.
                 run('chrpath', '--delete', *list(libs))
+
 
 pkg_exclude_names = frozenset()
 

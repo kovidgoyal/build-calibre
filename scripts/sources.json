@@ -411,8 +411,8 @@
     {
         "name": "podofo",
         "unix": {
-            "filename": "podofo-0.9.4.tar.gz",
-            "hash": "sha1:e91929e0e4c020aee77d6aca5a5af8195888918c",
+            "filename": "podofo-0.9.5.tar.gz",
+            "hash": "md5:4751a6cf41250bea550a73ff960b7228",
             "urls": ["http://downloads.sourceforge.net/podofo/{filename}"]
         }
     },
