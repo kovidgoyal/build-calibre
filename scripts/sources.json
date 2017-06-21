@@ -170,8 +170,8 @@
     {
         "name": "regex",
         "unix": {
-            "filename": "regex-2017.05.26.tar.gz",
-            "hash": "md5:8f9d6e46ceae5b52456cfc5f2163a6fb",
+            "filename": "regex-2017.06.20.tar.gz",
+            "hash": "md5:3bc011302ead741eab2f5e10236b6662",
             "urls": ["pypi"]
         }
     },
