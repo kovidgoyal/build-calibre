@@ -564,48 +564,6 @@
     },
 
     {
-        "name": "plist",
-        "unix": {
-            "filename": "libplist-1.12.tar.bz2",
-            "hash": "md5:8b04b0f09f2398022dcd4fba75012997",
-            "urls": ["http://www.libimobiledevice.org/downloads/{filename}"]
-        },
-        "windows": {
-            "filename": "libplist-7085a615837fabe6b5f784e14a320a00b6458df0.tar.bz2",
-            "hash": "git:7085a615837fabe6b5f784e14a320a00b6458df0",
-            "urls": ["https://github.com/kovidgoyal/libplist.git"]
-        }
-    },
-
-    {
-        "name": "usbmuxd",
-        "unix": {
-            "filename": "libusbmuxd-1.0.10.tar.bz2",
-            "hash": "md5:e5351ff6f6eedcb50701e02d91cc480c",
-            "urls": ["http://www.libimobiledevice.org/downloads/{filename}"]
-        },
-        "windows": {
-            "filename": "libusbmuxd-b43867d16fd29d711c32e2401a73d2e78473d03a.tar.bz2",
-            "hash": "git:b43867d16fd29d711c32e2401a73d2e78473d03a",
-            "urls": ["https://github.com/kovidgoyal/libusbmuxd.git"]
-        }
-    },
-
-    {
-        "name": "imobiledevice",
-        "unix": {
-            "filename": "libimobiledevice-1.2.0.tar.bz2",
-            "hash": "md5:8757900ba7bbe2ef5f54342415d0223e",
-            "urls": ["http://www.libimobiledevice.org/downloads/{filename}"]
-        },
-        "windows": {
-            "filename": "libimobiledevice-9ad34e11da5fd0343894b5066f44e4c02af9ed60.tar.bz2",
-            "hash": "git:9ad34e11da5fd0343894b5066f44e4c02af9ed60",
-            "urls": ["https://github.com/kovidgoyal/libimobiledevice.git"]
-        }
-    },
-
-    {
         "name": "macfsevents",
         "unix": {
             "filename": "MacFSEvents-0.7.tar.gz",

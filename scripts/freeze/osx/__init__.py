@@ -430,8 +430,7 @@ class Freeze(object):
     @flush
     def add_fontconfig(self):
         print('\nAdding fontconfig')
-        for x in ('fontconfig.1', 'freetype.6', 'expat.1',
-                  'plist.3', 'usbmuxd.4', 'imobiledevice.6'):
+        for x in ('fontconfig.1', 'freetype.6', 'expat.1'):
             src = os.path.join(PREFIX, 'lib', 'lib' + x + '.dylib')
             self.install_dylib(src)
         dst = os.path.join(self.resources_dir, 'fonts')
