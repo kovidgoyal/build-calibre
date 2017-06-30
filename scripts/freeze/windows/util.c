@@ -354,10 +354,25 @@ void redirect_out_stream(FILE *stream) {
     }
 }
 
+static void 
+null_invalid_parameter_handler(  
+   const wchar_t * expression,  
+   const wchar_t * function,   
+   const wchar_t * file,   
+   unsigned int line,  
+   uintptr_t pReserved  
+) {
+    // The python runtime expects various system calls with invalid parameters
+    // to return errors instead of aborting the program. So get the windows CRT
+    // to do that.
+}
+
 __declspec(dllexport) int __cdecl
 execute_python_entrypoint(const char *basename, const char *module, const char *function, int is_gui_app) {
     PyObject *site, *main, *res;
     int ret = 0;
+    // Prevent Windows' idiotic error dialog popups when various win32 api functions fail
+    SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOALIGNMENTFAULTEXCEPT | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
 
     if (is_gui_app) {
         // Redirect stdout and stderr to NUL so that python does not fail writing to them
@@ -365,6 +380,8 @@ execute_python_entrypoint(const char *basename, const char *module, const char *
         redirect_out_stream(stderr);
     }
     set_gui_app(is_gui_app);
+    // Disable the invalid parameter handler
+    _set_invalid_parameter_handler(null_invalid_parameter_handler);
 
     load_python_dll();
     initialize_interpreter(basename, module, function);
