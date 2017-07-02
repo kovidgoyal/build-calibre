@@ -20,8 +20,8 @@
     {
         "name": "unrar",
         "unix": {
-            "filename": "unrarsrc-5.5.5.tar.gz",
-            "hash": "sha1:819a168b5cc66861079c6d3057e4818b2e8dbfc0",
+            "filename": "unrarsrc-5.5.6.tar.gz",
+            "hash": "sha1:c32c8c8dcd176bf155190f406dfa3eb5b0f79079",
             "urls": ["http://www.rarlab.com/rar/{filename}"]
         }
     },
