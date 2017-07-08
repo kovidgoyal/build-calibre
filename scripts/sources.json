@@ -363,6 +363,24 @@
     },
 
     {
+        "name": "webencodings",
+        "unix": {
+            "filename": "webencodings-0.5.1.tar.gz",
+            "hash": "md5:32f6e261d52e57bf7e1c4d41546d15b8",
+            "urls": ["pypi"]
+        }
+    },
+
+    {
+        "name": "html5lib",
+        "unix": {
+            "filename": "html5lib-0.999999999.tar.gz",
+            "hash": "md5:8578e4e3a341436cb9743a9e4a299239",
+            "urls": ["pypi"]
+        }
+    },
+
+    {
         "name": "pillow",
         "unix": {
             "filename": "Pillow-3.2.0.tar.gz",
