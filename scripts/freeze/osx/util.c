@@ -115,6 +115,10 @@ int handle_sysexit(PyObject *e) {
 
     code = PyObject_GetAttrString(e, "code");
     if (!code) return 0;
+    if (!PyInt_Check(code)) {
+        PyObject_Print(code, stderr, Py_PRINT_RAW);
+        fflush(stderr);
+    }
     return pyobject_to_int(code);
 }
 
