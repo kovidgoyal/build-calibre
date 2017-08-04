@@ -170,6 +170,7 @@
 
     <UI>
         <UIRef Id="WixUI_Advanced" />
+        <UIRef Id="WixUI_ErrorProgressText" />
         <Publish Dialog="ExitDialog"
             Control="Finish" 
             Event="DoAction" 
