@@ -53,9 +53,8 @@ else:
         env = {'CFLAGS': CFLAGS + ' -DHAVE_LOAD_EXTENSION'}
         replace_in_file('setup.py', re.compile('def detect_tkinter.+:'), lambda m: m.group() + '\n' + ' ' * 8 + 'return 0')
         conf = (
-            '--prefix={} --with-threads --enable-ipv6 --enable-unicode={}'
-            ' --with-system-expat --with-pymalloc --without-ensurepip').format(
-            build_dir(), ('ucs2' if isosx or iswindows else 'ucs4'))
+            '--prefix={} --without-threads --enable-ipv6 --without-docstrings'
+            ' --with-system-expat --with-pymalloc --without-ensurepip').format(build_dir())
         if islinux:
             conf += ' --with-system-ffi --enable-shared'
             # Needed as the system openssl is too old, causing the _ssl module to fail
