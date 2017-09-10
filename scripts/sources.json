@@ -54,6 +54,15 @@
     },
 
     {
+        "name": "libunistring",
+        "unix": {
+            "filename": "libunistring-0.9.7.tar.xz",
+            "hash": "md5:82e0545363d111bfdfec2ddbfe62ffd3",
+            "urls": ["https://ftp.gnu.org/gnu/libunistring/{filename}"]
+        }
+    },
+
+    {
         "name": "sqlite",
         "unix": {
             "filename": "sqlite-autoconf-3130000.tar.gz",

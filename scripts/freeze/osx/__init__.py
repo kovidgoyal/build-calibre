@@ -245,6 +245,7 @@ class Freeze(object):
                 'sqlite3.0',
                 'z.1',
                 'glfw.3',
+                'unistring.2',
                 'crypto.1.0.0',
                 'ssl.1.0.0',
         ):
