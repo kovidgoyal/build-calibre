@@ -329,8 +329,8 @@
     {
         "name": "libxml2",
         "unix": {
-            "filename": "libxml2-2.9.4.tar.gz",
-            "hash": "sha1:958ae70baf186263a4bd801a81dd5d682aedd1db",
+            "filename": "libxml2-2.9.5.tar.gz",
+            "hash": "sha1:6ab515fa4d087a3973e880d46bf6bdad48114d20",
             "urls": ["ftp://xmlsoft.org/libxml2/{filename}"]
         }
     },
@@ -338,8 +338,8 @@
     {
         "name": "libxslt",
         "unix": {
-            "filename": "libxslt-1.1.28.tar.gz",
-            "hash": "sha1:4df177de629b2653db322bfb891afa3c0d1fa221",
+            "filename": "libxslt-1.1.30.tar.gz",
+            "hash": "sha1:3cb6eb8e7d410a1d21e6d7a76003220140cb2dbe",
             "urls": ["ftp://xmlsoft.org/libxml2/{filename}"]
         }
     },
