@@ -15,7 +15,6 @@ def main(args):
     if iswindows:
         run(*('cscript.exe configure.js include={0}/include include={0}/include/libxml2 lib={0}/lib prefix={0} zlib=yes iconv=no'.format(
             PREFIX.replace(os.sep, '/')).split()), cwd='win32')
-        replace_in_file('libxslt/win32config.h', '#define snprintf _snprintf', '')
         for f in walk('.'):
             if os.path.basename(f).startswith('Makefile'):
                 replace_in_file(f, '/OPT:NOWIN98', '', missing_ok=True)
