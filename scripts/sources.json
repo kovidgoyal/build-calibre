@@ -251,8 +251,8 @@
     {
         "name": "libpng",
         "unix": {
-            "filename": "libpng-1.6.23.tar.xz",
-            "hash": "md5:9b320a05ed4db1f3f0865c8a951fd9aa",
+            "filename": "libpng-1.6.32.tar.xz",
+            "hash": "sha1:161d91d15cfd739773e0a73b41032b9f27322914",
             "urls": ["http://downloads.sourceforge.net/sourceforge/libpng/{filename}"]
         }
     },
