@@ -285,6 +285,15 @@
     },
 
     {
+        "name": "harfbuzz",
+        "unix": {
+            "filename": "harfbuzz-1.6.3.tar.bz2",
+            "hash": "sha256:e31eb367beb61a9399d2c78b51c225ab2b1cbd46f364f2d80d97bb422b44101a",
+            "urls": ["https://www.freedesktop.org/software/harfbuzz/release/{filename}"]
+        }
+    },
+
+    {
         "name": "iconv",
         "unix": {
             "filename": "libiconv-1.14.tar.gz",
