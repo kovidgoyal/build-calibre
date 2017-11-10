@@ -14,9 +14,9 @@ from .utils import replace_in_file, simple_build
 
 def main(args):
     simple_build(
-        '--disable-dependency-tracking --disable-static --with-glib=no'
-        ' --with-gobject=no --with-cairo=no --with-fontconfig=no --with-icu=no --with-directwrite=no' +
-        ('--with-freetype=no --with-coretext=yes' if isosx else '--with-freetype=yes')
+        '--disable-dependency-tracking --disable-static --with-glib=no --with-freetype=yes'
+        ' --with-gobject=no --with-cairo=no --with-fontconfig=no --with-icu=no' + (
+            ' --with-coretext=' + ('yes' if isosx else 'no'))
     )
     pc = os.path.join(build_dir(), 'lib/pkgconfig/harfbuzz.pc')
     replace_in_file(pc, re.compile(br'^prefix=.+$', re.M), b'prefix=%s' % PREFIX)

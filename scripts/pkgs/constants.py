@@ -72,6 +72,7 @@ else:
     CPPFLAGS = worker_env['CPPFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
     LIBDIR = os.path.join(PREFIX, 'lib')
     LDFLAGS = worker_env['LDFLAGS'] = '-L{0} -Wl,-rpath-link,{0}'.format(LIBDIR)
+    os.environ['PATH'] = os.pathsep.join((BIN, os.environ['PATH']))
 if isosx:
     LDFLAGS = worker_env['LDFLAGS'] = '-headerpad_max_install_names -L{}'.format(LIBDIR)
 if iswindows:

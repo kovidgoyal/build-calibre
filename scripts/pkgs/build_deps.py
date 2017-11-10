@@ -23,14 +23,12 @@ all_deps = (
     # Python and its dependencies
     'zlib bzip2 expat sqlite libffi openssl ncurses readline python '
     # Miscellaneous dependencies
-    'freetype fontconfig harfbuzz glew glfw libunistring libpng '
+    'freetype fontconfig harfbuzz glfw libunistring libpng '
 ).strip().split()
 
 if isosx:
     all_deps.remove('bzip2')
     all_deps.remove('fontconfig')
-    all_deps.remove('freetype')
-    all_deps.remove('glew')
 else:
     all_deps.remove('cmake')
     all_deps.remove('pkg-config')
