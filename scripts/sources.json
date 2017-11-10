@@ -269,9 +269,9 @@
     {
         "name": "freetype",
         "unix": {
-            "filename": "freetype-2.6.3.tar.bz2",
-            "hash": "sha1:6c98bd5d0be313207c37ca23d25faf983486aee5",
-            "urls": ["http://download.savannah.gnu.org/releases/freetype/{filename}"]
+            "filename": "freetype-2.8.1.tar.bz2",
+            "hash": "sha1:417bb3747c4ac95b6f2652024a53fad45581fa1c",
+            "urls": ["https://download.savannah.gnu.org/releases/freetype/{filename}"]
         }
     },
 
