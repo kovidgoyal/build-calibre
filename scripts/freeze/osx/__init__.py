@@ -384,5 +384,5 @@ class Freeze(object):
 def main(args, build_dir):
     Freeze(
         build_dir,
-        dont_strip=args.dont_strip,
+        dont_strip=args.dont_strip or args.debug_build,
         sign_installers=args.sign_installers)

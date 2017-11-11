@@ -42,6 +42,7 @@ a('--dont-strip', default=False, action='store_true', help='Dont strip the binar
 a('--compression-level', default='9', choices=list('123456789'), help='Level of compression for the linux kitty tarball')
 a('--skip-kitty-tests', default=False, action='store_true', help='Skip the build tests when building kitty')
 a('--sign-installers', default=False, action='store_true', help='Sign the binary installer, needs signing keys to be installed in the VMs')
+a('--debug-build', default=False, action='store_true', help='Do a debug build, implies --dont-strip')
 a('--quick-build', default=False, action='store_true', help='Only build kitty syncing only kitty source code and not un-installing pkgs')
 
 args = parser.parse_args(args[1:])

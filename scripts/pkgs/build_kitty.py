@@ -34,6 +34,9 @@ def build_kitty(args):
     else:
         tdir = mkdtemp(prefix='osx-bundle')
         cmd.append('osx-bundle'), cmd.append('--prefix={}/{}.app'.format(tdir, kitty_constants['appname']))
+    if args.debug_build:
+        if '--debug' not in cmd:
+            cmd.append('--debug')
     run(*cmd, no_shell=args.quick_build)
     if not args.skip_kitty_tests:
         run_build_tests()
