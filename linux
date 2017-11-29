@@ -138,6 +138,10 @@ def mount_all(tdir):
             if readonly:
                 call('sudo', 'mount', '-o', 'remount,ro,bind', dest)
 
+    def copy(src, dest):
+        dest = os.path.join(img_path, dest.lstrip('/'))
+        shutil.copytree(src, dest, symlinks=True, ignore=shutil.ignore_patterns(*'build dest'.split()))
+
     mount(tdir, '/tmp')
     mount(sw_dir, '/sw')
     mount('sources-cache', '/sources')
@@ -145,7 +149,7 @@ def mount_all(tdir):
     mount('patches', '/patches', True)
     kitty_dir = os.environ.get('KITTY_SRC_DIR', os.path.join('..', 'kitty'))
     if os.path.exists(os.path.join(kitty_dir, 'setup.py')):
-        mount(kitty_dir, '/kitty', True)
+        copy(kitty_dir, '/tmp/kitty')
     mount('/dev', '/dev')
     call('sudo', 'mount', '-t', 'proc', 'proc', os.path.join(img_path, 'proc'))
     call('sudo', 'mount', '-t', 'sysfs', 'sys', os.path.join(img_path, 'sys'))

@@ -35,7 +35,7 @@ if iswindows:
 SOURCES = ROOT + 'sources'
 PATCHES = ROOT + 'patches'
 SCRIPTS = ROOT + 'scripts'
-KITTY_DIR = ROOT + 'kitty'
+KITTY_DIR = ROOT + ('kitty' if isosx else 'tmp/kitty')
 if iswindows:
     tempfile.tempdir = 'C:\\t\\t'
 PREFIX = os.path.join(SW, 'sw')

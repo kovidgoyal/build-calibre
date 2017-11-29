@@ -25,19 +25,24 @@ def run_build_tests():
 
 def build_kitty(args):
     initialize_constants()
-    putenv(SW=PREFIX, PKGCONFIG_EXE=os.path.join(PREFIX, 'bin', 'pkg-config'))
+    putenv(SW=PREFIX)
+    if isosx:
+        putenv(PKGCONFIG_EXE=os.path.join(PREFIX, 'bin', 'pkg-config'))
     os.chdir(KITTY_DIR)
     cmd = [PYTHON, 'setup.py']
     if args.quick_build:
         cmd.append('build'), cmd.append('--debug'), cmd.append('--incremental')
         tdir = None
     else:
-        tdir = mkdtemp(prefix='osx-bundle')
-        cmd.append('osx-bundle'), cmd.append('--prefix={}/{}.app'.format(tdir, kitty_constants['appname']))
+        if isosx:
+            tdir = mkdtemp(prefix='osx-bundle')
+            cmd.append('osx-bundle'), cmd.append('--prefix={}/{}.app'.format(tdir, kitty_constants['appname']))
+        else:
+            cmd.append('linux-package')
     if args.debug_build:
         if '--debug' not in cmd:
             cmd.append('--debug')
-    run(*cmd, no_shell=args.quick_build)
+    run(*cmd, no_shell=args.quick_build, library_path=True)
     if not args.skip_kitty_tests:
         run_build_tests()
     return tdir
