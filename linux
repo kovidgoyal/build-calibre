@@ -70,31 +70,29 @@ def check_for_image(tag):
 def build_container():
     cwd = os.getcwd()
     os.chdir(output_dir)
-    image = 'ubuntu:precise' if arch == '64' else 'daald/ubuntu32:precise'
+    image = 'ubuntu:trusty' if arch == '64' else 'daald/ubuntu32:trusty'
     call('sudo acbuild begin docker://' + image)
     try:
-        call('sudo acbuild set-name calibre' + arch)
+        call('sudo acbuild set-name kitty' + arch)
         call('sudo acbuild set-user kovid')
         call('sudo acbuild set-group users')
         call('sudo acbuild set-exec /bin/zsh')
         call('sudo acbuild set-working-directory /tmp')
         call('sudo acbuild environment add USER kovid')
         call('sudo acbuild environment add IN_CONTAINER 1')
-        call('sudo acbuild environment add TERM xterm-256color')
+        call('sudo acbuild environment add TERM xterm-kitty')
         call('sudo acbuild mount add sources /sources')
         call('sudo acbuild mount add sw /sw')
         call('sudo acbuild mount add tmp /tmp')
         call('sudo acbuild mount add scripts /scripts --read-only')
         call('sudo acbuild mount add patches /patches --read-only')
-        call('sudo acbuild mount add calibre /calibre --read-only')
+        call('sudo acbuild mount add kitty /kitty --read-only')
         call('sudo acbuild mount add terminfo /usr/share/terminfo --read-only')
         for cmd in [
                 # Basic build environment
                 'apt-get update',
-                'apt-get install -y build-essential nasm python-argparse cmake chrpath zsh',
-                # Build time deps for Qt. See http://doc.qt.io/qt-5/linux-requirements.html and https://wiki.qt.io/Building_Qt_5_from_Git
-                'apt-get install -y flex bison gperf ruby libx11-dev libxext-dev libxfixes-dev'
-                ' libxi-dev libxrender-dev libxcb1-dev libx11-xcb-dev libxcb-glx0-dev xkb-data libglu1-mesa-dev libgtk2.0-dev',
+                'apt-get install -y build-essential cmake chrpath zsh wget python2.7',
+                'apt-get install -y libfontconfig1-dev libxi-dev libxrandr-dev libxinerama-dev libxcursor-dev libunistring-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev mesa-common-dev libpng-dev',  # noqa
                 # Cleanup
                 'apt-get clean',
                 # User account
@@ -126,7 +124,7 @@ else:
     os.touch(os.path.join(tdir, '.zshrc'))
 
 cmd = [
-    'sudo', 'rkt', 'run', '--insecure-options=image',
+    'sudo', 'rkt', 'run', '--insecure-options=image', '--dns=8.8.8.8',
     '--volume=sw,kind=host,source=' + output_dir,
     '--volume=tmp,kind=host,source=' + tdir,
     '--volume=sources,kind=host,source=' + abspath('sources-cache'),
@@ -135,15 +133,15 @@ cmd = [
     '--volume=terminfo,kind=host,readOnly=true,source=' + '/usr/share/terminfo',
     img_path,
     '--interactive=' + ('true' if sys.stdin.isatty() else 'false'),
-    '--hostname=calibre' + arch,
+    '--hostname=kitty' + arch,
     '--readonly-rootfs=true',
-    '--exec=python2',
+    '--exec=python2.7',
     '--', '/scripts/main.py',
 ]
 
-calibre_dir = os.environ.get('CALIBRE_SRC_DIR', os.path.join('..', 'calibre'))
-if os.path.exists(os.path.join(calibre_dir, 'setup.py')):
+kitty_dir = os.environ.get('KITTY_SRC_DIR', os.path.join('..', 'kitty'))
+if os.path.exists(os.path.join(kitty_dir, 'setup.py')):
     idx = cmd.index(img_path)
-    cmd.insert(idx, '--volume=calibre,kind=host,readOnly=true,source=' + abspath(calibre_dir))
+    cmd.insert(idx, '--volume=kitty,kind=host,readOnly=true,source=' + abspath(kitty_dir))
 cmd += sys.argv[2:]
 call(*cmd)

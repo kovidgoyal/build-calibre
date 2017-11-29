@@ -2,12 +2,15 @@
 # vim:fileencoding=utf-8
 # License: GPLv3 Copyright: 2016, Kovid Goyal <kovid at kovidgoyal.net>
 
-from __future__ import (unicode_literals, division, absolute_import,
-                        print_function)
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import os
+import shlex
 import shutil
 
-from .constants import is64bit, CFLAGS, LDFLAGS, MAKEOPTS, isosx, build_dir, iswindows
+from .constants import (CFLAGS, LDFLAGS, MAKEOPTS, build_dir, is64bit, isosx,
+                        iswindows)
 from .utils import run
 
 
@@ -30,9 +33,14 @@ def main(args):
         run('nmake -f ms\\ntdll.mak test')
         run('nmake -f ms\\ntdll.mak install')
     else:
-        optflags = ['enable-ec_nistp_64_gcc_128'] if is64bit else []
-        run('./config', '--prefix=/usr', '--openssldir=/etc/ssl', 'shared',
-            'zlib', '-Wa,--noexecstack', CFLAGS, LDFLAGS, *optflags)
+        if is64bit:
+            cmd = ['./config', '--prefix=/usr', '--openssldir=/etc/ssl',
+                   'shared', 'zlib', '-Wa,--noexecstack', CFLAGS, LDFLAGS,
+                   'enable-ec_nistp_64_gcc_128']
+        else:
+            cmd = shlex.split('perl ./Configure shared threads zlib-dynamic "-Wa,--noexecstack" --prefix=/usr --openssldir=/etc/ssl -m32 linux-generic32')
+            cmd.append(CFLAGS), cmd.append(LDFLAGS)
+        run(*cmd)
         run('make ' + MAKEOPTS)
         run('make test', library_path=os.getcwd())
         run('make', 'INSTALL_PREFIX={}'.format(build_dir()), 'install_sw')
