@@ -59,6 +59,7 @@ else:
             conf += ' --with-system-ffi --enable-shared'
             # Needed as the system openssl is too old, causing the _ssl module to fail
             env['LD_LIBRARY_PATH'] = LIBDIR
+            env['CFLAGS'] += ' -I{}/include/ncursesw'.format(PREFIX)
         elif isosx:
             conf += ' --enable-framework={}/python --with-signal-module'.format(build_dir())
             env['MACOSX_DEPLOYMENT_TARGET'] = '10.9'  # Needed for readline detection
@@ -66,16 +67,25 @@ else:
         with ModifiedEnv(**env):
             simple_build(conf)
 
-        bindir = os.path.join(build_dir(), 'bin')
         if isosx:
+            bindir = os.path.join(build_dir(), 'bin')
             for f in os.listdir(bindir):
-                l = os.path.join(bindir, f)
-                if os.path.islink(l):
-                    fp = os.readlink(l)
+                link = os.path.join(bindir, f)
+                if os.path.islink(link):
+                    fp = os.readlink(link)
                     nfp = fp.replace(build_dir(), PREFIX)
                     if nfp != fp:
-                        os.unlink(l)
-                        os.symlink(nfp, l)
+                        os.unlink(link)
+                        os.symlink(nfp, link)
+        else:
+            for path in glob.glob(os.path.join(build_dir(), 'lib/python*/_sysconfigdata*.py')):
+                with open(path, 'r+b') as f:
+                    raw = f.read().decode('utf-8')
+                    nraw = raw.replace(build_dir(), PREFIX)
+                    if raw == nraw:
+                        raise ValueError('Failed to replace build directory (%s) from sysconfig data' % build_dir())
+                    f.seek(0), f.truncate()
+                    f.write(nraw.encode('utf-8'))
 
 
 def filter_pkg(parts):
