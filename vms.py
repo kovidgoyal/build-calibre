@@ -16,7 +16,7 @@ def is_host_reachable(name, timeout=1):
     try:
         socket.create_connection((name, 22), timeout).close()
         return True
-    except:
+    except Exception:
         return False
 
 
@@ -67,7 +67,6 @@ def shutdown_vm(name, max_wait=15):
     isosx = name.startswith('osx-')
     cmd = 'sudo shutdown -h now' if isosx else 'shutdown.exe -s -f -t 0'
     shp = run_in_vm(name, cmd, async=True)
-    shutdown_time = time.time()
 
     try:
         while is_host_reachable(name) and time.time() - start_time <= max_wait:
@@ -78,10 +77,6 @@ def shutdown_vm(name, max_wait=15):
             subprocess.check_call(('VBoxManage controlvm %s poweroff' % name).split())
             return
         print('SSH server shutdown, now waiting for VM to poweroff...')
-        if isosx:
-            # OS X VM hangs on shutdown, so just give it at most 5 seconds to
-            # shutdown cleanly.
-            max_wait = 5 + shutdown_time - start_time
         while is_vm_running(name) and time.time() - start_time <= max_wait:
             time.sleep(0.1)
         if is_vm_running(name):
