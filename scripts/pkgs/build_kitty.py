@@ -31,7 +31,7 @@ def build_kitty(args):
     os.chdir(KITTY_DIR)
     cmd = [PYTHON, 'setup.py']
     if args.quick_build:
-        cmd.append('build'), cmd.append('--debug'), cmd.append('--incremental')
+        cmd.append('build'), cmd.append('--debug')
         tdir = None
     else:
         if isosx:
