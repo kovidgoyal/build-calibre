@@ -287,8 +287,8 @@
     {
         "name": "harfbuzz",
         "unix": {
-            "filename": "harfbuzz-1.6.3.tar.bz2",
-            "hash": "sha256:e31eb367beb61a9399d2c78b51c225ab2b1cbd46f364f2d80d97bb422b44101a",
+            "filename": "harfbuzz-1.7.2.tar.bz2",
+            "hash": "sha256:a790585e35c1a87f0dcc23580c84b7cc2324e6f67a2946178d278c2a36c790cb",
             "urls": ["https://www.freedesktop.org/software/harfbuzz/release/{filename}"]
         }
     },

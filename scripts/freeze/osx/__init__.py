@@ -246,7 +246,6 @@ class Freeze(object):
                 'z.1',
                 'glfw.3',
                 'unistring.2',
-                'freetype.6',
                 'harfbuzz.0',
                 'png16.16',
                 'crypto.1.0.0',
