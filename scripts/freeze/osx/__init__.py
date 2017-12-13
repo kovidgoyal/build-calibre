@@ -225,6 +225,7 @@ class Freeze(object):
             CFBundleGetInfoString='kitty, an OpenGL based terminal emulator https://github.com/kovidgoyal/kitty',
             CFBundleIconFile=APPNAME + '.icns',
             NSHighResolutionCapable=True,
+            NSSupportsAutomaticGraphicsSwitching=True,
             LSApplicationCategoryType='public.app-category.utilities',
             LSEnvironment={'KITTY_LAUNCHED_BY_LAUNCH_SERVICES': '1'},
         )
