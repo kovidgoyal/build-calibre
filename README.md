@@ -108,6 +108,7 @@ You need a VirtualBox virtual machine of Windows 7 64bit named
     * Install SVN: http://tortoisesvn.net/downloads.html
     * Install nasm.exe:  http://www.nasm.us/pub/nasm/releasebuilds/2.11/win32/nasm-2.11-win32.zip
     * Install git: https://git-scm.com/download/win
+    * Install Wix: http://wixtoolset.org/releases/
     * Ensure that all the above tools are in PATH so that they can be run in a
       command prompt using just their names.
     * Create the folders: C:\sw64 C:\sw32 C:\sources C:\patches C:\scripts C:\calibre C:\t
