@@ -8,15 +8,13 @@ from __future__ import (absolute_import, division, print_function,
 import errno
 import operator
 import os
-import plistlib
 import shutil
 import stat
 import subprocess
 import sys
 import tempfile
-import time
 
-from pkgs.constants import KITTY_DIR, PREFIX, SW, get_py_ver
+from pkgs.constants import PREFIX, SW, get_py_ver
 from pkgs.utils import current_dir, timeit, walk, run_shell
 
 from .. import kitty_constants, py_compile
@@ -104,7 +102,6 @@ class Freeze(object):
 
     def run(self):
         ret = 0
-        self.create_skeleton()
         self.add_python_framework()
         self.add_stdlib()
         self.add_misc_libraries()
@@ -193,43 +190,6 @@ class Freeze(object):
             os.symlink(basename(curr), 'Versions/Current')
             for y in ('Python', 'Resources'):
                 os.symlink('Versions/Current/%s' % y, y)
-
-    @flush
-    def create_skeleton(self):
-        x = join(KITTY_DIR, 'logo', APPNAME + '.iconset')
-        if not os.path.exists(x):
-            raise SystemExit('Failed to find icns format icons')
-        subprocess.check_call([
-            'iconutil', '-c', 'icns', x, '-o',
-            join(self.resources_dir, basename(x).partition('.')[0] + '.icns')
-        ])
-        self.create_plist()
-
-    @flush
-    def create_plist(self):
-        pl = dict(
-            CFBundleDevelopmentRegion='English',
-            CFBundleDisplayName=APPNAME,
-            CFBundleName=APPNAME,
-            CFBundleIdentifier='net.kovidgoyal.' + APPNAME,
-            CFBundleVersion=VERSION,
-            CFBundleShortVersionString=VERSION,
-            CFBundlePackageType='APPL',
-            CFBundleSignature='????',
-            CFBundleExecutable=APPNAME,
-            LSMinimumSystemVersion='10.9.5',
-            LSRequiresNativeExecution=True,
-            NSAppleScriptEnabled=False,
-            NSHumanReadableCopyright=time.strftime(
-                'Copyright %Y, Kovid Goyal'),
-            CFBundleGetInfoString='kitty, an OpenGL based terminal emulator https://github.com/kovidgoyal/kitty',
-            CFBundleIconFile=APPNAME + '.icns',
-            NSHighResolutionCapable=True,
-            NSSupportsAutomaticGraphicsSwitching=True,
-            LSApplicationCategoryType='public.app-category.utilities',
-            LSEnvironment={'KITTY_LAUNCHED_BY_LAUNCH_SERVICES': '1'},
-        )
-        plistlib.writePlist(pl, join(self.contents_dir, 'Info.plist'))
 
     @flush
     def install_dylib(self, path, set_id=True):
