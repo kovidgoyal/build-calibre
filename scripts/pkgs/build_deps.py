@@ -23,7 +23,7 @@ all_deps = (
     # Python and its dependencies
     'zlib bzip2 expat sqlite libffi openssl ncurses readline python '
     # Miscellaneous dependencies
-    'freetype fontconfig harfbuzz glfw libunistring libpng '
+    'freetype fontconfig harfbuzz glfw libpng '
 ).strip().split()
 
 if isosx:
