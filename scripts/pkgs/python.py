@@ -53,7 +53,7 @@ else:
         env = {'CFLAGS': CFLAGS + ' -DHAVE_LOAD_EXTENSION'}
         replace_in_file('setup.py', re.compile('def detect_tkinter.+:'), lambda m: m.group() + '\n' + ' ' * 8 + 'return 0')
         conf = (
-            '--prefix={} --without-threads --enable-ipv6 --without-docstrings'
+            '--prefix={} --enable-ipv6 --without-docstrings'
             ' --with-system-expat --with-pymalloc --without-ensurepip').format(build_dir())
         if islinux:
             conf += ' --with-system-ffi --enable-shared'
