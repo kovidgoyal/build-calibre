@@ -112,7 +112,7 @@
             "urls":["https://github.com/kovidgoyal/pywin32.git"]
         }
     },
-7
+
     {
         "name": "setuptools",
         "unix": {
