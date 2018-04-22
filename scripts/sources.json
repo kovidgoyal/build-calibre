@@ -77,7 +77,7 @@
         "unix": {
             "filename": "ncurses-6.0.tar.gz",
             "hash": "md5:ee13d052e1ead260d7c28071f46eefb1",
-            "urls": ["ftp://invisible-island.net/ncurses/{filename}"]
+            "urls": ["ftp://ftp.gnu.org/gnu/ncurses/{filename}"]
         }
     },
 
