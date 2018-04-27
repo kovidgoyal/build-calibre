@@ -210,6 +210,8 @@ class Freeze(object):
                 'png16.16',
                 'crypto.1.0.0',
                 'ssl.1.0.0',
+                'readline.6',
+                'ncursesw.6',
         ):
             print('\nAdding', x)
             x = 'lib%s.dylib' % x
