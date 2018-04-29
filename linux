@@ -69,6 +69,7 @@ def print_cmd(cmd):
 
 print_cmd.silent_calls = False
 
+
 def call(*cmd):
     if len(cmd) == 1 and isinstance(cmd[0], basestring):
         cmd = shlex.split(cmd[0])
