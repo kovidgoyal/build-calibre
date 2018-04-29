@@ -231,7 +231,7 @@ def run():
     if os.path.exists(zshrc):
         shutil.copy2(zshrc, os.path.join(tdir, '.zshrc'))
     else:
-        os.touch(os.path.join(tdir, '.zshrc'))
+        open(os.path.join(tdir, '.zshrc'), 'wb').close()
     try:
         call('sudo', 'cp', '/etc/resolv.conf', os.path.join(img_path, 'etc'))
         mount_all(tdir)
