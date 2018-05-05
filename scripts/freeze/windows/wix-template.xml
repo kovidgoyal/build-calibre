@@ -9,6 +9,11 @@
         InstallerVersion='300' Languages='1033' Compressed='yes'
         SummaryCodepage='1252' />
 
+    <!-- Disable creation of system restore points on calibre installs. Speeds
+         up the install. We dont need system restore since we dont install any
+         system DLLs/components anyway (apart from start menu entries) -->
+    <Property Id="MSIFASTINSTALL" Value="3" /> 
+
     <Media Id="1" Cabinet="{app}.cab" CompressionLevel="{compression}" EmbedCab="yes" />
     <!-- The following line ensures that DLLs are replaced even if
         their version is the same as before or they dont have versions.
