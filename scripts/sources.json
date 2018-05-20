@@ -174,8 +174,8 @@
     {
         "name": "pygments",
         "unix": {
-            "filename": "Pygments-2.1.3.tar.gz",
-            "hash": "md5:ed3fba2467c8afcda4d317e4ef2c6150",
+            "filename": "Pygments-2.2.0.tar.gz",
+            "hash": "sha256:dbae1046def0efb574852fab9e90209b23f556367b5a320c0bcb871c77c3e8cc",
             "urls": ["pypi"]
         }
     },

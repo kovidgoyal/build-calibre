@@ -2,20 +2,25 @@
 # vim:fileencoding=utf-8
 # License: GPLv3 Copyright: 2016, Kovid Goyal <kovid at kovidgoyal.net>
 
-from __future__ import (unicode_literals, division, absolute_import,
-                        print_function)
-import sys
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import importlib
 import os
+import sys
 import tempfile
 
-from pkgs.constants import (
-    SW, PREFIX, set_build_dir, pkg_ext, set_current_source, iswindows,
-    set_tdir, mkdtemp, isosx)
+from pkgs.constants import (PREFIX, SW, isosx, iswindows, mkdtemp, pkg_ext,
+                            set_build_dir, set_current_source, set_tdir)
 from pkgs.download_sources import download, filename_for_dep
-from pkgs.utils import (
-    run_shell, install_package, create_package, extract_source, simple_build,
-    set_title, fix_install_names, rmtree)
+from pkgs.utils import (create_package, extract_source, fix_install_names,
+                        install_package, python_build, rmtree, run_shell,
+                        set_title, simple_build)
+
+if isosx:
+    python_deps = 'pygments'.split()
+else:
+    python_deps = []
 
 all_deps = (
     # Build tools
@@ -24,7 +29,7 @@ all_deps = (
     'zlib bzip2 expat sqlite libffi openssl ncurses readline python '
     # Miscellaneous dependencies
     'freetype fontconfig harfbuzz glfw libpng '
-).strip().split()
+).strip().split() + python_deps
 
 if isosx:
     all_deps.remove('bzip2')
@@ -83,7 +88,11 @@ def build(dep, args, dest_dir):
         if hasattr(m, 'main'):
             m.main(args)
         else:
-            simple_build()
+            if dep in python_deps:
+                python_build()
+                output_dir = os.path.join(output_dir, os.path.relpath(PREFIX, '/'))
+            else:
+                simple_build()
         if isosx:
             fix_install_names(m, output_dir)
     except Exception:

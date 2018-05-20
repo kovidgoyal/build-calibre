@@ -6,6 +6,8 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import errno
+import glob
+import json
 import operator
 import os
 import shutil
@@ -13,9 +15,10 @@ import stat
 import subprocess
 import sys
 import tempfile
+import zipfile
 
-from pkgs.constants import PREFIX, SW, get_py_ver
-from pkgs.utils import current_dir, timeit, walk, run_shell
+from pkgs.constants import PREFIX, PYTHON, SW, get_py_ver
+from pkgs.utils import current_dir, run_shell, timeit, walk
 
 from .. import kitty_constants, py_compile
 from .sign import sign_app
@@ -91,6 +94,8 @@ class Freeze(object):
         self.to_strip = []
         self.warnings = []
         self.py_ver = get_py_ver()
+        self.python_stdlib = join(self.resources_dir, 'Python', 'lib', 'python' + self.py_ver)
+        self.site_packages = self.python_stdlib  # hack to avoid needing to add site-packages to path
 
         self.run()
 
@@ -103,6 +108,7 @@ class Freeze(object):
     def run(self):
         ret = 0
         self.add_python_framework()
+        self.add_site_packages()
         self.add_stdlib()
         self.add_misc_libraries()
         self.copy_site()
@@ -253,8 +259,9 @@ class Freeze(object):
     def add_stdlib(self):
         print('\nAdding python stdlib')
         src = PREFIX + '/python/Python.framework/Versions/Current/lib/python' + self.py_ver
-        dest = join(self.resources_dir, 'Python', 'lib', 'python' + self.py_ver)
-        os.makedirs(dest)
+        dest = self.python_stdlib
+        if not os.path.exists(dest):
+            os.makedirs(dest)
         for x in os.listdir(src):
             if x in ('site-packages', 'config', 'test', 'lib2to3', 'lib-tk',
                      'lib-old', 'idlelib', 'plat-mac', 'plat-darwin',
@@ -268,6 +275,54 @@ class Freeze(object):
                 dest2 = join(dest, basename(x))
                 if dest2.endswith('.so'):
                     self.fix_dependencies_in_lib(dest2)
+
+    @flush
+    def add_site_packages(self):
+        print('\nAdding site-packages')
+        os.makedirs(self.site_packages)
+        sys_path = json.loads(subprocess.check_output([
+            PYTHON, '-c', 'import sys, json; json.dump(sys.path, sys.stdout)']))
+        paths = reversed(map(abspath, [x for x in sys_path if x.startswith('/') and not x.startswith('/Library/')]))
+        upaths = []
+        for x in paths:
+            if x not in upaths and (x.endswith('.egg') or x.endswith('/site-packages')):
+                upaths.append(x)
+        for x in upaths:
+            print('\t', x)
+            tdir = None
+            try:
+                if not os.path.isdir(x):
+                    zf = zipfile.ZipFile(x)
+                    tdir = tempfile.mkdtemp()
+                    zf.extractall(tdir)
+                    x = tdir
+                self.add_modules_from_dir(x)
+                self.add_packages_from_dir(x)
+            finally:
+                if tdir is not None:
+                    shutil.rmtree(tdir)
+        self.remove_bytecode(self.site_packages)
+
+    @flush
+    def add_modules_from_dir(self, src):
+        for x in glob.glob(join(src, '*.py')) + glob.glob(join(src, '*.so')):
+            shutil.copy2(x, self.site_packages)
+            if x.endswith('.so'):
+                self.fix_dependencies_in_lib(x)
+
+    @flush
+    def add_packages_from_dir(self, src):
+        for x in os.listdir(src):
+            x = join(src, x)
+            if os.path.isdir(x) and os.path.exists(join(x, '__init__.py')):
+                if self.filter_package(basename(x)):
+                    continue
+                self.add_package_dir(x)
+
+    @flush
+    def filter_package(self, name):
+        return name in ('Cython', 'modulegraph', 'macholib', 'py2app',
+                        'bdist_mpkg', 'altgraph')
 
     @flush
     def remove_bytecode(self, dest):

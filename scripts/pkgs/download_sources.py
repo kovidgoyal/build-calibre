@@ -83,6 +83,7 @@ def verify_hash(pkg):
                 matched = fhash == q
     return matched
 
+
 start_time = 0
 
 
@@ -112,9 +113,9 @@ def get_pypi_url(pkg):
     pkg_name = '-'.join(parts[:-1])
     base = 'https://pypi.python.org/simple/%s/' % pkg_name
     raw = urllib.urlopen(base).read()
-    md5 = pkg['hash'].rpartition(':')[-1]
-    for m in re.finditer(br'href="([^"]+%s)#md5=%s"' % (pkg['filename'], md5), raw):
+    for m in re.finditer(br'href="([^"]+%s)#sha256=.+"' % pkg['filename'], raw):
         return urlparse.urljoin(base, m.group(1))
+    raise ValueError('Failed to find PyPI URL for {}'.format(pkg))
 
 
 def get_git_clone(pkg, url, fname):
