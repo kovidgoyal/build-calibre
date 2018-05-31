@@ -28,8 +28,12 @@ def binary_includes():
         j(PREFIX, 'lib', 'lib' + x) for x in (
             'expat.so.1', 'sqlite3.so.0', 'ffi.so.6',
             'z.so.1', 'bz2.so.1.0', 'png16.so.16',
-            'iconv.so.2', 'pcre.so.1', 'graphite2.so.3', 'glib-2.0.so.0', 'freetype.so.6', 'harfbuzz.so.0',
-            'xkbcommon.so.0', 'xkbcommon-x11.so.0',
+
+            # dont include freetype because fontconfig is closely coupled to it
+            # and also distros often patch freetype
+            # 'iconv.so.2', 'pcre.so.1', 'graphite2.so.3', 'glib-2.0.so.0', 'freetype.so.6',
+
+            'harfbuzz.so.0', 'xkbcommon.so.0', 'xkbcommon-x11.so.0',
             'ncursesw.so.6', 'ssl.so.1.0.0', 'crypto.so.1.0.0', 'readline.so.6',
             'python%sm.so.1.0' % py_ver,
         )]
