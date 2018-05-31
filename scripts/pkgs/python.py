@@ -53,7 +53,7 @@ else:
         env = {'CFLAGS': CFLAGS + ' -DHAVE_LOAD_EXTENSION'}
         replace_in_file('setup.py', re.compile('def detect_tkinter.+:'), lambda m: m.group() + '\n' + ' ' * 8 + 'return 0')
         conf = (
-            '--prefix={} --enable-ipv6 --without-docstrings'
+            '--prefix={} --enable-ipv6'
             ' --with-system-expat --with-pymalloc --without-ensurepip').format(build_dir())
         if islinux:
             conf += ' --with-system-ffi --enable-shared'
@@ -90,8 +90,7 @@ else:
 
 def filter_pkg(parts):
     if (
-        'idlelib' in parts or 'lib2to3' in parts or 'lib-tk' in parts or 'ensurepip' in parts or
-        'config' in parts or 'pydoc_data' in parts or 'Icons' in parts
+        'idlelib' in parts or 'lib2to3' in parts or 'lib-tk' in parts or 'ensurepip' in parts or 'config' in parts or 'pydoc_data' in parts or 'Icons' in parts
     ):
         return True
     if iswindows:
@@ -109,7 +108,7 @@ def post_install_check():
     if iswindows:
         # Ensure the system python27.dll is not being loaded
         run(PYTHON, '-c', "import sys; 'MSC v.1900' not in sys.version and sys.exit(1)")
-    mods = '_ssl zlib bz2 ctypes sqlite3'.split()
+    mods = '_ssl zlib bz2 ctypes sqlite3 multiprocessing.synchronize'.split()
     if not iswindows:
         mods.extend('readline _curses'.split())
     run(PYTHON, '-c', 'import ' + ','.join(mods), library_path=True)

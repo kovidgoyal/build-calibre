@@ -35,7 +35,7 @@ if iswindows:
 SOURCES = ROOT + 'sources'
 PATCHES = ROOT + 'patches'
 SCRIPTS = ROOT + 'scripts'
-KITTY_DIR = ROOT + ('kitty' if isosx else 'tmp/kitty')
+KITTY_DIR = ROOT + 'kitty'
 if iswindows:
     tempfile.tempdir = 'C:\\t\\t'
 PREFIX = os.path.join(SW, 'sw')
@@ -47,7 +47,10 @@ cygwin_paths = []
 
 
 def get_py_ver():
-    return subprocess.check_output([PYTHON, '-c', 'import sysconfig; print(sysconfig.get_python_version())']).decode('utf-8').strip()
+    from .utils import current_env
+    return subprocess.check_output([
+        PYTHON, '-c', 'import sysconfig; print(sysconfig.get_python_version())'
+    ], env=current_env(library_path=True)).decode('utf-8').strip()
 
 
 if iswindows:

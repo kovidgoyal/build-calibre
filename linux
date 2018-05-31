@@ -56,19 +56,24 @@ mkdir('build/linux')
 output_dir = os.path.join(abspath('build'), 'linux', arch)
 mkdir(output_dir)
 img_path = os.path.abspath(
-    os.path.realpath(os.path.join(output_dir, 'container-1')))
+    os.path.realpath(os.path.join(output_dir, 'chroot-1')))
 sw_dir = os.path.join(output_dir, 'sw')
 mkdir(sw_dir)
 
-silent_calls = False
+
+def print_cmd(cmd):
+    if not print_cmd.silent_calls:
+        print('\033[92m', end='')
+        print(*cmd, end='\033[0m\n')
+
+
+print_cmd.silent_calls = False
 
 
 def call(*cmd):
     if len(cmd) == 1 and isinstance(cmd[0], basestring):
         cmd = shlex.split(cmd[0])
-    if not silent_calls:
-        print('\033[92m', end='')
-        print(*cmd, end='\033[0m\n')
+    print_cmd(cmd)
     ret = subprocess.Popen(cmd).wait()
     if ret != 0:
         raise SystemExit(ret)
@@ -78,39 +83,112 @@ def check_for_image(tag):
     return os.path.exists(img_path)
 
 
-def build_container():
-    cwd = os.getcwd()
-    os.chdir(output_dir)
-    image = 'ubuntu:trusty' if arch == '64' else 'daald/ubuntu32:trusty'
+def cached_download(url):
+    bn = os.path.basename(url)
+    local = os.path.join('/tmp', bn)
+    if not os.path.exists(local):
+        from urllib import urlopen
+        print('Downloading', url, '...')
+        data = urlopen(url).read()
+        with open(local, 'wb') as f:
+            f.write(data)
+    return local
+
+
+def copy_terminfo():
+    raw = subprocess.check_output(['infocmp']).decode('utf-8').splitlines()[0]
+    path = raw.partition(':')[2].strip()
+    if path and os.path.exists(path):
+        bdir = os.path.basename(os.path.dirname(path))
+        dest = os.path.join(img_path, 'usr/share/terminfo', bdir)
+        call('sudo', 'mkdir', '-p', dest)
+        call('sudo', 'cp', '-a', path, dest)
+
+
+def chroot(cmd, as_root=True):
+    if isinstance(cmd, basestring):
+        cmd = shlex.split(cmd)
+    print_cmd(['in-chroot'] + cmd)
+    print_cmd.silent_calls = True
     user = pwd.getpwuid(os.geteuid()).pw_name
-    call('sudo acbuild begin docker://' + image)
+    env = {
+        'PATH': '/sbin:/usr/sbin:/bin:/usr/bin',
+        'PS1': '\x1b[92mchroot\x1b[0m ({}-bit) {}'.format(arch, '#' if as_root else '$'),
+        'HOME': '/root' if as_root else '/home/' + user,
+        'USER': 'root' if as_root else user,
+        'TERM': os.environ.get('TERM', 'xterm-256color'),
+    }
+    us = [] if as_root else ['--userspec={}:{}'.format(os.geteuid(), os.getegid())]
+    as_arch = ['linux{}'.format(arch), '--']
+    cmd = ['sudo', 'chroot'] + us + [img_path] + as_arch + list(cmd)
+    copy_terminfo()
+    call('sudo', 'cp', '/etc/resolv.conf', os.path.join(img_path, 'etc'))
+    print_cmd.silent_calls = False
+    ret = subprocess.Popen(cmd, env=env).wait()
+    if ret != 0:
+        raise SystemExit(ret)
+
+
+def write_in_chroot(path, data):
+    path = path.lstrip('/')
+    p = subprocess.Popen(['sudo', 'tee', os.path.join(img_path, path)], stdin=subprocess.PIPE, stdout=open(os.devnull, 'wb'))
+    if not isinstance(data, bytes):
+        data = data.encode('utf-8')
+    p.communicate(data)
+    if p.wait() != 0:
+        raise SystemExit(p.returncode)
+
+
+def _build_container():
+    ubuntu_version = 'trusty'
+    url = 'https://partner-images.canonical.com/core/{0}/current/ubuntu-{0}-core-cloudimg-{{}}-root.tar.gz'.format(ubuntu_version)
+    archive = cached_download(url.format('amd64' if arch == '64' else 'i386'))
+    user = pwd.getpwuid(os.geteuid()).pw_name
+    if os.path.exists(img_path):
+        call('sudo', 'rm', '-rf', img_path)
+    mkdir(img_path)
+    call('sudo tar -C "{}" -xpf "{}"'.format(img_path, archive))
+    if os.getegid() != 100:
+        chroot('groupadd -f -g {} {}'.format(os.getegid(), 'crusers'))
+    chroot('useradd --home-dir=/home/{user} --create-home --uid={uid} --gid={gid} {user}'.format(
+        user=user, uid=os.geteuid(), gid=os.getegid()))
+    # Prevent services from starting
+    write_in_chroot('/usr/sbin/policy-rc.d', '#!/bin/sh\nexit 101')
+    chroot('chmod +x /usr/sbin/policy-rc.d')
+    # prevent upstart scripts from running during install/update
+    chroot('dpkg-divert --local --rename --add /sbin/initctl')
+    chroot('cp -a /usr/sbin/policy-rc.d /sbin/initctl')
+    chroot('''sed -i 's/^exit.*/exit 0/' /sbin/initctl''')
+    # remove apt-cache translations for fast "apt-get update"
+    write_in_chroot('/etc/apt/apt.conf.d/chroot-no-languages', 'Acquire::Languages "none";')
+
+    for cmd in [
+        # Basic build environment
+        'apt-get update',
+        'apt-get install -y build-essential nasm cmake chrpath zsh python2.7 git autoconf bison gettext',
+        # Build time deps for glfw.
+        'apt-get install -y libxcursor-dev libxrandr-dev libxi-dev libxinerama-dev libgl1-mesa-dev libxcb-xkb-dev',
+        # Deps for kittu
+        'apt-get install -y libfontconfig1-dev',
+        # Cleanup
+        'apt-get clean',
+        'chsh -s /bin/zsh ' + user,
+    ]:
+        chroot(cmd)
+    call('sudo chown {}:{} "{}"'.format(os.getuid(), os.getgid(), img_path))
+
+
+def build_container():
     try:
-        call('sudo acbuild set-name kitty' + arch)
-        call('sudo acbuild set-user ' + user)
-        call('sudo acbuild set-group users')
-        call('sudo acbuild set-exec /bin/zsh')
-        call('sudo acbuild set-working-directory /tmp')
-        for cmd in [
-                # Basic build environment
-                'apt-get update',
-                'apt-get install -y build-essential cmake chrpath zsh wget python2.7',
-                'apt-get install -y libfontconfig1-dev libxi-dev libxrandr-dev libxinerama-dev libxcursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev mesa-common-dev libgl1-mesa-dev libpng-dev',  # noqa
-                # Cleanup
-                'apt-get clean',
-                # User account
-                'useradd --home-dir=/home/{0} --create-home --uid=1000 --gid=100 {0}'.format(user),
-                'chsh -s /bin/zsh ' + user,
-        ]:
-            cmd = ['sudo', 'acbuild', 'run', '--'] + shlex.split(cmd)
-            call(*cmd)
-        root = '.acbuild/currentaci/rootfs'
+        _build_container()
+    except Exception:
+        failed_img_path = os.path.join(os.path.dirname(img_path), 'failed')
+        if os.path.exists(failed_img_path):
+            call('sudo rm -rf "{}"'.format(failed_img_path))
         if os.path.exists(img_path):
-            call('sudo', 'rm', '-rf', img_path)
-        call('sudo', 'mv', root, img_path)
-        call('sudo chown {}:{} {}'.format(os.getuid(), os.getgid(), img_path))
-    finally:
-        call('sudo acbuild end')
-        os.chdir(cwd)
+            call('sudo mv "{}" "{}"'.format(img_path, failed_img_path))
+            call('sudo chown {}:{} "{}"'.format(os.getuid(), os.getgid(), failed_img_path))
+        raise
 
 
 def get_mounts():
@@ -125,8 +203,7 @@ def get_mounts():
 
 
 def mount_all(tdir):
-    global silent_calls
-    silent_calls = True
+    print_cmd.silent_calls = True
 
     current_mounts = get_mounts()
 
@@ -138,9 +215,13 @@ def mount_all(tdir):
             if readonly:
                 call('sudo', 'mount', '-o', 'remount,ro,bind', dest)
 
-    def copy(src, dest):
+    def clone(src, dest):
         dest = os.path.join(img_path, dest.lstrip('/'))
-        shutil.copytree(src, dest, symlinks=True, ignore=shutil.ignore_patterns(*'build dest'.split()))
+        if dest not in current_mounts:
+            if os.path.exists(dest):
+                shutil.rmtree(dest)
+            call('sudo', 'cp', '-PRp', '--reflink=auto', src, dest)
+            call('sudo', 'chown', '-R', '1000:1000', dest)
 
     mount(tdir, '/tmp')
     mount(sw_dir, '/sw')
@@ -149,30 +230,21 @@ def mount_all(tdir):
     mount('patches', '/patches', True)
     kitty_dir = os.environ.get('KITTY_SRC_DIR', os.path.join('..', 'kitty'))
     if os.path.exists(os.path.join(kitty_dir, 'setup.py')):
-        copy(kitty_dir, '/tmp/kitty')
+        clone(kitty_dir, '/kitty')
     mount('/dev', '/dev')
     call('sudo', 'mount', '-t', 'proc', 'proc', os.path.join(img_path, 'proc'))
     call('sudo', 'mount', '-t', 'sysfs', 'sys', os.path.join(img_path, 'sys'))
-    silent_calls = False
+    call('sudo', 'chmod', 'a+w', os.path.join(img_path, 'dev/shm'))
+    call('sudo', 'mount', '--bind', '/dev/shm', os.path.join(img_path, 'dev/shm'))
+    print_cmd.silent_calls = False
 
 
 def umount_all():
-    global silent_calls
-    silent_calls = True
-    for mp in get_mounts():
+    print_cmd.silent_calls = True
+    for mp in sorted(get_mounts(), key=len, reverse=True):
         if mp.startswith(img_path):
             call('sudo', 'umount', '-l', mp)
-    silent_calls = False
-
-
-def copy_terminfo():
-    raw = subprocess.check_output(['infocmp']).decode('utf-8').splitlines()[0]
-    path = raw.partition(':')[2].strip()
-    if path and os.path.exists(path):
-        bdir = os.path.basename(os.path.dirname(path))
-        dest = os.path.join(img_path, 'usr/share/terminfo', bdir)
-        call('sudo', 'mkdir', '-p', dest)
-        call('sudo', 'cp', '-a', path, dest)
+    print_cmd.silent_calls = False
 
 
 def shutdown():
@@ -224,29 +296,23 @@ if not check_for_image(arch):
 
 
 def run():
-    global silent_calls
-    silent_calls = True
+    print_cmd.silent_calls = True
     tdir = tempfile.mkdtemp()
     zshrc = os.path.realpath(os.path.expanduser('~/.zshrc'))
     if os.path.exists(zshrc):
         shutil.copy2(zshrc, os.path.join(tdir, '.zshrc'))
     else:
-        os.touch(os.path.join(tdir, '.zshrc'))
+        open(os.path.join(tdir, '.zshrc'), 'wb').close()
     try:
-        call('sudo', 'cp', '/etc/resolv.conf', os.path.join(img_path, 'etc'))
         mount_all(tdir)
         cmd = [
-            'sudo', 'chroot',
-            '--userspec={}:{}'.format(os.geteuid(), os.getegid()), img_path,
-            '/usr/bin/env', '-i', 'HOME=/tmp', 'TERM=' + os.environ['TERM'], 'PATH=/bin:/usr/bin:/sbin:/usr/sbin',
-            '/usr/bin/python2.7', '/scripts/main.py'
+            'python2.7', '/scripts/main.py'
         ] + sys.argv[2:]
-        copy_terminfo()
         os.environ.pop('LANG', None)
         for k in tuple(os.environ):
             if k.startswith('LC') or k.startswith('XAUTH'):
                 del os.environ[k]
-        call(*cmd)
+        chroot(cmd, as_root=False)
     finally:
         umount_all()
         shutil.rmtree(tdir)

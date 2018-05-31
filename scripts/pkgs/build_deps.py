@@ -24,12 +24,18 @@ all_deps = (
     'pkg-config cmake '
     # Python and its dependencies
     'zlib bzip2 expat sqlite libffi openssl ncurses readline python '
+    # Freetype and its dependencies
+    'libpng iconv pcre glib graphite freetype fontconfig '
     # Miscellaneous dependencies
-    'freetype fontconfig harfbuzz glfw libpng '
+    'harfbuzz glfw '
 ).strip().split() + python_deps
 
 if isosx:
     all_deps.remove('bzip2')
+    all_deps.remove('iconv')
+    all_deps.remove('pcre')
+    all_deps.remove('glib')
+    all_deps.remove('graphite')
     all_deps.remove('fontconfig')
     all_deps.remove('freetype')
     all_deps.remove('ncurses')
@@ -37,6 +43,7 @@ if isosx:
 else:
     all_deps.remove('cmake')
     all_deps.remove('pkg-config')
+    all_deps.append('xkbcommon')
 
 
 def ensure_clear_dir(dest_dir):

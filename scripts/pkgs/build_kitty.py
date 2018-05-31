@@ -10,17 +10,23 @@ import subprocess
 
 from .build_deps import init_env
 from .constants import putenv, PREFIX, KITTY_DIR, PYTHON, isosx, mkdtemp
-from .utils import run, run_shell, ModifiedEnv, current_env
+from .utils import run, run_shell, current_env
 from freeze import initialize_constants, kitty_constants
 
 
 def run_build_tests():
-    # OS X has a wcwidth() implementation that is too old
-    with ModifiedEnv(ANCIENT_WCWIDTH='1'):
-        p = subprocess.Popen([PYTHON, 'test.py'], env=current_env())
-        if p.wait() != 0:
-            run_shell()
-            raise SystemExit(p.wait())
+    p = subprocess.Popen([PYTHON, 'test.py'], env=current_env(library_path=True))
+    if p.wait() != 0:
+        run_shell()
+        raise SystemExit(p.wait())
+
+
+def safe_remove(x):
+    if os.path.exists(x):
+        if os.path.isdir(x):
+            shutil.rmtree(x)
+        else:
+            os.unlink(x)
 
 
 def build_kitty(args):
@@ -30,15 +36,19 @@ def build_kitty(args):
         putenv(PKGCONFIG_EXE=os.path.join(PREFIX, 'bin', 'pkg-config'))
     os.chdir(KITTY_DIR)
     cmd = [PYTHON, 'setup.py']
+    [safe_remove(x) for x in 'build compile_commands.json'.split()]
     if args.quick_build:
         cmd.append('build'), cmd.append('--debug')
         tdir = None
     else:
+        bundle = 'osx-bundle' if isosx else 'linux-package'
+        tdir = mkdtemp(prefix=bundle)
+        cmd.append(bundle)
         if isosx:
-            tdir = mkdtemp(prefix='osx-bundle')
-            cmd.append('osx-bundle'), cmd.append('--prefix={}/{}.app'.format(tdir, kitty_constants['appname']))
+            cmd.append('--prefix={}/{}.app'.format(tdir, kitty_constants['appname']))
         else:
-            cmd.append('linux-package')
+            cmd.append('--prefix={}/{}'.format(tdir, kitty_constants['appname']))
+            cmd.append('--for-freeze')
     if args.debug_build:
         if '--debug' not in cmd:
             cmd.append('--debug')
@@ -57,7 +67,10 @@ def main(args):
         if isosx:
             from freeze.osx import main as freeze
             freeze(args, os.path.join(tdir, kitty_constants['appname'] + '.app'))
-            shutil.rmtree(tdir)
+        else:
+            from freeze.linux import main as freeze
+            freeze(os.path.join(tdir, kitty_constants['appname']))
+        shutil.rmtree(tdir)
 
         # After a successful run, remove the unneeded sw directory
         shutil.rmtree(PREFIX)
