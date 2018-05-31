@@ -17,10 +17,7 @@ from pkgs.utils import (create_package, extract_source, fix_install_names,
                         install_package, python_build, rmtree, run_shell,
                         set_title, simple_build)
 
-if isosx:
-    python_deps = 'pygments'.split()
-else:
-    python_deps = []
+python_deps = 'pygments'.split()
 
 all_deps = (
     # Build tools
