@@ -231,7 +231,7 @@ def mount_all(tdir):
 
 def umount_all():
     print_cmd.silent_calls = True
-    for mp in get_mounts():
+    for mp in sorted(get_mounts(), key=len, reverse=True):
         if mp.startswith(img_path):
             call('sudo', 'umount', '-l', mp)
     print_cmd.silent_calls = False
