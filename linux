@@ -224,6 +224,8 @@ def mount_all(tdir):
     mount('/dev', '/dev')
     call('sudo', 'mount', '-t', 'proc', 'proc', os.path.join(img_path, 'proc'))
     call('sudo', 'mount', '-t', 'sysfs', 'sys', os.path.join(img_path, 'sys'))
+    call('sudo', 'chmod', 'a+w', os.path.join(img_path, 'dev/shm'))
+    call('sudo', 'mount', '--bind', '/dev/shm', os.path.join(img_path, 'dev/shm'))
     print_cmd.silent_calls = False
 
 
