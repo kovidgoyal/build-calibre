@@ -22,6 +22,8 @@ def create_bundle(osname, bitness=''):
     pkg_dir = os.path.join(base, 'build', osname)
     if bitness:
         pkg_dir = os.path.join(pkg_dir, bitness)
+        if osname == 'linux':
+            pkg_dir = os.path.join(pkg_dir, 'sw')
     tdir = tempfile.mkdtemp(dir=pkg_dir)
     name = osname
     if bitness:
@@ -50,7 +52,6 @@ if len(sys.argv) > 1:
     bitness = m.group(2) if osname != 'osx' else ''
     create_bundle(osname, bitness)
 else:
-    # for osname in 'linux win'.split():
-    #     for bitness in '64 32'.split():
-    #         create_bundle(osname, bitness)
+    for bitness in '64 32'.split():
+        create_bundle('linux', bitness)
     create_bundle('osx')
