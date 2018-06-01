@@ -63,6 +63,14 @@ def parallel_build(jobs, log=print, verbose=True):
         return True
 
 
+def remove_pycache(basedir):
+    import shutil
+    for dirpath, dirnames, filenames in os.walk(basedir):
+        for d in dirnames:
+            if d == '__pycache__':
+                shutil.rmtree(os.path.join(dirpath, d))
+
+
 def py_compile(basedir):
     run(PYTHON, '-OO', '-m', 'compileall', '-d', os.path.basename(basedir), '-f', '-q', '-b', basedir, library_path=True)
     for f in walk(basedir):

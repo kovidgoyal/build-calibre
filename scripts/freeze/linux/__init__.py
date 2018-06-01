@@ -13,7 +13,7 @@ import subprocess
 import tarfile
 import time
 
-from freeze import kitty_constants, py_compile
+from freeze import kitty_constants, py_compile, remove_pycache
 from pkgs.constants import PREFIX, SW, is64bit, get_py_ver
 from pkgs.utils import walk
 
@@ -107,6 +107,7 @@ def copy_python(env):
     dest = j(env.py_dir, 'site-packages')
     import_site_packages(srcdir, dest)
     py_compile(env.py_dir)
+    py_compile(os.path.join(env.base, 'lib', 'kitty'))
 
 
 def is_elf(path):
@@ -114,7 +115,23 @@ def is_elf(path):
         return f.read(4) == b'\x7fELF'
 
 
+def fix_permissions(files):
+    for path in files:
+        os.chmod(path, 0o766)
+
+
 STRIPCMD = ['strip']
+
+
+def find_binaries(env):
+    files = {j(env.bin_dir, x) for x in os.listdir(env.bin_dir)} | {
+        x for x in {
+            j(os.path.dirname(env.bin_dir), x) for x in os.listdir(env.bin_dir)} if os.path.exists(x)}
+    for x in walk(env.lib_dir):
+        x = os.path.realpath(x)
+        if x not in files and is_elf(x):
+            files.add(x)
+    return files
 
 
 def strip_files(files, argv_max=(256 * 1024)):
@@ -134,14 +151,7 @@ def strip_files(files, argv_max=(256 * 1024)):
             [os.chmod(x, old_mode) for x, old_mode in unwritable_files]
 
 
-def strip_binaries(env):
-    files = {j(env.bin_dir, x) for x in os.listdir(env.bin_dir)} | {
-        x for x in {
-            j(os.path.dirname(env.bin_dir), x) for x in os.listdir(env.bin_dir)} if os.path.exists(x)}
-    for x in walk(env.lib_dir):
-        x = os.path.realpath(x)
-        if x not in files and is_elf(x):
-            files.add(x)
+def strip_binaries(files):
     print('Stripping %d files...' % len(files))
     before = sum(os.path.getsize(x) for x in files)
     strip_files(files)
@@ -182,6 +192,9 @@ def main(package_dir, args):
     env = Env(package_dir)
     copy_libs(env)
     copy_python(env)
+    files = find_binaries(env)
+    fix_permissions(files)
     if not args.dont_strip and not args.debug_build:
-        strip_binaries(env)
+        strip_binaries(files)
+    remove_pycache(os.path.join(env.base, 'lib'))
     create_tarfile(env, args.compression_level)
