@@ -2,12 +2,15 @@
 # vim:fileencoding=utf-8
 # License: GPLv3 Copyright: 2016, Kovid Goyal <kovid at kovidgoyal.net>
 
-from __future__ import (unicode_literals, division, absolute_import,
-                        print_function)
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from .constants import iswindows
-from .utils import run, install_binaries, copy_headers
+import os
+import re
 
+from .constants import PREFIX, build_dir, iswindows
+from .utils import (copy_headers, install_binaries, replace_in_file, run,
+                    simple_build)
 
 if iswindows:
     def main(args):
@@ -16,3 +19,7 @@ if iswindows:
         install_binaries('zlib1.dll*', 'bin')
         install_binaries('zlib.lib'), install_binaries('zdll.*')
         copy_headers('zconf.h'), copy_headers('zlib.h')
+else:
+    def main(args):
+        simple_build()
+        replace_in_file(os.path.join(build_dir(), 'lib/pkgconfig/zlib.pc'), re.compile(br'^prefix=.+$', re.M), b'prefix=%s' % PREFIX)
