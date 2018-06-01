@@ -69,7 +69,7 @@ def main(args):
             freeze(args, os.path.join(tdir, kitty_constants['appname'] + '.app'))
         else:
             from freeze.linux import main as freeze
-            freeze(os.path.join(tdir, kitty_constants['appname']))
+            freeze(os.path.join(tdir, kitty_constants['appname']), args)
         shutil.rmtree(tdir)
 
         # After a successful run, remove the unneeded sw directory

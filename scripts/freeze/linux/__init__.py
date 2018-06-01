@@ -178,9 +178,10 @@ def create_tarfile(env, compression_level='9'):
         os.path.basename(ans), os.stat(ans).st_size / (1024.**2)))
 
 
-def main(package_dir):
+def main(package_dir, args):
     env = Env(package_dir)
     copy_libs(env)
     copy_python(env)
-    # strip_binaries(env)
-    create_tarfile(env)
+    if not args.dont_strip and not args.debug_build:
+        strip_binaries(env)
+    create_tarfile(env, args.compression_level)
