@@ -4,7 +4,7 @@
 
 #define UNICODE
 
-#define _WIN32_WINNT 0x0502 
+#define _WIN32_WINNT 0x0502
 #define WINDOWS_LEAN_AND_MEAN
 
 #include <windows.h>
@@ -30,9 +30,9 @@ static int _show_error(const wchar_t *preamble, const wchar_t *msg, const int co
     buf = (wchar_t*)LocalAlloc(LMEM_ZEROINIT, sizeof(wchar_t)*
             (wcslen(msg) + wcslen(preamble) + 80));
 
-    _snwprintf_s(buf, 
+    _snwprintf_s(buf,
         LocalSize(buf) / sizeof(wchar_t), _TRUNCATE,
-        L"%s\r\n  %s (Error Code: %d)\r\n", 
+        L"%s\r\n  %s (Error Code: %d)\r\n",
         preamble, msg, code);
 
     if (GUI_APP) {
@@ -64,17 +64,17 @@ int show_last_error_crt(wchar_t *preamble) {
 
 int show_last_error(wchar_t *preamble) {
     wchar_t *msg = NULL;
-    DWORD dw = GetLastError(); 
+    DWORD dw = GetLastError();
     int ret;
 
     FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
         FORMAT_MESSAGE_FROM_SYSTEM |
         FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         dw,
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        (LPWSTR)&msg, 
+        (LPWSTR)&msg,
         0,
         NULL );
 
@@ -95,7 +95,7 @@ char* get_app_dir() {
     sz = GetModuleFileNameA(NULL, buf, MAX_PATH);
     if (sz >= MAX_PATH-1) ExitProcess(_show_error(L"Installation directory path too long", L"", 1));
     err = _splitpath_s(buf, drive, 4, buf2, MAX_PATH, NULL, 0, NULL, 0);
-    if (err != 0) ExitProcess(show_last_error_crt(L"Failed to find application directory")); 
+    if (err != 0) ExitProcess(show_last_error_crt(L"Failed to find application directory"));
     _snprintf_s(buf3, MAX_PATH, _TRUNCATE, "%s%s", drive, buf2);
     free(buf); free(buf2);
     return buf3;
@@ -113,7 +113,7 @@ wchar_t* get_app_dirw() {
     sz = GetModuleFileNameW(NULL, buf, MAX_PATH);
     if (sz >= MAX_PATH-1) ExitProcess(_show_error(L"Installation directory path too long", L"", 1));
     err = _wsplitpath_s(buf, drive, 4, buf2, MAX_PATH, NULL, 0, NULL, 0);
-    if (err != 0) ExitProcess(show_last_error_crt(L"Failed to find application directory")); 
+    if (err != 0) ExitProcess(show_last_error_crt(L"Failed to find application directory"));
     _snwprintf_s(buf3, MAX_PATH, _TRUNCATE, L"%s%s", drive, buf2);
     free(buf); free(buf2);
     return buf3;
@@ -136,7 +136,7 @@ void load_python_dll() {
     _putenv_s("QT_PLUGIN_PATH", qt_plugin_dir);
 
     if (!SetDllDirectoryA(dll_dir)) ExitProcess(show_last_error(L"Failed to set DLL directory."));
-    if (FAILED(__HrLoadAllImportsForDll(python_dll))) 
+    if (FAILED(__HrLoadAllImportsForDll(python_dll)))
         ExitProcess(_show_error(L"Failed to delay load the python dll", L"", 1));
 }
 
@@ -156,14 +156,16 @@ void setup_stream(const char *name, const char *errors, UINT cp) {
 
     stream = PySys_GetObject((char*)name);
 
-    if (!PyFile_SetEncodingAndErrors(stream, buf, (char*)errors)) 
+    if (!PyFile_SetEncodingAndErrors(stream, buf, (char*)errors))
         ExitProcess(calibre_show_python_error(L"Failed to set stream encoding", 1));
 
     free(buf);
-    
+
 }
 
-void setup_streams() {
+UINT
+setup_streams() {
+    UINT code_page = GetConsoleOutputCP();
     SetConsoleOutputCP(CP_UTF8);
     _putenv_s("PYTHONIOENCODING", "UTF-8");
     _setmode(_fileno(stdin),  _O_BINARY);
@@ -171,18 +173,20 @@ void setup_streams() {
     _setmode(_fileno(stderr), _O_BINARY);
     if (!GUI_APP) { // Remove buffering
         setvbuf(stdin,  NULL, _IONBF, 2);
-        setvbuf(stdout, NULL, _IONBF, 2);                                                   
+        setvbuf(stdout, NULL, _IONBF, 2);
         setvbuf(stderr, NULL, _IONBF, 2);
     }
 
     //printf("input cp: %d output cp: %d\r\n", GetConsoleCP(), GetConsoleOutputCP());
-    
+
     setup_stream("stdin", "strict", GetConsoleCP());
     setup_stream("stdout", "strict", CP_UTF8);
     setup_stream("stderr", "strict", CP_UTF8);
+    return code_page;
 }
 
-void initialize_interpreter(const char *basename, const char *module, const char *function) {
+UINT
+initialize_interpreter(const char *basename, const char *module, const char *function) {
     DWORD sz; char *buf, *path; HMODULE dll;
     int *flag, i, argc;
     wchar_t *app_dir, **wargv;
@@ -237,9 +241,9 @@ void initialize_interpreter(const char *basename, const char *module, const char
     Py_SetProgramName(program_name);
     Py_SetPythonHome(python_home);
 
-    //printf("Path before Py_Initialize(): %s\r\n\n", Py_GetPath()); 
+    //printf("Path before Py_Initialize(): %s\r\n\n", Py_GetPath());
     Py_Initialize();
-    setup_streams();
+    UINT code_page = setup_streams();
 
     PySys_SetArgv(1, dummy_argv);
     //printf("Path after Py_Initialize(): %s\r\n\n", Py_GetPath());
@@ -263,8 +267,7 @@ void initialize_interpreter(const char *basename, const char *module, const char
         PyList_SetItem(argv, i, v);
     }
     PySys_SetObject("argv", argv);
-
-
+    return code_page;
 }
 
 
@@ -279,12 +282,12 @@ wchar_t* pyobject_to_wchar(PyObject *o) {
     } else t = (PyUnicodeObject*)o;
 
 
-    s = 2*PyUnicode_GET_SIZE(t) +1; 
+    s = 2*PyUnicode_GET_SIZE(t) +1;
     ans = (wchar_t*)calloc(s, sizeof(wchar_t));
     if (ans == NULL) return NULL;
     s = PyUnicode_AsWideChar(t, ans, s-1);
     ans[s] = L'\0';
-    
+
     return ans;
 }
 
@@ -312,7 +315,7 @@ int handle_sysexit(PyObject *e) {
 int calibre_show_python_error(const wchar_t *preamble, int code) {
     PyObject *exc, *val, *tb, *str, **system_exit;
     HMODULE dll;
-    int ret, issysexit = 0; wchar_t *i; 
+    int ret, issysexit = 0; wchar_t *i;
 
     if (!PyErr_Occurred()) return code;
     dll = GetModuleHandleA(python_dll);
@@ -358,13 +361,13 @@ void redirect_out_stream(FILE *stream) {
     }
 }
 
-static void 
-null_invalid_parameter_handler(  
-   const wchar_t * expression,  
-   const wchar_t * function,   
-   const wchar_t * file,   
-   unsigned int line,  
-   uintptr_t pReserved  
+static void
+null_invalid_parameter_handler(
+   const wchar_t * expression,
+   const wchar_t * function,
+   const wchar_t * file,
+   unsigned int line,
+   uintptr_t pReserved
 ) {
     // The python runtime expects various system calls with invalid parameters
     // to return errors instead of aborting the program. So get the windows CRT
@@ -388,7 +391,7 @@ execute_python_entrypoint(const char *basename, const char *module, const char *
     _set_invalid_parameter_handler(null_invalid_parameter_handler);
 
     load_python_dll();
-    initialize_interpreter(basename, module, function);
+    UINT code_page = initialize_interpreter(basename, module, function);
 
     site = PyImport_ImportModule("site");
 
@@ -398,13 +401,13 @@ execute_python_entrypoint(const char *basename, const char *module, const char *
         Py_XINCREF(site);
 
         main = PyObject_GetAttrString(site, "main");
-        if (main == NULL || !PyCallable_Check(main)) 
+        if (main == NULL || !PyCallable_Check(main))
             ret = calibre_show_python_error(L"site module has no main function", 1);
         else {
             Py_XINCREF(main);
             res = PyObject_CallObject(main, NULL);
 
-            if (res == NULL) 
+            if (res == NULL)
                 ret = calibre_show_python_error(L"Python function terminated unexpectedly", 1);
             else {
             }
@@ -412,6 +415,7 @@ execute_python_entrypoint(const char *basename, const char *module, const char *
     }
     PyErr_Clear();
     Py_Finalize();
+    if (code_page != CP_UTF8) SetConsoleOutputCP(code_page);
 
     //printf("11111 Returning: %d\r\n", ret);
     return ret;
@@ -433,14 +437,12 @@ wchar_t* get_temp_filename(const wchar_t *prefix) {
     }
 
     uRetVal = GetTempFileName(lpPathBuffer, // directory for tmp files
-                              prefix,       // temp file name prefix 
-                              0,            // create unique name 
-                              szTempName);  // buffer for name 
+                              prefix,       // temp file name prefix
+                              0,            // create unique name
+                              szTempName);  // buffer for name
 
      if (uRetVal == 0) {
          ExitProcess(show_last_error(L"Failed to get temp file name"));
      }
      return szTempName;
 }
-
-
