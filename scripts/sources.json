@@ -591,20 +591,22 @@
     },
 
     {
-        "name": "macfsevents",
+        "name": "wayland",
         "unix": {
-            "filename": "MacFSEvents-0.7.tar.gz",
-            "hash": "md5:089d52d40a088651302967b1d13c3825",
-            "urls": ["pypi"]
+            "filename": "wayland-1.15.0.tar.xz",
+            "hash": "md5:b7393c17fdce9a8d383edab656c92fd2",
+            "urls": ["https://wayland.freedesktop.org/releases/{filename}"]
         }
-    },
+    }, 
 
     {
-        "name": "easylzma",
-        "windows": {
-            "filename": "easylzma-1753f61f673abdebc08fcf4a37eedd6da8a67ba1.tar.bz2",
-            "hash": "git:1753f61f673abdebc08fcf4a37eedd6da8a67ba1",
-            "urls": ["https://github.com/lloyd/easylzma.git"]
+        "name": "wayland-protocols",
+        "unix": {
+            "filename": "wayland-protocols-1.14.tar.xz",
+            "hash": "md5:5d32eaf0f5d6b7da7f5ad0959e2551e6",
+            "urls": ["https://wayland.freedesktop.org/releases/{filename}"]
         }
     }
+
+
 ]

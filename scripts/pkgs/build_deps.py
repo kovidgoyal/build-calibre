@@ -44,6 +44,9 @@ else:
     all_deps.remove('cmake')
     all_deps.remove('pkg-config')
     all_deps.append('xkbcommon')
+    all_deps.append('libxml2')  # needed for wayland
+    all_deps.append('wayland')
+    all_deps.append('wayland-protocols')
 
 
 def ensure_clear_dir(dest_dir):
