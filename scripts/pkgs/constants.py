@@ -60,6 +60,9 @@ if iswindows:
     for k in env:
         if k != 'PATH':
             worker_env[k] = env[k]
+    # The windows build machine has a very old/incomplete certificate store
+    # In particular it is missing Let's Encrypt intermediate certs
+    os.environ[b'SSL_CERT_FILE'] = os.path.join(CALIBRE_DIR, 'resources', 'mozilla-ca-certs.pem')
 else:
     CFLAGS = worker_env['CFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
     CPPFLAGS = worker_env['CPPFLAGS'] = '-I' + os.path.join(PREFIX, 'include')
