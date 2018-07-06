@@ -27,7 +27,7 @@ from pkgs.constants import (
     PREFIX, QT_PREFIX, QT_DLLS, CALIBRE_DIR, mkdtemp, QT_PLUGINS,
     PYQT_MODULES, py_ver, PYTHON, SW
 )
-from pkgs.utils import timeit, current_dir
+from pkgs.utils import timeit, current_dir, walk
 from .. import calibre_constants, py_compile
 from .sign import sign_app
 
@@ -475,8 +475,7 @@ class Freeze(object):
         paths = reversed(map(abspath, [x for x in sys_path if x.startswith('/') and not x.startswith('/Library/')]))
         upaths = []
         for x in paths:
-            if x not in upaths and (x.endswith('.egg') or
-                                    x.endswith('/site-packages')):
+            if x not in upaths and (x.endswith('.egg') or x.endswith('/site-packages')):
                 upaths.append(x)
         upaths.append(join(CALIBRE_DIR, 'src'))
         for x in upaths:
@@ -504,6 +503,9 @@ class Freeze(object):
                 os.remove(join(sp, 'PyQt5', x))
         os.remove(join(sp, 'PyQt5', 'uic/port_v3/proxy_base.py'))
         self.remove_bytecode(sp)
+        for path in walk(sp):
+            if path.endswith('.so'):
+                self.fix_dependencies_in_lib(path)
 
     @flush
     def add_modules_from_dir(self, src):
@@ -572,7 +574,12 @@ class Freeze(object):
                 dest2 = join(dest, basename(x))
                 if dest2.endswith('.so'):
                     self.fix_dependencies_in_lib(dest2)
-        self.remove_bytecode(join(self.resources_dir, 'Python', 'lib'))
+
+        target = join(self.resources_dir, 'Python', 'lib')
+        self.remove_bytecode(target)
+        for path in walk(target):
+            if path.endswith('.so'):
+                self.fix_dependencies_in_lib(path)
 
     @flush
     def remove_bytecode(self, dest):
