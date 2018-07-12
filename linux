@@ -165,7 +165,7 @@ def _build_container():
     for cmd in [
         # Basic build environment
         'apt-get update',
-        'apt-get install -y build-essential nasm cmake chrpath zsh python2.7 git autoconf bison gettext uuid-dev',
+        'apt-get install -y build-essential nasm cmake chrpath zsh python2.7 git autoconf bison gettext uuid-dev liblzma-dev',
         # Build time deps for glfw.
         'apt-get install -y libxcursor-dev libxrandr-dev libxi-dev libxinerama-dev libgl1-mesa-dev libxcb-xkb-dev',
         # Deps for kittu
