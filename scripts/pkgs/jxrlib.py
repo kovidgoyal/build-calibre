@@ -13,7 +13,7 @@ from .utils import walk, run, install_binaries
 def main(args):
     if iswindows:
         plat = 'x64' if is64bit else 'Win32'
-        sln = r'jxrencoderdecoder\JXR_vc11.sln'
+        sln = r'jxrencoderdecoder\JXRDecApp_vc14.vcxproj'
         run('MSBuild.exe', sln, '/t:Build', '/p:Platform=' + plat, '/p:Configuration=Release', '/p:PlatformToolset=v140')
 
         def fname_map(x):
@@ -23,5 +23,5 @@ def main(args):
             if f.endswith('.exe'):
                 install_binaries(f, 'bin', fname_map=fname_map)
     else:
-        run('make')
-        install_binaries('JxrDecApp', 'bin')
+        run('make', os.path.join(os.getcwd(), 'build/JxrDecApp'))
+        install_binaries('build/JxrDecApp', 'bin')

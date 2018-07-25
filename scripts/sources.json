@@ -293,9 +293,9 @@
     {
         "name": "jxrlib",
         "unix": {
-            "filename": "jxrlib_1.1.orig.tar.gz",
-            "hash": "sha256:c7287b86780befa0914f2eeb8be2ac83e672ebd4bd16dc5574a36a59d9708303",
-            "urls": ["https://mirrorservice.org/sites/ftp.debian.org/debian/pool/main/j/jxrlib/{filename}"]
+            "filename": "jxrlib-0.2.1.tar.gz",
+            "hash": "sha256:5ae964ae61f301f38a62b8e18eb8d2eee27eaf2b942477b033435ebf38fa4a19",
+            "urls": ["https://github.com/glencoesoftware/jxrlib/archive/v0.2.1.tar.gz"]
         }
     },
 
