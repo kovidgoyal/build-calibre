@@ -503,16 +503,14 @@ class Freeze(object):
                 os.remove(join(sp, 'PyQt5', x))
         os.remove(join(sp, 'PyQt5', 'uic/port_v3/proxy_base.py'))
         self.remove_bytecode(sp)
-        for path in walk(sp):
-            if path.endswith('.so'):
-                self.fix_dependencies_in_lib(path)
 
     @flush
     def add_modules_from_dir(self, src):
         for x in glob.glob(join(src, '*.py')) + glob.glob(join(src, '*.so')):
-            shutil.copy2(x, self.site_packages)
+            dest = os.path.join(self.site_packages, os.path.basename(x))
+            shutil.copy2(x, dest)
             if x.endswith('.so'):
-                self.fix_dependencies_in_lib(x)
+                self.fix_dependencies_in_lib(dest)
 
     @flush
     def add_packages_from_dir(self, src):
