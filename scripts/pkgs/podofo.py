@@ -6,7 +6,6 @@ from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 import os
 import shutil
-import re
 
 from .constants import PREFIX, build_dir, islinux, CMAKE, LIBDIR, iswindows
 from .utils import walk, run, ModifiedEnv, install_binaries, replace_in_file, install_tree, windows_cmake_build, copy_headers
@@ -30,9 +29,6 @@ def main(args):
             elif f.endswith('.lib'):
                 install_binaries(f, 'lib')
     else:
-        if islinux:
-            # CMP0033 not supported by the version of cmake in the container
-            replace_in_file('CMakeLists.txt', re.compile(br'^.+CMP0033.+$', re.MULTILINE), '')
         # cmake cannot find libpng
         replace_in_file('CMakeLists.txt', 'FIND_PACKAGE(PNG)',
                         'SET(PNG_INCLUDE_DIR "{}/include/libpng16")\nSET(PNG_FOUND "1")\nSET(PNG_LIBRARIES "-lpng16")'.format(PREFIX))
