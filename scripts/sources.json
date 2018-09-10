@@ -198,8 +198,8 @@
     {
         "name": "msgpack",
         "unix": {
-            "filename": "msgpack-python-0.4.8.tar.gz",
-            "hash": "md5:dcd854fb41ee7584ebbf35e049e6be98",
+            "filename": "msgpack-0.5.6.tar.gz",
+            "hash": "sha256:0ee8c8c85aa651be3aa0cd005b5931769eaa658c948ce79428766f1bd46ae2c3",
             "urls": ["pypi"]
         }
     },
