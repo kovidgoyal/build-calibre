@@ -1,0 +1,15 @@
+--- ./qtbase/src/platformsupport/fontdatabases/mac/qcoretextfontdatabase.mm.orig	2018-10-18 10:36:55.016457121 +0530
++++ ./qtbase/src/platformsupport/fontdatabases/mac/qcoretextfontdatabase.mm	2018-10-18 10:37:26.469615885 +0530
+@@ -300,9 +300,9 @@ static void getFontDescription(CTFontDes
+ 
+     if (styles) {
+         if (CFNumberRef weightValue = (CFNumberRef) CFDictionaryGetValue(styles, kCTFontWeightTrait)) {
+-            float normalizedWeight;
+-            if (CFNumberGetValue(weightValue, kCFNumberFloatType, &normalizedWeight))
+-                fd->weight = QCoreTextFontEngine::qtWeightFromCFWeight(normalizedWeight);
++            double normalizedWeight;
++            if (CFNumberGetValue(weightValue, kCFNumberFloat64Type, &normalizedWeight))
++                fd->weight = QCoreTextFontEngine::qtWeightFromCFWeight(float(normalizedWeight));
+         }
+         if (CFNumberRef italic = (CFNumberRef) CFDictionaryGetValue(styles, kCTFontSlantTrait)) {
+             double d;

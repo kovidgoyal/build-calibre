@@ -8,7 +8,7 @@ import os
 import shutil
 
 from .constants import CFLAGS, LDFLAGS, MAKEOPTS, build_dir, isosx, islinux, LIBDIR, iswindows, PREFIX
-from .utils import run, run_shell, replace_in_file, ModifiedEnv, current_env
+from .utils import apply_patch, run, run_shell, replace_in_file, ModifiedEnv, current_env
 
 
 def main(args):
@@ -29,6 +29,7 @@ def main(args):
             r'''searchOrder << (QFileInfo(qAppFileName()).path().replace(QLatin1Char('/'), QLatin1Char('\\')) + QString::fromLatin1("\\app\\DLLs\\"));''')
     cflags, ldflags = CFLAGS, LDFLAGS
     if isosx:
+        apply_patch('fix_mojave_font_weights_in_qt_5.6.patch')
         ldflags = '-L' + LIBDIR
         # The following is needed as without it the Qt build system does not add the
         # necessary -stdlib=libc++ when linking. Probably, you can get rid of
