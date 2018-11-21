@@ -593,8 +593,8 @@
     {
         "name": "wayland",
         "unix": {
-            "filename": "wayland-1.15.0.tar.xz",
-            "hash": "md5:b7393c17fdce9a8d383edab656c92fd2",
+            "filename": "wayland-1.16.0.tar.xz",
+            "hash": "sha1:24c63a5045c653dcfa24efd10fa7c7de89aca9ef",
             "urls": ["https://wayland.freedesktop.org/releases/{filename}"]
         }
     }, 
@@ -602,8 +602,8 @@
     {
         "name": "wayland-protocols",
         "unix": {
-            "filename": "wayland-protocols-1.14.tar.xz",
-            "hash": "md5:5d32eaf0f5d6b7da7f5ad0959e2551e6",
+            "filename": "wayland-protocols-1.17.tar.xz",
+            "hash": "sha1:7d2569c838c776545e3eb1b1049b9c37178aae24",
             "urls": ["https://wayland.freedesktop.org/releases/{filename}"]
         }
     }
