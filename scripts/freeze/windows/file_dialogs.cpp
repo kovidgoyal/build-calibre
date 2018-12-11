@@ -39,7 +39,7 @@ void set_dpi_aware() {
             // E_ACCESSDENIED if the DPI was already set previously
             // and S_OK means the call was successful
             if (SetProcessDpiAwarenessFunc(ProcessPerMonitorDpiAware) == E_INVALIDARG) {
-                PRINTERR("Failed to set process DPI awareness using SetProcessDpiAwareness"); 
+                PRINTERR("Failed to set process DPI awareness using SetProcessDpiAwareness");
             } else {
                 FreeLibrary(sh_core);
                 return;
@@ -59,7 +59,7 @@ void set_dpi_aware() {
 
         if (SetProcessDPIAwareFunc) {
             if (!SetProcessDPIAwareFunc()) {
-                PRINTERR("Failed to set process DPI awareness using SetProcessDPIAware"); 
+                PRINTERR("Failed to set process DPI awareness using SetProcessDPIAware");
             }
         }
 
@@ -168,7 +168,7 @@ int show_dialog(HANDLE pipe, char *secret, HWND parent, bool save_dialog, LPWSTR
                 reinterpret_cast<LPVOID*>(&pfd)),
         "Failed to create COM object for file dialog")
     CALLCOM(pfd->GetOptions(&options), "Failed to get options")
-    options |= FOS_PATHMUSTEXIST | FOS_FORCESHOWHIDDEN;
+    options |= FOS_PATHMUSTEXIST;
     if (no_symlinks) options |= FOS_NODEREFERENCELINKS;
     if (save_dialog) {
         options |= FOS_NOREADONLYRETURN;
@@ -185,7 +185,7 @@ int show_dialog(HANDLE pipe, char *secret, HWND parent, bool save_dialog, LPWSTR
     }
     CALLCOM(pfd->SetOptions(options), "Failed to set options")
     if (title != NULL) { CALLCOM(pfd->SetTitle(title), "Failed to set title") }
-    if (folder != NULL) { 
+    if (folder != NULL) {
         hr = SHCreateItemFromParsingName(folder, NULL, IID_IShellItem, reinterpret_cast<void **>(&folder_item));
         // Failure to set initial folder is not critical
         if (SUCCEEDED(hr)) pfd->SetFolder(folder_item);
@@ -236,7 +236,7 @@ error:
 #define CHECK_KEY(x) (key_size == sizeof(x) - 1 && memcmp(buf, x, sizeof(x) - 1) == 0)
 #define READSTR(x) READ(sizeof(unsigned short), buf); if(!read_string(*((unsigned short*)buf), &x)) return 1;
 #define SETBINARY(x) if(_setmode(_fileno(x), _O_BINARY) == -1) { PRINTERR("Failed to set binary mode"); return 1; }
-#define READBOOL(x)  READ(1, buf); x = !!buf[0]; 
+#define READBOOL(x)  READ(1, buf); x = !!buf[0];
 
 HANDLE open_named_pipe(LPWSTR pipename) {
     HANDLE ans = INVALID_HANDLE_VALUE;
@@ -297,7 +297,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             if (sizeof(HWND) == 8) parent = (HWND)*((__int64*)buf);
             else if (sizeof(HWND) == 4) parent = (HWND)*((__int32*)buf);
             else { fprintf(stderr, "Unknown pointer size: %zd", sizeof(HWND)); fflush(stderr); return 1;}
-#pragma warning( pop ) 
+#pragma warning( pop )
         }
 
         else if CHECK_KEY("PIPENAME") { READSTR(pipename); pipe = open_named_pipe(pipename); if (pipe == INVALID_HANDLE_VALUE) return 1; }
@@ -339,7 +339,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     if (pipe == INVALID_HANDLE_VALUE) { PRINTERR("No pipename received"); return 1; }
     if (secret == NULL) { PRINTERR("No secret received"); return 1; }
 
-    if (echo != NULL) { 
+    if (echo != NULL) {
         int echo_sz = 0;
         char *echo_buf = to_utf8(echo, &echo_sz);
         if (!write_bytes(pipe, SECRET_SIZE+1, secret)) return 1;
@@ -349,7 +349,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         // dont check return status as failure is not critical
         set_app_uid(app_uid);
     }
-	
+
     set_dpi_aware();
     return show_dialog(pipe, secret, parent, save_dialog, title, folder, filename, save_path, multiselect, confirm_overwrite, only_dirs, no_symlinks, file_types, num_file_types, default_extension);
 }
