@@ -492,28 +492,28 @@
     {
         "name": "qt",
         "unix": {
-            "filename": "qt-everywhere-opensource-src-5.6.2.tar.xz",
-            "hash": "sha1:42af05f2086c38a10ba1c707bbff7eca5fe55a22",
-            "urls": ["http://www.mirrorservice.org/sites/download.qt-project.org/archive/qt/5.6/5.6.2/single/{filename}"]
+            "filename": "qt-everywhere-opensource-src-5.6.3.tar.xz",
+            "hash": "md5:010342d515b62ee1c0e709254f4ef9ab",
+            "urls": ["https://download.qt.io/archive/qt/5.6/5.6.3/single/{filename}"]
         },
         "windows": {
-            "filename": "qt-everywhere-opensource-src-5.6.2.zip",
-            "hash": "sha1:c7135b63fd63d708dc43143589dd6134256af075",
-            "urls": ["http://www.mirrorservice.org/sites/download.qt-project.org/archive/qt/5.6/5.6.2/single/{filename}"]
+            "filename": "qt-everywhere-opensource-src-5.6.3.zip",
+            "hash": "md5:f9e6cd1b6e336899369d26bf757d7457",
+            "urls": ["https://download.qt.io/archive/qt/5.6/5.6.3/single/{filename}"]
         }
     },
 
     {
         "name": "webkit",
         "unix": {
-            "filename":"qtwebkit-opensource-src-5.6.2.tar.xz",
-            "hash": "sha1:3dba4ec72c784f03ef4bf62a199cf4e7e49a6562",
-            "urls":["http://www.mirrorservice.org/sites/download.qt-project.org/community_releases/5.6/5.6.2/{filename}"]
+            "filename":"qtwebkit-opensource-src-5.6.3.tar.xz",
+            "hash": "md5:d99754a17c0afdda00b0684675a035ab",
+            "urls":["https://download.qt.io/community_releases/5.6/5.6.3/{filename}"]
         },
         "windows": {
-            "filename":"qtwebkit-opensource-src-5.6.2.zip",
-            "hash": "sha1:0351be53d1d439582e8e610b6d64e882da3786e1",
-            "urls":["http://www.mirrorservice.org/sites/download.qt-project.org/community_releases/5.6/5.6.2/{filename}"]
+            "filename":"qtwebkit-opensource-src-5.6.3.zip",
+            "hash": "md5:2241ca95085747160aafc052c8bb82d3",
+            "urls":["https://download.qt.io/community_releases/5.6/5.6.3/{filename}"]
         }
     },
 
