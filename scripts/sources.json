@@ -492,28 +492,28 @@
     {
         "name": "qt",
         "unix": {
-            "filename": "qt-everywhere-opensource-src-5.6.3.tar.xz",
-            "hash": "md5:010342d515b62ee1c0e709254f4ef9ab",
-            "urls": ["https://download.qt.io/archive/qt/5.6/5.6.3/single/{filename}"]
+            "filename": "qt-everywhere-opensource-src-5.6.2.tar.xz",
+            "hash": "md5:5175fba2f221fd4c91e94771a57a5557",
+            "urls": ["https://download.qt.io/archive/qt/5.6/5.6.2/single/{filename}"]
         },
         "windows": {
-            "filename": "qt-everywhere-opensource-src-5.6.3.zip",
-            "hash": "md5:f9e6cd1b6e336899369d26bf757d7457",
-            "urls": ["https://download.qt.io/archive/qt/5.6/5.6.3/single/{filename}"]
+            "filename": "qt-everywhere-opensource-src-5.6.2.zip",
+            "hash": "md5:b684a2f37b1beebd421b3b7d1eca15dc",
+            "urls": ["https://download.qt.io/archive/qt/5.6/5.6.2/single/{filename}"]
         }
     },
 
     {
         "name": "webkit",
         "unix": {
-            "filename":"qtwebkit-opensource-src-5.6.3.tar.xz",
-            "hash": "md5:d99754a17c0afdda00b0684675a035ab",
-            "urls":["https://download.qt.io/community_releases/5.6/5.6.3/{filename}"]
+            "filename":"qtwebkit-opensource-src-5.6.2.tar.xz",
+            "hash": "md5:5196f47b75e2d6cc9663c89cf9902ef0",
+            "urls":["https://download.qt.io/community_releases/5.6/5.6.2/{filename}"]
         },
         "windows": {
-            "filename":"qtwebkit-opensource-src-5.6.3.zip",
-            "hash": "md5:2241ca95085747160aafc052c8bb82d3",
-            "urls":["https://download.qt.io/community_releases/5.6/5.6.3/{filename}"]
+            "filename":"qtwebkit-opensource-src-5.6.2.zip",
+            "hash": "md5:4689efa0b53a58469b191031da8295d6",
+            "urls":["https://download.qt.io/community_releases/5.6/5.6.2/{filename}"]
         }
     },
 
