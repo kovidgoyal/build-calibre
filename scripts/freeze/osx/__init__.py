@@ -66,8 +66,10 @@ def compile_launcher_lib(contents_dir, gcc, base):
     return dest
 
 
+gcc = os.environ.get('CC', 'clang')
+
+
 def compile_launchers(contents_dir, xprograms, pyver):
-    gcc = os.environ.get('CC', 'gcc')
     base = os.path.dirname(__file__)
     lib = compile_launcher_lib(contents_dir, gcc, base)
     src = open(join(base, 'launcher.c'), 'rb').read()
@@ -609,9 +611,11 @@ class Freeze(object):
                 exe = plist['CFBundleExecutable']
                 # We cannot symlink the bundle executable as if we do,
                 # codesigning fails
-                nexe = plist['CFBundleExecutable'] = exe + '-placeholder-for-codesigning'
-                shutil.copy2(join(self.contents_dir, 'MacOS', exe), join(exe_dir, nexe))
-                exe = join(exe_dir, plist['CFBundleExecutable'])
+                plist['CFBundleExecutable'] = exe + '-placeholder-for-codesigning'
+                nexe = join(exe_dir, plist['CFBundleExecutable'])
+                base = os.path.dirname(abspath(__file__))
+                cmd = [gcc, '-Wall', '-Werror', '-DEXE_NAME="%s"' % exe, join(base, 'placeholder.c'), '-o', nexe, '-headerpad_max_install_names']
+                subprocess.check_call(cmd)
                 plistlib.writePlist(plist, join(cc_dir, x))
             elif x == 'MacOS':
                 for item in os.listdir(join(self.contents_dir, 'MacOS')):
