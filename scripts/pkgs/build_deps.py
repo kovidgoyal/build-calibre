@@ -18,7 +18,7 @@ from pkgs.utils import (
     python_build, set_title, fix_install_names, rmtree)
 
 python_deps = (
-    'setuptools six cssutils dateutil dnspython mechanize msgpack regex chardet dukpy unrardll'
+    'setuptools six css-parser dateutil dnspython mechanize msgpack regex chardet dukpy unrardll'
     ' pygments pycrypto apsw lxml html5-parser pillow netifaces psutil dbuspython macfsevents webencodings html5lib'
 ).strip().split()
 
