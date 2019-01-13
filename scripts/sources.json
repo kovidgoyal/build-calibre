@@ -47,8 +47,8 @@
     {
         "name": "sqlite",
         "unix": {
-            "filename": "sqlite-autoconf-3240000.tar.gz",
-            "hash": "sha1:da68915e3563b5244cbcdb6c7e20fb35559bcfc6",
+            "filename": "sqlite-autoconf-3260000.tar.gz",
+            "hash": "sha1:9af2df1a6da5db6e2ecf3f463625f16740e036e9",
             "urls": ["https://www.sqlite.org/2018/{filename}"]
         }
     },
@@ -225,9 +225,9 @@
     {
         "name": "apsw",
         "unix": {
-            "filename": "apsw-3.23.1-r1.zip",
-            "hash": "sha1:e356f210925374882645f69a226ad153c886942e",
-            "urls": ["https://github.com/rogerbinns/apsw/releases/download/3.23.1-r1/{filename}"]
+            "filename": "apsw-3.26.0-r1.zip",
+            "hash": "sha1:7504f619af7ee0c992a0098faf6629a85a9617fa",
+            "urls": ["https://github.com/rogerbinns/apsw/releases/download/3.26.0-r1/{filename}"]
         }
     },
 
