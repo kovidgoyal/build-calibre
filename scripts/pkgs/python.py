@@ -10,7 +10,7 @@ import glob
 import shutil
 
 from .constants import build_dir, CFLAGS, isosx, iswindows, LIBDIR, PREFIX, islinux, PYTHON, is64bit
-from .utils import ModifiedEnv, run, simple_build, replace_in_file, install_binaries, copy_headers
+from .utils import ModifiedEnv, run, simple_build, replace_in_file, install_binaries, copy_headers, walk
 
 if iswindows:
     def main(args):
@@ -25,10 +25,9 @@ if iswindows:
         # os.makedirs('externals/sqlite-3.8.11.0')
         # os.makedirs('externals/bzip2-1.0.6')
 
-        # vcvarsall.bat causes the wrong MSBuild.exe to be found in PATH,
-        # so prevent build.bat from calling it, since we have called it
-        # already and fixed the paths, anyway.
-        replace_in_file('PCbuild\\build.bat', re.compile(r'^call.+env.bat.+$', re.MULTILINE), '')
+        # dont need python 3 to get externals, use git instead
+        replace_in_file('PCbuild\\get_externals.bat', re.compile(r'^call.+find_python.bat.+$', re.MULTILINE), '')
+
         run('PCbuild\\build.bat', '-e', '--no-tkinter', '--no-bsddb', '-c', 'Release', '-m',
             '-p', ('x64' if is64bit else 'Win32'), '-v', '-t', 'Build')
         # Run the tests
@@ -48,6 +47,12 @@ if iswindows:
         copy_headers('PC\\pyconfig.h', 'private\\python\\include')
         copy_headers('Include\\*.h', 'private\\python\\include')
         shutil.copytree('Lib', os.path.join(build_dir(), 'private\\python\\Lib'))
+        # bloody git creates files with no write permission
+        import stat
+        for path in walk('externals'):
+            os.chmod(path, stat.S_IWRITE)
+            os.remove(path)
+
 else:
     def main(args):
         env = {'CFLAGS': CFLAGS + ' -DHAVE_LOAD_EXTENSION'}
@@ -73,19 +78,18 @@ else:
         if isosx:
             bindir = os.path.join(build_dir(), 'bin')
             for f in os.listdir(bindir):
-                l = os.path.join(bindir, f)
-                if os.path.islink(l):
-                    fp = os.readlink(l)
+                link = os.path.join(bindir, f)
+                if os.path.islink(link):
+                    fp = os.readlink(link)
                     nfp = fp.replace(build_dir(), PREFIX)
                     if nfp != fp:
-                        os.unlink(l)
-                        os.symlink(nfp, l)
+                        os.unlink(link)
+                        os.symlink(nfp, link)
 
 
 def filter_pkg(parts):
     if (
-        'idlelib' in parts or 'lib2to3' in parts or 'lib-tk' in parts or 'ensurepip' in parts or
-        'config' in parts or 'pydoc_data' in parts or 'Icons' in parts
+        'idlelib' in parts or 'lib2to3' in parts or 'lib-tk' in parts or 'ensurepip' in parts or 'config' in parts or 'pydoc_data' in parts or 'Icons' in parts
     ):
         return True
     if iswindows:

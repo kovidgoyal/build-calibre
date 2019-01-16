@@ -98,8 +98,8 @@
             "urls": ["https://www.python.org/ftp/python/2.7.12/{filename}"]
         },
         "windows": {
-            "filename":"python-296b98a308cfc8eeccb37f60c4a6e8149b8c5a1a.tar.bz2",
-            "hash":"git:296b98a308cfc8eeccb37f60c4a6e8149b8c5a1a",
+            "filename":"python-1948b35e654e0b69ac93e31e3c3405172a6a1b91.tar.bz2",
+            "hash":"git:1948b35e654e0b69ac93e31e3c3405172a6a1b91",
             "urls":["https://github.com/kovidgoyal/cpython.git"]
         }
     },
