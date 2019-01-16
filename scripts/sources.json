@@ -93,9 +93,9 @@
     {
         "name": "python",
         "unix": {
-            "filename": "Python-2.7.12.tar.xz",
-            "hash": "md5:57dffcee9cee8bb2ab5f82af1d8e9a69",
-            "urls": ["https://www.python.org/ftp/python/2.7.12/{filename}"]
+            "filename": "Python-2.7.15.tar.xz",
+            "hash": "sha1:f99348a095ec4a6411c84c0d15343d11920c9724",
+            "urls": ["https://www.python.org/ftp/python/2.7.15/{filename}"]
         },
         "windows": {
             "filename":"python-1948b35e654e0b69ac93e31e3c3405172a6a1b91.tar.bz2",
