@@ -49,7 +49,7 @@ int handle_sysexit(PyObject *e) {
 
 int report_python_error(const char *preamble, int code) {
     PyObject *exc, *val, *tb, *str;
-    int ret, issysexit = 0; char *i, *buf; 
+    int ret, issysexit = 0; char *i, *buf;
 
     if (!PyErr_Occurred()) return code;
     issysexit = PyErr_ExceptionMatches(PyExc_SystemExit);
@@ -91,9 +91,9 @@ static void get_paths()
     char *p;
 	pid_t pid;
 	int ret;
-	
+
 	pid = getpid();
-	
+
 	if (snprintf(linkname, sizeof(linkname), "/proc/%i/exe", pid) < 0)
 		{
 		/* This should only happen on large word systems. I'm not sure
@@ -103,17 +103,17 @@ static void get_paths()
         exit(report_error("PID too large", EXIT_FAILURE));
 		}
 
-	
-	ret = readlink(linkname, exe_path, PATH_MAX);
-	
+
+	ret = readlink(linkname, exe_path, sizeof(exe_path));
+
 	if (ret == -1) {
         exit(report_error("Failed to read exe path.", EXIT_FAILURE));
     }
-	
-	if (ret >= PATH_MAX) {
+
+	if ((size_t)ret >= sizeof(exe_path)) {
         exit(report_error("exe path buffer too small.", EXIT_FAILURE));
     }
-	
+
 	exe_path[ret] = 0;
 
     p = rindex(exe_path, '/');
@@ -127,11 +127,14 @@ static void get_paths()
         exit(report_error("Only one path separator in executable path", EXIT_FAILURE));
     }
     *p = 0;
+    if (strlen(base_dir) == 0) {
+        exit(report_error("base directory empty", EXIT_FAILURE));
+    }
 
-    snprintf(bin_dir,        PATH_MAX, "%s/bin", base_dir);
-    snprintf(lib_dir,        PATH_MAX, "%s/lib", base_dir);
-    snprintf(resources_dir,  PATH_MAX, "%s/resources", base_dir);
-    snprintf(extensions_dir, PATH_MAX, "%s/%s/site-packages/calibre/plugins", lib_dir, PYTHON_VER);
+    snprintf(bin_dir,        sizeof(bin_dir), "%s/bin", base_dir);
+    snprintf(lib_dir,        sizeof(lib_dir), "%s/lib", base_dir);
+    snprintf(resources_dir,  sizeof(resources_dir), "%s/resources", base_dir);
+    snprintf(extensions_dir, sizeof(extensions_dir), "%s/%s/site-packages/calibre/plugins", lib_dir, PYTHON_VER);
 }
 
 
@@ -145,15 +148,15 @@ void setup_stream(const char *name, const char *errors) {
     snprintf(buf, 20, "%s", "utf-8");
     snprintf(buf+21, 30, "%s", errors);
 
-    if (!PyFile_SetEncodingAndErrors(stream, buf, buf+21)) 
+    if (!PyFile_SetEncodingAndErrors(stream, buf, buf+21))
         exit(report_python_error("Failed to set stream encoding", 1));
-    
+
 }
 
 void setup_streams() {
     if (!GUI_APP) { // Remove buffering
         setvbuf(stdin,  NULL, _IONBF, 2);
-        setvbuf(stdout, NULL, _IONBF, 2);                                                   
+        setvbuf(stdout, NULL, _IONBF, 2);
         setvbuf(stderr, NULL, _IONBF, 2);
     }
 
@@ -164,14 +167,12 @@ void setup_streams() {
 
 void initialize_interpreter(int argc, char **argv, char *outr, char *errr,
         const char *basename, const char *module, const char *function) {
-    char *path, *encoding, *p;
+    char *encoding, *p;
 
     get_paths();
+    char path[3*PATH_MAX];
 
-    path = (char*)calloc(3*PATH_MAX, sizeof(char));
-    if (!path) OOM;
-
-    snprintf(path, 3*PATH_MAX,
+    snprintf(path, sizeof(path),
             "%s/%s:%s/%s/plat-linux2:%s/%s/lib-dynload:%s/%s/site-packages",
             lib_dir, PYTHON_VER, lib_dir, PYTHON_VER, lib_dir, PYTHON_VER,
             lib_dir, PYTHON_VER);
@@ -188,7 +189,7 @@ void initialize_interpreter(int argc, char **argv, char *outr, char *errr,
     Py_SetProgramName(exe_path);
     Py_SetPythonHome(base_dir);
 
-    //printf("Path before Py_Initialize(): %s\r\n\n", Py_GetPath()); 
+    //printf("Path before Py_Initialize(): %s\r\n\n", Py_GetPath());
     Py_Initialize();
     if (!Py_FileSystemDefaultEncoding) {
         encoding = getenv("PYTHONIOENCODING");
@@ -241,15 +242,15 @@ int execute_python_entrypoint(int argc, char **argv, const char *basename, const
         Py_XINCREF(site);
 
         pmain = PyObject_GetAttrString(site, "main");
-        if (pmain == NULL || !PyCallable_Check(pmain)) 
+        if (pmain == NULL || !PyCallable_Check(pmain))
             ret = report_python_error("site module has no main function", 1);
         else {
             Py_XINCREF(pmain);
             res = PyObject_CallObject(pmain, NULL);
 
-            if (res == NULL) 
+            if (res == NULL)
                 ret = report_python_error("Python function terminated unexpectedly", 1);
-            
+
             ret = pyobject_to_int(res);
         }
     }
@@ -259,5 +260,3 @@ int execute_python_entrypoint(int argc, char **argv, const char *basename, const
     //printf("11111 Returning: %d\r\n", ret);
     return ret;
 }
-
-
