@@ -111,9 +111,9 @@
     {
         "name": "python",
         "unix": {
-            "filename": "Python-3.7.0.tar.xz",
-            "hash": "sha256:0382996d1ee6aafe59763426cf0139ffebe36984474d0ec4126dd1c40a8b3549",
-            "urls": ["https://www.python.org/ftp/python/3.7.0/{filename}"]
+            "filename": "Python-3.7.2.tar.xz",
+            "hash": "md5:df6ec36011808205beda239c72f947cb",
+            "urls": ["https://www.python.org/ftp/python/3.7.2/{filename}"]
         }
     },
 
