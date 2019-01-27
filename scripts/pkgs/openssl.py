@@ -5,13 +5,15 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import glob
 import os
+import re
 import shlex
 import shutil
 
-from .constants import (CFLAGS, LDFLAGS, MAKEOPTS, build_dir, is64bit, isosx,
-                        iswindows)
-from .utils import run
+from .constants import (CFLAGS, LDFLAGS, MAKEOPTS, PREFIX, build_dir, is64bit,
+                        isosx, iswindows)
+from .utils import replace_in_file, run
 
 
 def main(args):
@@ -19,6 +21,9 @@ def main(args):
         run('sh ./Configure darwin64-x86_64-cc shared enable-ec_nistp_64_gcc_128 no-ssl2 --openssldir=' + build_dir())
         run('make ' + MAKEOPTS)
         run('make install')
+        pkgconfig = os.path.join(build_dir(), 'lib', 'pkgconfig')
+        for pc in glob.glob(os.path.join(pkgconfig, '*.pc')):
+            replace_in_file(pc, re.compile(br'^prefix=.+$', re.M), b'prefix=%s' % PREFIX)
     elif iswindows:
         conf = 'perl Configure VC-WIN32 enable-static-engine'.split()
         if is64bit:
