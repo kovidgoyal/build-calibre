@@ -421,6 +421,24 @@ def build_portable(env):
     subprocess.check_call([PREFIX + r'\bin\elzma.exe', '-9', '--lzip', name])
 
 
+def sign_files(env, files):
+    args = ['signtool.exe', 'sign', '/a', '/fd', 'sha256', '/td', 'sha256', '/d',
+            'calibre - E-book management', '/du',
+            'https://calibre-ebook.com', '/tr']
+
+    def runcmd(cmd):
+        for timeserver in ('http://sha256timestamp.ws.symantec.com/sha256/timestamp', 'http://timestamp.comodoca.com/rfc3161',):
+            try:
+                subprocess.check_call(cmd + [timeserver] + list(files))
+                break
+            except subprocess.CalledProcessError:
+                print ('Signing failed, retrying with different timestamp server')
+        else:
+            raise SystemExit('Signing failed')
+
+    runcmd(args)
+
+
 def sign_installers(env):
     printf('Signing installers...')
     installers = set()
@@ -431,21 +449,7 @@ def sign_installers(env):
             os.remove(f)
     if not installers:
         raise ValueError('No installers found')
-    args = ['signtool.exe', 'sign', '/a', '/fd', 'sha256', '/td', 'sha256', '/d',
-            'calibre - E-book management', '/du',
-            'https://calibre-ebook.com', '/tr']
-
-    def runcmd(cmd):
-        for timeserver in ('http://sha256timestamp.ws.symantec.com/sha256/timestamp', 'http://timestamp.comodoca.com/rfc3161',):
-            try:
-                subprocess.check_call(cmd + [timeserver] + list(installers))
-                break
-            except subprocess.CalledProcessError:
-                print ('Signing failed, retrying with different timestamp server')
-        else:
-            raise SystemExit('Signing failed')
-
-    runcmd(args)
+    sign_files(env, installers)
 
 
 def add_dir_to_zip(zf, path, prefix=''):
@@ -492,7 +496,7 @@ def build_utils(env):
     build(j(base, 'eject.c'), 'calibre-eject.exe')
 
 
-def build_launchers(env, debug=False):
+def build_launchers(env, debug=False, sign_launchers=False):
     if not os.path.exists(env.obj_dir):
         os.makedirs(env.obj_dir)
     dflags = (['/Zi'] if debug else [])
@@ -521,6 +525,7 @@ def build_launchers(env, debug=False):
     src = j(base, 'main.c')
     shutil.copy2(dll, env.dll_dir)
     basenames, modules, functions = calibre_constants['basenames'], calibre_constants['modules'], calibre_constants['functions']
+    files_to_sign = []
     for typ in ('console', 'gui', ):
         printf('Processing %s launchers' % typ)
         subsys = 'WINDOWS' if typ == 'gui' else 'CONSOLE'
@@ -536,6 +541,7 @@ def build_launchers(env, debug=False):
             cmd = ['cl.exe'] + cflags + dflags + ['/Tc' + src, '/Fo' + dest]
             run(*cmd)
             exe = j(env.base, bname + '.exe')
+            files_to_sign.append(exe)
             lib = dll.replace('.dll', '.lib')
             u32 = ['user32.lib']
             printf('Linking', bname)
@@ -550,6 +556,13 @@ def build_launchers(env, debug=False):
                 'user32.lib', 'kernel32.lib',
                 '/OUT:' + exe] + u32 + dlflags + [embed_resources(env, exe), dest, lib]
             run(*cmd)
+    if sign_launchers:
+        # Some anti-virus programs have now taken to complaining
+        # that individual exe files are not signed, even though the installer
+        # is signed and exe files can load arbitrary code anyway. Fucking
+        # moronic anti-virus vendors.
+        # https://www.mobileread.com/forums/showthread.php?t=314918
+        sign_files(env, files_to_sign)
 
 
 def add_to_zipfile(zf, name, base, zf_names):
@@ -651,7 +664,7 @@ def main(args, ext_dir, test_runner):
     build_dir = a(j(mkdtemp('frozen-')))
     env = Env(build_dir)
     initbase(env)
-    build_launchers(env)
+    build_launchers(env, sign_launchers=args.sign_installers)
     build_utils(env)
     freeze(env, ext_dir)
     embed_manifests(env)
