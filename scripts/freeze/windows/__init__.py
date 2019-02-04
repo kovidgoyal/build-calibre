@@ -475,6 +475,7 @@ def add_dir_to_zip(zf, path, prefix=''):
 
 
 def build_utils(env):
+
     def build(src, name, subsys='CONSOLE', libs='setupapi.lib'.split()):
         printf('Building ' + name)
         obj = j(env.obj_dir, (src) + '.obj')
@@ -496,7 +497,7 @@ def build_utils(env):
     build(j(base, 'eject.c'), 'calibre-eject.exe')
 
 
-def build_launchers(env, debug=False, sign_launchers=False):
+def build_launchers(env, debug=False):
     if not os.path.exists(env.obj_dir):
         os.makedirs(env.obj_dir)
     dflags = (['/Zi'] if debug else [])
@@ -525,7 +526,6 @@ def build_launchers(env, debug=False, sign_launchers=False):
     src = j(base, 'main.c')
     shutil.copy2(dll, env.dll_dir)
     basenames, modules, functions = calibre_constants['basenames'], calibre_constants['modules'], calibre_constants['functions']
-    files_to_sign = []
     for typ in ('console', 'gui', ):
         printf('Processing %s launchers' % typ)
         subsys = 'WINDOWS' if typ == 'gui' else 'CONSOLE'
@@ -541,7 +541,6 @@ def build_launchers(env, debug=False, sign_launchers=False):
             cmd = ['cl.exe'] + cflags + dflags + ['/Tc' + src, '/Fo' + dest]
             run(*cmd)
             exe = j(env.base, bname + '.exe')
-            files_to_sign.append(exe)
             lib = dll.replace('.dll', '.lib')
             u32 = ['user32.lib']
             printf('Linking', bname)
@@ -556,13 +555,6 @@ def build_launchers(env, debug=False, sign_launchers=False):
                 'user32.lib', 'kernel32.lib',
                 '/OUT:' + exe] + u32 + dlflags + [embed_resources(env, exe), dest, lib]
             run(*cmd)
-    if sign_launchers:
-        # Some anti-virus programs have now taken to complaining
-        # that individual exe files are not signed, even though the installer
-        # is signed and exe files can load arbitrary code anyway. Fucking
-        # moronic anti-virus vendors.
-        # https://www.mobileread.com/forums/showthread.php?t=314918
-        sign_files(env, files_to_sign)
 
 
 def add_to_zipfile(zf, name, base, zf_names):
@@ -660,17 +652,28 @@ def copy_crt(env):
             os.chmod(os.path.join(env.dll_dir, bname), stat.S_IRWXU)
 
 
+def sign_executables(env):
+    files_to_sign = []
+    for path in walk(env.base):
+        if path.lower().endswith('.exe'):
+            files_to_sign.append(path)
+    printf('Signing {} exe files'.format(len(files_to_sign)))
+    sign_files(env, files_to_sign)
+
+
 def main(args, ext_dir, test_runner):
     build_dir = a(j(mkdtemp('frozen-')))
     env = Env(build_dir)
     initbase(env)
-    build_launchers(env, sign_launchers=args.sign_installers)
+    build_launchers(env)
     build_utils(env)
     freeze(env, ext_dir)
     embed_manifests(env)
     copy_crt(env)
     archive_lib_dir(env)
     test_runner(os.path.join(env.base, 'calibre-debug.exe'), env.base)
+    if args.sign_installers:
+        sign_executables(env)
     create_installer(env)
     if not is64bit:
         build_portable(env)
