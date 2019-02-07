@@ -168,6 +168,24 @@
     },
 
     {
+        "name": "feedparser",
+        "unix": {
+            "filename": "feedparser-5.2.1.tar.bz2",
+            "hash": "sha256:ce875495c90ebd74b179855449040003a1beb40cd13d5f037a0654251e260b02",
+            "urls": ["pypi"]
+        }
+    },
+
+    {
+        "name": "markdown",
+        "unix": {
+            "filename": "Markdown-3.0.1.tar.gz",
+            "hash": "sha256:d02e0f9b04c500cde6637c11ad7c72671f359b87b9fe924b2383649d8841db7c",
+            "urls": ["pypi"]
+        }
+    },
+
+    {
         "name": "regex",
         "unix": {
             "filename": "regex-2018.07.11.tar.gz",
@@ -207,8 +225,8 @@
     {
         "name": "pygments",
         "unix": {
-            "filename": "Pygments-2.1.3.tar.gz",
-            "hash": "md5:ed3fba2467c8afcda4d317e4ef2c6150",
+            "filename": "Pygments-2.3.1.tar.gz",
+            "hash": "sha256:5ffada19f6203563680669ee7f53b64dabbeb100eb51b61996085e99c03b284a",
             "urls": ["pypi"]
         }
     },

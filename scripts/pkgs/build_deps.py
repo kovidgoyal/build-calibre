@@ -19,7 +19,7 @@ from pkgs.utils import (
 
 python_deps = (
     'setuptools six css-parser dateutil dnspython mechanize msgpack regex chardet dukpy unrardll'
-    ' pygments pycrypto apsw lxml html5-parser pillow netifaces psutil dbuspython macfsevents webencodings html5lib'
+    ' pygments pycrypto apsw lxml html5-parser pillow netifaces psutil dbuspython macfsevents webencodings html5lib feedparser markdown'
 ).strip().split()
 
 all_deps = (
