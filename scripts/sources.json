@@ -195,6 +195,24 @@
     },
 
     {
+        "name": "soupsieve",
+        "unix": {
+            "filename": "soupsieve-1.8.tar.gz",
+            "hash": "sha256:eaed742b48b1f3e2d45ba6f79401b2ed5dc33b2123dfe216adb90d4bfa0ade26",
+            "urls": ["pypi"]
+        }
+    },
+
+    {
+        "name": "beautifulsoup4",
+        "unix": {
+            "filename": "beautifulsoup4-4.7.1.tar.gz",
+            "hash": "sha256:945065979fb8529dd2f37dbb58f00b661bdbcbebf954f93b32fdf5263ef35348",
+            "urls": ["pypi"]
+        }
+    },
+
+    {
         "name": "regex",
         "unix": {
             "filename": "regex-2018.07.11.tar.gz",
