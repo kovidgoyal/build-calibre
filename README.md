@@ -115,7 +115,7 @@ You need a VirtualBox virtual machine of Windows 7 64bit named
 Now you need to install [cygwin](https://www.cygwin.com/setup-x86_64.exe) and
 setup ssh access.
 
-    * Install cygwin, with the: vim, dos2unix, rsync, openssh, unzip, wget, make, zsh, bash-completion, curl
+    * Install cygwin, with the: vim, dos2unix, rsync, openssh, unzip, wget, make, zsh, patch, bash-completion, curl
       packages
     * Edit /etc/passwd and replace all occurrences of /bin/bash with /bin/zsh (in
       a cygwin prompt)
