@@ -129,7 +129,7 @@ def to_vm(rsync, output_dir, prefix='/', name='sw'):
     print('Mirroring data to the VM...')
     calibre_dir = get_calibre_dir()
     if os.path.exists(os.path.join(calibre_dir, 'setup.py')):
-        rsync.to_vm(calibre_dir, prefix + 'calibre', '/imgsrc /build /dist /manual /format_docs /translations /.build-cache /tags /Changelog* *.so *.pyd')
+        rsync.to_vm(calibre_dir, prefix + 'calibre', '/imgsrc /build /bypy /dist /manual /format_docs /translations /.build-cache /tags /Changelog* *.so *.pyd')
 
     for x in 'scripts patches'.split():
         rsync.to_vm(x, prefix + x)
