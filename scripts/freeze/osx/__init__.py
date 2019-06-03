@@ -18,7 +18,6 @@ import tempfile
 import stat
 import operator
 import time
-import tarfile
 from functools import partial
 from itertools import repeat
 
@@ -630,13 +629,6 @@ class Freeze(object):
             plist['CFBundleIdentifier'] = 'com.calibre-ebook.console'
             plist['CFBundleExecutable'] = 'calibre-parallel'
         self.create_app_clone('console.app', specialise_plist)
-        # Comes from https://github.com/julienXX/terminal-notifier (version 1.4.2)
-        tf = join(dirname(abspath(__file__)), 'calibre-notifier.app.tar.bz2')
-        with tarfile.open(tf) as tf:
-            tf.extractall(self.contents_dir)
-        dest = join(self.contents_dir, 'calibre-notifier.app')
-        os.rename(join(self.contents_dir, 'notifier.app'), dest)
-        shutil.copy2(join(self.resources_dir, 'calibre.icns'), join(dest, 'Contents', 'Resources', 'library.icns'))
 
     @flush
     def create_gui_apps(self):
