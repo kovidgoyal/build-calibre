@@ -2,7 +2,9 @@
  * Copyright 2009 Kovid Goyal
  */
 
+#ifndef UNICODE
 #define UNICODE
+#endif
 #define WINDOWS_LEAN_AND_MEAN
 #include<windows.h>
 #include<strsafe.h>
@@ -31,17 +33,17 @@ static int show_error(const wchar_t *preamble, const wchar_t *msg, const int cod
 
 static int show_last_error(wchar_t *preamble) {
     wchar_t *msg = NULL;
-    DWORD dw = GetLastError(); 
+    DWORD dw = GetLastError();
     int ret;
 
     FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
         FORMAT_MESSAGE_FROM_SYSTEM |
         FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         dw,
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        (LPWSTR)&msg, 
+        (LPWSTR)&msg,
         0,
         NULL );
 
@@ -50,13 +52,13 @@ static int show_last_error(wchar_t *preamble) {
     return ret;
 }
 
-typedef int (__cdecl *ENTRYPROC)(const char*, const char*, const char*, int); 
+typedef int (__cdecl *ENTRYPROC)(const char*, const char*, const char*, int);
 
 static ENTRYPROC load_launcher_dll() {
     wchar_t buf[MAX_PATH];  // Cannot use a zero initializer for the array as it generates an implicit call to memset()
     wchar_t *dll_point = NULL;
     int i = 0;
-    DWORD sz = 0; 
+    DWORD sz = 0;
     HMODULE dll = 0;
     ENTRYPROC entrypoint = NULL;
 
