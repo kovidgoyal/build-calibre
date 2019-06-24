@@ -41,14 +41,13 @@ def build_kitty(args):
         cmd.append('build'), cmd.append('--debug')
         tdir = None
     else:
-        bundle = 'osx-bundle' if isosx else 'linux-package'
+        bundle = 'macos-freeze' if isosx else 'linux-freeze'
         tdir = mkdtemp(prefix=bundle)
         cmd.append(bundle)
         if isosx:
             cmd.append('--prefix={}/{}.app'.format(tdir, kitty_constants['appname']))
         else:
             cmd.append('--prefix={}/{}'.format(tdir, kitty_constants['appname']))
-            cmd.append('--for-freeze')
     if args.debug_build:
         if '--debug' not in cmd:
             cmd.append('--debug')
