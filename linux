@@ -169,7 +169,7 @@ def _build_container():
         # Build time deps for glfw.
         'apt-get install -y libxcursor-dev libxrandr-dev libxi-dev libxinerama-dev libgl1-mesa-dev libxcb-xkb-dev',
         # Deps for kittu
-        'apt-get install -y libfontconfig1-dev libdbus-1-dev',
+        'apt-get install -y libfontconfig1-dev libdbus-1-dev libcanberra-dev',
         # Cleanup
         'apt-get clean',
         'chsh -s /bin/zsh ' + user,
