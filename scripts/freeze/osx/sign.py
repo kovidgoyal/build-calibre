@@ -7,7 +7,6 @@ from __future__ import (unicode_literals, division, absolute_import,
 
 import subprocess
 import os
-import plistlib
 from glob import glob
 
 
@@ -16,7 +15,7 @@ from pkgs.utils import current_dir
 
 
 def codesign(items):
-    if isinstance(items, basestring):
+    if hasattr(items, 'strip'):
         items = [items]
     # If you get errors while codesigning that look like "A timestamp was
     # expected but not found" it means that codesign  failed to contact Apple's time
@@ -42,34 +41,22 @@ def expand_dirs(items):
     return items
 
 
-def get_executable(info_path):
-    return plistlib.readPlist(info_path)['CFBundleExecutable']
-
-
 def sign_app(appdir):
     appdir = os.path.abspath(appdir)
     subprocess.check_call(['security', 'unlock-keychain', '-p', 'keychains are stupid', CODESIGN_KEYCHAIN])
-    with current_dir(os.path.join(appdir, 'Contents')):
-        executables = {get_executable('Info.plist')}
-
-        # Sign everything in MacOS except the main executable
-        # which will be signed automatically by codesign when
-        # signing the app bundle
-        with current_dir('MacOS'):
-            items = set(os.listdir('.')) - executables
-            codesign(expand_dirs(items))
-
+    with current_dir(os.path.join(appdir, 'Contents', 'Frameworks')):
         # Sign everything in Frameworks
-        with current_dir('Frameworks'):
-            fw = set(glob('*.framework'))
-            codesign(fw)
-            items = set(os.listdir('.')) - fw
-            codesign(expand_dirs(items))
+        fw = set(glob('*.framework'))
+        codesign(fw)
+        items = set(os.listdir('.')) - fw
+        items = expand_dirs(items)
+        items.discard('kitty/kitty/launcher/kitty')
+        codesign(items)
 
     # Now sign the main app
     codesign(appdir)
     # Verify the signature
-    subprocess.check_call(['codesign', '--deep', '--verify', '-v', appdir])
+    subprocess.check_call(['codesign', '--deep', '--verify', '--strict', '--verbose=2', appdir])
     subprocess.check_call('spctl --verbose=4 --assess --type execute'.split() + [appdir])
 
     return 0
