@@ -117,7 +117,7 @@ def is_elf(path):
 
 def fix_permissions(files):
     for path in files:
-        os.chmod(path, 0o766)
+        os.chmod(path, 0o755)
 
 
 STRIPCMD = ['strip']
